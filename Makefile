@@ -1,7 +1,7 @@
 CLEAN_FILES = # deliberately empty, so we can append below.
 CXX=g++
 PLATFORM_LDFLAGS= -lpthread -lrt
-PLATFORM_CXXFLAGS= -std=c++11 -fno-builtin-memcmp -msse -msse4.2 
+PLATFORM_CXXFLAGS= -std=gnu++17 -fno-builtin-memcmp -msse -msse4.2
 PROFILING_FLAGS=-pg
 OPT=
 LDFLAGS += -Wl,-rpath=$(RPATH)
@@ -70,7 +70,7 @@ PINK = $(PINK_PATH)/pink/lib/libpink$(DEBUG_SUFFIX).a
 ifndef ROCKSDB_PATH
 ROCKSDB_PATH = $(THIRD_PATH)/rocksdb
 endif
-ROCKSDB = $(ROCKSDB_PATH)/librocksdb$(DEBUG_SUFFIX).a
+ROCKSDB = $(ROCKSDB_PATH)/librocksdb$(DEBUG_SUFFIX).so
 
 ifndef GLOG_PATH
 GLOG_PATH = $(THIRD_PATH)/glog
@@ -226,7 +226,8 @@ $(PINK):
 	$(AM_V_at)make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
 $(ROCKSDB):
-	$(AM_V_at)make -j $(PROCESSOR_NUMS) -C $(ROCKSDB_PATH)/ static_lib DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL)
+	$(AM_V_at)env LDFLAGS="" make -j $(PROCESSOR_NUMS) -C $(ROCKSDB_PATH)/ shared_lib DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 DISABLE_WARNING_AS_ERROR=1
+	#cd $(ROCKSDB_PATH) && BUILD_TYPE=rls bash build-rocks.sh shared_lib -j70
 
 $(BLACKWIDOW):
 	$(AM_V_at)make -C $(BLACKWIDOW_PATH) ROCKSDB_PATH=$(ROCKSDB_PATH) SLASH_PATH=$(SLASH_PATH) DEBUG_LEVEL=$(DEBUG_LEVEL)
