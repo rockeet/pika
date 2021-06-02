@@ -1,15 +1,15 @@
 [submodule "third/glog"]
 	path = third/glog
-	url = https://github.com/Qihoo360/glog.git
+	url = git@github.com:rockeet/glog.git
 [submodule "third/slash"]
 	path = third/slash
-	url = https://github.com/Qihoo360/slash.git
+	url = git@github.com:rockeet/slash.git
 [submodule "third/rocksdb"]
 	path = third/rocksdb
-	url = https://github.com/facebook/rocksdb.git
+	url = git@github.com:rockeet/rocksdb-private.git
 [submodule "third/blackwidow"]
 	path = third/blackwidow
-	url = https://github.com/Qihoo360/blackwidow.git
+	url = git@github.com:rockeet/blackwidow.git
 [submodule "third/pink"]
 	path = third/pink
-	url = https://github.com/Qihoo360/pink.git
+	url = git@github.com:rockeet/pink.git
