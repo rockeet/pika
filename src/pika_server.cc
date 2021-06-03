@@ -223,12 +223,14 @@ bool PikaServer::ServerInit() {
 void PikaServer::Start() {
   int ret = 0;
   // start rsync first, rocksdb opened fd will not appear in this fork
+/*
   ret = pika_rsync_service_->StartRsync();
   if (0 != ret) {
     tables_.clear();
     LOG(FATAL) << "Start Rsync Error: bind port " +std::to_string(pika_rsync_service_->ListenPort()) + " failed"
       <<  ", Listen on this port to receive Master FullSync Data";
   }
+*/
 
   // We Init Table Struct Before Start The following thread
   InitTableStruct();
@@ -696,6 +698,7 @@ Status PikaServer::DoSameThingEveryPartition(const TaskType& type) {
           }
         case TaskType::kPurgeLog:
          {
+           /*
             std::shared_ptr<SyncMasterPartition> partition =
               g_pika_rm->GetSyncMasterPartitionByName(
                   PartitionInfo(table_item.second->GetTableName(),
@@ -706,6 +709,7 @@ Status PikaServer::DoSameThingEveryPartition(const TaskType& type) {
               break;
             }
             partition->StableLogger()->PurgeStableLogs();
+            */
             break;
           }
         case TaskType::kCompactAll:
@@ -1587,6 +1591,7 @@ void PikaServer::AutoDeleteExpiredDump() {
 }
 
 void PikaServer::AutoKeepAliveRSync() {
+  return;
   if (!pika_rsync_service_->CheckRsyncAlive()) {
     LOG(WARNING) << "The Rsync service is down, Try to restart";
     pika_rsync_service_->StartRsync();

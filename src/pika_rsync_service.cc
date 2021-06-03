@@ -36,6 +36,7 @@ PikaRsyncService::~PikaRsyncService() {
 }
 
 int PikaRsyncService::StartRsync() {
+  return 0;
   int ret = 0;
   std::string auth;
   if (g_pika_conf->masterauth().empty()) {
