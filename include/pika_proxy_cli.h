@@ -89,4 +89,3 @@ class ProxyCli : public std::enable_shared_from_this<ProxyCli> {
 };
 
 #endif  // PIKA_PROXY_CLI_H_
-#
