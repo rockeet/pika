@@ -1271,12 +1271,12 @@ void PikaServer::SlowlogPushEntry(const PikaCmdArgsType& argv, int32_t time, int
 
   for (uint32_t idx = 0; idx < slargc; ++idx) {
     if (slargc != argv.size() && idx == slargc - 1) {
-      char buffer[32];
+      char buffer[64];
       sprintf(buffer, "... (%lu more arguments)", argv.size() - slargc + 1);
       entry.argv.push_back(std::string(buffer));
     } else {
       if (argv[idx].size() > SLOWLOG_ENTRY_MAX_STRING) {
-        char buffer[32];
+        char buffer[64];
         sprintf(buffer, "... (%lu more bytes)", argv[idx].size() - SLOWLOG_ENTRY_MAX_STRING);
         std::string suffix(buffer);
         std::string brief = argv[idx].substr(0, SLOWLOG_ENTRY_MAX_STRING);

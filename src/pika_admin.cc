@@ -878,6 +878,7 @@ void InfoCmd::InfoShardingReplication(std::string& info) {
       tmp_stream << "master_host:" << master_ip << "\r\n";
       tmp_stream << "master_port:" << master_port << "\r\n";
       tmp_stream << "master_link_status:up"<< "\r\n";
+      // fallthrough
     case PIKA_ROLE_SINGLE :
     case PIKA_ROLE_MASTER :
       tmp_stream << "connected_slaves:" << slave_num << "\r\n" << slave_list_string;
@@ -964,6 +965,7 @@ void InfoCmd::InfoReplication(std::string& info) {
       if (!all_partition_sync) {
         tmp_stream <<"db_repl_state:" << out_of_sync.str() << "\r\n";
       }
+      // fallthrough
     case PIKA_ROLE_SINGLE :
     case PIKA_ROLE_MASTER :
       tmp_stream << "connected_slaves:" << g_pika_server->GetSlaveListString(slaves_list_str) << "\r\n" << slaves_list_str;
