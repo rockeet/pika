@@ -96,8 +96,10 @@ PikaServer::PikaServer() :
   pika_dispatch_thread_ = new PikaDispatchThread(ips, port_, worker_num_, 3000,
                                                  worker_queue_limit, g_pika_conf->max_conn_rbuf_size());
   pika_monitor_thread_ = new PikaMonitorThread();
+/*
   pika_rsync_service_ = new PikaRsyncService(g_pika_conf->db_sync_path(),
                                              g_pika_conf->port() + kPortShiftRSync);
+*/
   pika_pubsub_thread_ = new pink::PubSubThread();
   pika_auxiliary_thread_ = new PikaAuxiliaryThread();
 
@@ -1381,7 +1383,7 @@ void PikaServer::EnablePublish(int fd) {
   pika_pubsub_thread_->UpdateConnReadyState(fd, pink::PubSubThread::ReadyState::kReady);
 }
 
-int PikaServer::UnSubscribe(std::shared_ptr<pink::PinkConn> conn,
+int PikaServer::UnSubscribe(const std::shared_ptr<pink::PinkConn>& conn,
                             const std::vector<std::string>& channels,
                             bool pattern,
                             std::vector<std::pair<std::string, int>>* result) {
@@ -1389,7 +1391,7 @@ int PikaServer::UnSubscribe(std::shared_ptr<pink::PinkConn> conn,
   return subscribed;
 }
 
-void PikaServer::Subscribe(std::shared_ptr<pink::PinkConn> conn,
+void PikaServer::Subscribe(const std::shared_ptr<pink::PinkConn>& conn,
                            const std::vector<std::string>& channels,
                            bool pattern,
                            std::vector<std::pair<std::string, int>>* result) {

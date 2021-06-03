@@ -427,8 +427,8 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   };
   struct ProcessArg {
     ProcessArg() {}
-    ProcessArg(std::shared_ptr<Partition> _partition,
-        std::shared_ptr<SyncMasterPartition> _sync_partition,
+    ProcessArg(const std::shared_ptr<Partition>& _partition,
+        const std::shared_ptr<SyncMasterPartition>& _sync_partition,
         HintKeys _hint_keys) : partition(_partition),
         sync_partition(_sync_partition), hint_keys(_hint_keys) {}
     std::shared_ptr<Partition> partition;
@@ -446,10 +446,10 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   virtual void ProcessSinglePartitionCmd();
   virtual void ProcessMultiPartitionCmd();
   virtual void ProcessDoNotSpecifyPartitionCmd();
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr) = 0;
+  virtual void Do(const std::shared_ptr<Partition>& = nullptr) = 0;
   virtual Cmd* Clone() = 0;
   // used for execute multikey command into different slots
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) = 0;
+  virtual void Split(const std::shared_ptr<Partition>&, const HintKeys& hint_keys) = 0;
   virtual void Merge() = 0;
 
   void Initial(const PikaCmdArgsType& argv,
@@ -486,12 +486,12 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
  protected:
   // enable copy, used default copy
   //Cmd(const Cmd&);
-  void ProcessCommand(std::shared_ptr<Partition> partition,
+  void ProcessCommand(const std::shared_ptr<Partition>&,
       std::shared_ptr<SyncMasterPartition> sync_partition, const HintKeys& hint_key = HintKeys());
-  void InternalProcessCommand(std::shared_ptr<Partition> partition,
+  void InternalProcessCommand(const std::shared_ptr<Partition>&,
       std::shared_ptr<SyncMasterPartition> sync_partition, const HintKeys& hint_key);
-  void DoCommand(std::shared_ptr<Partition> partition, const HintKeys& hint_key);
-  void DoBinlog(std::shared_ptr<SyncMasterPartition> partition);
+  void DoCommand(const std::shared_ptr<Partition>&, const HintKeys& hint_key);
+  void DoBinlog(const std::shared_ptr<Partition>&);
   bool CheckArg(int num) const;
   void LogCommand() const;
 
