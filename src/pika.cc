@@ -129,19 +129,12 @@ static void usage()
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 2 && argc != 3) {
-    usage();
-    exit(-1);
-  }
-
-  bool path_opt = false;
-  char c;
-  char path[1024];
+  int c;
+  const char* path = nullptr;
   while (-1 != (c = getopt(argc, argv, "c:hv"))) {
     switch (c) {
       case 'c':
-        snprintf(path, 1024, "%s", optarg);
-        path_opt = true;
+        path = optarg;
         break;
       case 'h':
         usage();
@@ -151,11 +144,10 @@ int main(int argc, char *argv[]) {
         return 0;
       default:
         usage();
-        return 0;
+        return 1;
     }
   }
-
-  if (path_opt == false) {
+  if (nullptr == path) {
     fprintf (stderr, "Please specify the conf file path\n" );
     usage();
     exit(-1);
