@@ -4,9 +4,6 @@
 [submodule "third/slash"]
 	path = third/slash
 	url = git@github.com:rockeet/slash.git
-[submodule "third/rocksdb"]
-	path = third/rocksdb
-	url = git@github.com:rockeet/rocksdb-private.git
 [submodule "third/blackwidow"]
 	path = third/blackwidow
 	url = git@github.com:rockeet/blackwidow.git
