@@ -17,7 +17,7 @@ class PikaClientProcessor {
   PikaClientProcessor(
       size_t worker_num,
       size_t max_queue_size,
-      const std::string& name_prefix = "CliProcessor");
+      const std::string& name_prefix = "Cli");
   ~PikaClientProcessor();
   int Start();
   void Stop();
