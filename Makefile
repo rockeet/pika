@@ -72,6 +72,8 @@ ROCKSDB_PATH = $(THIRD_PATH)/rocksdb
 endif
 ROCKSDB = $(ROCKSDB_PATH)/librocksdb$(DEBUG_SUFFIX).so
 
+PROTO_BUF_LDFLAGS ?= -lprotobuf
+
 ifndef GLOG_PATH
 GLOG_PATH = $(THIRD_PATH)/glog
 endif
@@ -113,7 +115,7 @@ LDFLAGS += $(LIB_PATH) \
 					 -lblackwidow$(DEBUG_SUFFIX) \
 					 -lrocksdb$(DEBUG_SUFFIX) \
 					 -lglog \
-					 -lprotobuf \
+					 ${PROTO_BUF_LDFLAGS}
 
 # ---------------End Dependences----------------
 
@@ -210,7 +212,7 @@ all: $(BINARY)
 
 dbg: $(BINARY)
 
-$(BINARY): $(SLASH) $(PINK) $(ROCKSDB) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
+$(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
 	$(AM_V_at)rm -f $@
 	$(AM_V_at)$(AM_LINK)
 	$(AM_V_at)rm -rf $(OUTPUT)
@@ -225,9 +227,11 @@ $(SLASH):
 $(PINK):
 	$(AM_V_at)make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
+ifeq (${ROCKSDB_PATH},third/rocksdb)
 $(ROCKSDB):
 	$(AM_V_at)env LDFLAGS="" make -j $(PROCESSOR_NUMS) -C $(ROCKSDB_PATH)/ shared_lib DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 DISABLE_WARNING_AS_ERROR=1
 	#cd $(ROCKSDB_PATH) && BUILD_TYPE=rls bash build-rocks.sh shared_lib -j70
+endif
 
 $(BLACKWIDOW):
 	$(AM_V_at)make -C $(BLACKWIDOW_PATH) ROCKSDB_PATH=$(ROCKSDB_PATH) SLASH_PATH=$(SLASH_PATH) DEBUG_LEVEL=$(DEBUG_LEVEL)
