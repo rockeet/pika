@@ -245,6 +245,10 @@ clean:
 	rm -rf $(PIKA_PROTO_GENS)
 	find $(SRC_PATH) -name "*.[oda]*" -exec rm -f {} \;
 	find $(SRC_PATH) -type f -regex ".*\.\(\(gcda\)\|\(gcno\)\)" -exec rm {} \;
+	+make -C $(SLASH_PATH)/slash clean
+	+make -C $(PINK_PATH)/pink clean
+	+make -C $(BLACKWIDOW_PATH) clean
+
 
 distclean: clean
 	make -C $(PINK_PATH)/pink/ SLASH_PATH=$(SLASH_PATH) clean
