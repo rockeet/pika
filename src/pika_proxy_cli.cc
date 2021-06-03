@@ -26,11 +26,13 @@ void ProxyHandle::FdClosedHandle(int fd, const std::string& ip_port) const {
 ProxyCli::ProxyCli(int cron_interval, int keepalive_timeout)
   : cron_interval_(cron_interval),
     keepalive_timeout_(keepalive_timeout) {
+  proxy_factory_ = nullptr;
+  proxy_handle_ = nullptr;
 }
 
 int ProxyCli::Start() {
-  ProxyFactory* proxy_factory_ = new ProxyFactory(shared_from_this());
-  ProxyHandle* proxy_handle_ = new ProxyHandle(shared_from_this());
+  proxy_factory_ = new ProxyFactory(shared_from_this());
+  proxy_handle_ = new ProxyHandle(shared_from_this());
   client_ptr_ = std::make_shared<pink::ClientThread>(
       proxy_factory_, cron_interval_,
       keepalive_timeout_, proxy_handle_, nullptr);
