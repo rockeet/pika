@@ -1596,6 +1596,8 @@ void PikaServer::AutoKeepAliveRSync() {
 void PikaServer::InitBlackwidowOptions() {
   slash::RWLock rwl(&bw_options_rw_, true);
 
+  bw_options_.json_file = g_pika_conf->json_file();
+
   // For rocksdb::Options
   bw_options_.options.create_if_missing = true;
   bw_options_.options.keep_log_file_num = 10;

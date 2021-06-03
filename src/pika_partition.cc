@@ -19,21 +19,21 @@ extern PikaReplicaManager* g_pika_rm;
 
 std::string PartitionPath(const std::string& table_path,
                           uint32_t partition_id) {
-  char buf[100];
+  char buf[16];
   snprintf(buf, sizeof(buf), "%u/", partition_id);
   return table_path + buf;
 }
 
 std::string PartitionName(const std::string& table_name,
                           uint32_t partition_id) {
-  char buf[256];
+  char buf[512];
   snprintf(buf, sizeof(buf), "(%s:%u)", table_name.data(), partition_id);
   return std::string(buf);
 }
 
 std::string BgsaveSubPath(const std::string& table_name,
                           uint32_t partition_id) {
-  char buf[256];
+  char buf[512];
   std::string partition_id_str = std::to_string(partition_id);
   snprintf(buf, sizeof(buf), "%s/%s", table_name.data(), partition_id_str.data());
   return std::string(buf);
@@ -43,7 +43,7 @@ std::string DbSyncPath(const std::string& sync_path,
                        const std::string& table_name,
                        const uint32_t partition_id,
                        bool classic_mode) {
-  char buf[256];
+  char buf[512];
   std::string partition_id_str = std::to_string(partition_id);
   if (classic_mode) {
     snprintf(buf, sizeof(buf), "%s/", table_name.data());

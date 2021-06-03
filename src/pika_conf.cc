@@ -149,6 +149,8 @@ int PikaConf::Load()
     return ret;
   }
 
+  GetConfStr("json-file", &json_file_);
+
   GetConfInt("timeout", &timeout_);
   if (timeout_ < 0) {
       timeout_ = 60; // 60s
