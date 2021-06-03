@@ -6,4 +6,4 @@ env PATH=/node-shared/vcpkg/installed/x64-linux/tools/protobuf:$PATH \
     LDFLAGS="-L/node-shared/lib" \
     PROTO_BUF_LDFLAGS="-L/node-shared/lib -letcd-cpp-api" \
     ROCKSDB_PATH="/node-shared/leipeng/osc/rocksdb" \
-    make DISABLE_UPDATE_SB=1 $@
+    make DISABLE_UPDATE_SB=1 DISABLE_WARNING_AS_ERROR=1 $@
