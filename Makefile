@@ -120,8 +120,8 @@ LDFLAGS += $(LIB_PATH) \
 # ---------------End Dependences----------------
 
 VERSION_CC=$(SRC_PATH)/build_version.cc
-LIB_SOURCES :=  $(VERSION_CC) \
-				$(filter-out $(VERSION_CC), $(wildcard $(SRC_PATH)/*.cc))
+ORG_SOURCES := $(filter-out $(VERSION_CC), $(wildcard $(SRC_PATH)/*.cc))
+LIB_SOURCES := $(VERSION_CC) $(ORG_SOURCES)
 
 PIKA_PROTO := $(wildcard $(SRC_PATH)/*.proto)
 PIKA_PROTO_GENS:= $(PIKA_PROTO:%.proto=%.pb.h) $(PIKA_PROTO:%.proto=%.pb.cc)
@@ -180,13 +180,12 @@ gen_build_version = sed -e s/@@GIT_SHA@@/$(git_sha)/ -e s/@@GIT_DATE_TIME@@/$(da
 # the version of the source that we used to build the executable file.
 CLEAN_FILES += $(SRC_PATH)/build_version.cc
 
-$(SRC_PATH)/build_version.cc: FORCE
+$(SRC_PATH)/build_version.cc: $(ORG_SOURCES)
 	$(AM_V_GEN)rm -f $@-t
 	$(AM_V_at)$(gen_build_version) > $@-t
 	$(AM_V_at)if test -f $@; then         \
 	  cmp -s $@-t $@ && rm -f $@-t || mv -f $@-t $@;    \
 	else mv -f $@-t $@; fi
-FORCE: 
 
 LIBOBJECTS = $(LIB_SOURCES:.cc=.o)
 PROTOOBJECTS = $(PIKA_PROTO:.proto=.pb.o)
