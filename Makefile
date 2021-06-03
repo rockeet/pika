@@ -221,11 +221,11 @@ $(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
 	$(AM_V_at)cp -r $(CURDIR)/conf $(OUTPUT)
 	
 
-$(SLASH):
-	$(AM_V_at)make -C $(SLASH_PATH)/slash/ DEBUG_LEVEL=$(DEBUG_LEVEL)
+$(SLASH): $(shell find $(SLASH_PATH)/slash -name '*.cc' -o -name '*.h')
+	$(AM_V_at)+make -C $(SLASH_PATH)/slash/ DEBUG_LEVEL=$(DEBUG_LEVEL)
 
-$(PINK):
-	$(AM_V_at)make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
+$(PINK): $(shell find $(PINK_PATH)/pink -name '*.cc' -o -name '*.h')
+	$(AM_V_at)+make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
 ifeq (${ROCKSDB_PATH},third/rocksdb)
 $(ROCKSDB):
@@ -233,8 +233,8 @@ $(ROCKSDB):
 	#cd $(ROCKSDB_PATH) && BUILD_TYPE=rls bash build-rocks.sh shared_lib -j70
 endif
 
-$(BLACKWIDOW):
-	$(AM_V_at)make -C $(BLACKWIDOW_PATH) ROCKSDB_PATH=$(ROCKSDB_PATH) SLASH_PATH=$(SLASH_PATH) DEBUG_LEVEL=$(DEBUG_LEVEL)
+$(BLACKWIDOW): $(SLASH) $(shell find $(BLACKWIDOW_PATH) -name '*.cc' -o -name '*.h')
+	$(AM_V_at)+make -C $(BLACKWIDOW_PATH) ROCKSDB_PATH=$(ROCKSDB_PATH) SLASH_PATH=$(SLASH_PATH) DEBUG_LEVEL=$(DEBUG_LEVEL)
 
 $(GLOG):
 	cd $(THIRD_PATH)/glog; if [ ! -f ./Makefile ]; then ./configure --disable-shared; fi; make; echo '*' > $(CURDIR)/third/glog/.gitignore;
