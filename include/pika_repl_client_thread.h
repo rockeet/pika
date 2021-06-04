@@ -53,7 +53,7 @@ class PikaReplClientThread : public pink::ClientThread {
     int DeleteWorkerSpecificData(void* data) const override {
       return 0;
     }
-    void DestConnectFailedHandle(std::string ip_port, std::string reason) const override {
+    void DestConnectFailedHandle(const std::string& ip_port, const std::string& reason) const override {
     }
   };
 

@@ -52,7 +52,7 @@ class ProxyHandle : public pink::ClientHandle {
     return 0;
   }
   void DestConnectFailedHandle(
-      std::string ip_port, std::string reason) const override {
+      const std::string& ip_port, const std::string& reason) const override {
   }
 
  private:
