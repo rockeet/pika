@@ -31,7 +31,7 @@ void ZAddCmd::DoInitial() {
   return;
 }
 
-void ZAddCmd::Do(std::shared_ptr<Partition> partition) {
+void ZAddCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t count = 0;
   rocksdb::Status s = partition->db()->ZAdd(key_, score_members, &count);
   if (s.ok()) {
@@ -51,7 +51,7 @@ void ZCardCmd::DoInitial() {
   return;
 }
 
-void ZCardCmd::Do(std::shared_ptr<Partition> partition) {
+void ZCardCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t card = 0;
   rocksdb::Status s = partition->db()->ZCard(key_, &card);
   if (s.ok() || s.IsNotFound()) {
@@ -101,7 +101,7 @@ void ZScanCmd::DoInitial() {
   return;
 }
 
-void ZScanCmd::Do(std::shared_ptr<Partition> partition) {
+void ZScanCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t next_cursor = 0;
   std::vector<blackwidow::ScoreMember> score_members;
   rocksdb::Status s = partition->db()->ZScan(key_, cursor_, pattern_, count_, &score_members, &next_cursor);
@@ -140,7 +140,7 @@ void ZIncrbyCmd::DoInitial() {
   return;
 }
 
-void ZIncrbyCmd::Do(std::shared_ptr<Partition> partition) {
+void ZIncrbyCmd::Do(const std::shared_ptr<Partition>& partition) {
   double score = 0;
   rocksdb::Status s = partition->db()->ZIncrby(key_, member_, by_, &score);
   if (s.ok()) {
@@ -181,7 +181,7 @@ void ZRangeCmd::DoInitial() {
   ZsetRangeParentCmd::DoInitial();
 }
 
-void ZRangeCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ScoreMember> score_members;
   rocksdb::Status s = partition->db()->ZRange(key_, start_, stop_, &score_members);
   if (s.ok() || s.IsNotFound()) {
@@ -217,7 +217,7 @@ void ZRevrangeCmd::DoInitial() {
   ZsetRangeParentCmd::DoInitial();
 }
 
-void ZRevrangeCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRevrangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ScoreMember> score_members;
   rocksdb::Status s = partition->db()->ZRevrange(key_, start_, stop_, &score_members);
   if (s.ok() || s.IsNotFound()) {
@@ -324,7 +324,7 @@ void ZRangebyscoreCmd::DoInitial() {
   ZsetRangebyscoreParentCmd::DoInitial();
 }
 
-void ZRangebyscoreCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRangebyscoreCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_score_ == blackwidow::ZSET_SCORE_MAX || max_score_ == blackwidow::ZSET_SCORE_MIN) {
     res_.AppendContent("*0");
     return;
@@ -375,7 +375,7 @@ void ZRevrangebyscoreCmd::DoInitial() {
   right_close_ = tmp_close;
 }
 
-void ZRevrangebyscoreCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRevrangebyscoreCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_score_ == blackwidow::ZSET_SCORE_MAX || max_score_ == blackwidow::ZSET_SCORE_MIN) {
     res_.AppendContent("*0");
     return;
@@ -423,7 +423,7 @@ void ZCountCmd::DoInitial() {
   return;
 }
 
-void ZCountCmd::Do(std::shared_ptr<Partition> partition) {
+void ZCountCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_score_ == blackwidow::ZSET_SCORE_MAX || max_score_ == blackwidow::ZSET_SCORE_MIN) {
     res_.AppendContent("*0");
     return;
@@ -450,7 +450,7 @@ void ZRemCmd::DoInitial() {
   return;
 }
 
-void ZRemCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRemCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t count = 0;
   rocksdb::Status s = partition->db()->ZRem(key_, members_, &count);
   if (s.ok() || s.IsNotFound()) {
@@ -528,7 +528,7 @@ void ZUnionstoreCmd::DoInitial() {
   ZsetUIstoreParentCmd::DoInitial();
 }
 
-void ZUnionstoreCmd::Do(std::shared_ptr<Partition> partition) {
+void ZUnionstoreCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t count = 0;
   rocksdb::Status s = partition->db()->ZUnionstore(dest_key_, keys_, weights_, aggregate_, &count);
   if (s.ok()) {
@@ -548,7 +548,7 @@ void ZInterstoreCmd::DoInitial() {
   return;
 }
 
-void ZInterstoreCmd::Do(std::shared_ptr<Partition> partition) {
+void ZInterstoreCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t count = 0;
   rocksdb::Status s = partition->db()->ZInterstore(dest_key_, keys_, weights_, aggregate_, &count);
   if (s.ok()) {
@@ -573,7 +573,7 @@ void ZRankCmd::DoInitial() {
   ZsetRankParentCmd::DoInitial();
 }
 
-void ZRankCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRankCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t rank = 0;
   rocksdb::Status s = partition->db()->ZRank(key_, member_, &rank);
   if (s.ok()) {
@@ -593,7 +593,7 @@ void ZRevrankCmd::DoInitial() {
   ZsetRankParentCmd::DoInitial();
 }
 
-void ZRevrankCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRevrankCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t revrank = 0;
   rocksdb::Status s = partition->db()->ZRevrank(key_, member_, &revrank);
   if (s.ok()) {
@@ -614,7 +614,7 @@ void ZScoreCmd::DoInitial() {
   member_ = argv_[2];
 }
 
-void ZScoreCmd::Do(std::shared_ptr<Partition> partition) {
+void ZScoreCmd::Do(const std::shared_ptr<Partition>& partition) {
   double score = 0;
   rocksdb::Status s = partition->db()->ZScore(key_, member_, &score);
   if (s.ok()) {
@@ -700,7 +700,7 @@ void ZRangebylexCmd::DoInitial() {
   ZsetRangebylexParentCmd::DoInitial();
 }
 
-void ZRangebylexCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRangebylexCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_member_ == "+" || max_member_ == "-") {
     res_.AppendContent("*0");
     return;
@@ -740,7 +740,7 @@ void ZRevrangebylexCmd::DoInitial() {
   right_close_ = tmp_b;
 }
 
-void ZRevrangebylexCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRevrangebylexCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_member_ == "+" || max_member_ == "-") {
     res_.AppendContent("*0");
     return;
@@ -775,7 +775,7 @@ void ZLexcountCmd::DoInitial() {
   }
 }
 
-void ZLexcountCmd::Do(std::shared_ptr<Partition> partition) {
+void ZLexcountCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_member_ == "+" || max_member_ == "-") {
     res_.AppendContent(":0");
     return;
@@ -806,7 +806,7 @@ void ZRemrangebyrankCmd::DoInitial() {
   }
 }
 
-void ZRemrangebyrankCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRemrangebyrankCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t count = 0;
   rocksdb::Status s = partition->db()->ZRemrangebyrank(key_, start_rank_, stop_rank_, &count);
   if (s.ok() || s.IsNotFound()) {
@@ -831,7 +831,7 @@ void ZRemrangebyscoreCmd::DoInitial() {
   return;
 }
 
-void ZRemrangebyscoreCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRemrangebyscoreCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_score_ == blackwidow::ZSET_SCORE_MAX || max_score_ == blackwidow::ZSET_SCORE_MIN) {
     res_.AppendContent(":0");
     return;
@@ -860,7 +860,7 @@ void ZRemrangebylexCmd::DoInitial() {
   return;
 }
 
-void ZRemrangebylexCmd::Do(std::shared_ptr<Partition> partition) {
+void ZRemrangebylexCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (min_member_ == "+" || max_member_ == "-") {
     res_.AppendContent("*0");
     return;
@@ -892,7 +892,7 @@ void ZPopmaxCmd::DoInitial() {
   }
 }
 
-void ZPopmaxCmd::Do(std::shared_ptr<Partition> partition) {
+void ZPopmaxCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ScoreMember> score_members;
   rocksdb::Status s = partition->db()->ZPopMax(key_, count_, &score_members);
   if (s.ok() || s.IsNotFound()) {
@@ -927,7 +927,7 @@ void ZPopminCmd::DoInitial() {
   }
 }
 
-void ZPopminCmd::Do(std::shared_ptr<Partition> partition) {
+void ZPopminCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ScoreMember> score_members;
   rocksdb::Status s = partition->db()->ZPopMin(key_, count_, &score_members);
   if (s.ok() || s.IsNotFound()) {

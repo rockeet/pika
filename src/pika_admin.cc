@@ -94,7 +94,7 @@ void SlaveofCmd::DoInitial() {
   }
 }
 
-void SlaveofCmd::Do(std::shared_ptr<Partition> partition) {
+void SlaveofCmd::Do(const std::shared_ptr<Partition>& partition) {
   // Check if we are already connected to the specified master
   if ((master_ip_ == "127.0.0.1" || g_pika_server->master_ip() == master_ip_)
     && g_pika_server->master_port() == master_port_) {
@@ -178,7 +178,7 @@ void DbSlaveofCmd::DoInitial() {
   }
 }
 
-void DbSlaveofCmd::Do(std::shared_ptr<Partition> partition) {
+void DbSlaveofCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<SyncSlavePartition> slave_partition =
       g_pika_rm->GetSyncSlavePartitionByName(PartitionInfo(db_name_, 0));
   if (!slave_partition) {
@@ -222,7 +222,7 @@ void AuthCmd::DoInitial() {
   pwd_ = argv_[1];
 }
 
-void AuthCmd::Do(std::shared_ptr<Partition> partition) {
+void AuthCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string root_password(g_pika_conf->requirepass());
   std::string user_password(g_pika_conf->userpass());
   if (user_password.empty() && root_password.empty()) {
@@ -270,7 +270,7 @@ void BgsaveCmd::DoInitial() {
   }
 }
 
-void BgsaveCmd::Do(std::shared_ptr<Partition> partition) {
+void BgsaveCmd::Do(const std::shared_ptr<Partition>& partition) {
   g_pika_server->DoSameThingSpecificTable(TaskType::kBgSave, bgsave_tables_);
   LogCommand();
   res_.AppendContent("+Background saving started");
@@ -307,7 +307,7 @@ void CompactCmd::DoInitial() {
   }
 }
 
-void CompactCmd::Do(std::shared_ptr<Partition> partition) {
+void CompactCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (!strcasecmp(struct_type_.data(), "all")) {
     g_pika_server->DoSameThingSpecificTable(TaskType::kCompactAll, compact_tables_);
   } else if (!strcasecmp(struct_type_.data(), "string")) {
@@ -355,7 +355,7 @@ void PurgelogstoCmd::DoInitial() {
   }
 }
 
-void PurgelogstoCmd::Do(std::shared_ptr<Partition> partition) {
+void PurgelogstoCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<SyncMasterPartition> sync_partition = g_pika_rm->GetSyncMasterPartitionByName(PartitionInfo(table_, 0));
   if (!sync_partition) {
     res_.SetRes(CmdRes::kErrOther, "Partition not found");
@@ -372,7 +372,7 @@ void PingCmd::DoInitial() {
   }
 }
 
-void PingCmd::Do(std::shared_ptr<Partition> partition) {
+void PingCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<pink::PinkConn> conn = GetConn();
   if (!conn) {
     res_.SetRes(CmdRes::kErrOther, kCmdNamePing);
@@ -410,7 +410,7 @@ void SelectCmd::DoInitial() {
   }
 }
 
-void SelectCmd::Do(std::shared_ptr<Partition> partition) {
+void SelectCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<PikaClientConn> conn =
     std::dynamic_pointer_cast<PikaClientConn>(GetConn());
   if (!conn) {
@@ -428,7 +428,7 @@ void FlushallCmd::DoInitial() {
     return;
   }
 }
-void FlushallCmd::Do(std::shared_ptr<Partition> partition) {
+void FlushallCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (!partition) {
     LOG(INFO) << "Flushall, but partition not found";
   } else {
@@ -486,7 +486,7 @@ void FlushdbCmd::DoInitial() {
   }
 }
 
-void FlushdbCmd::Do(std::shared_ptr<Partition> partition) {
+void FlushdbCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (!partition) {
     LOG(INFO) << "Flushdb, but partition not found";
   } else {
@@ -525,7 +525,7 @@ void ClientCmd::DoInitial() {
   return;
 }
 
-void ClientCmd::Do(std::shared_ptr<Partition> partition) {
+void ClientCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (!strcasecmp(operation_.data(), "list")) {
     struct timeval now;
     gettimeofday(&now, NULL);
@@ -582,7 +582,7 @@ void ShutdownCmd::DoInitial() {
   }
 }
 // no return
-void ShutdownCmd::Do(std::shared_ptr<Partition> partition) {
+void ShutdownCmd::Do(const std::shared_ptr<Partition>& partition) {
   DLOG(WARNING) << "handle \'shutdown\'";
   g_pika_server->Exit();
   res_.SetRes(CmdRes::kNone);
@@ -673,7 +673,7 @@ void InfoCmd::DoInitial() {
   }
 }
 
-void InfoCmd::Do(std::shared_ptr<Partition> partition) {
+void InfoCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string info;
   switch (info_section_) {
     case kInfo:
@@ -1153,7 +1153,7 @@ void ConfigCmd::DoInitial() {
   return;
 }
 
-void ConfigCmd::Do(std::shared_ptr<Partition> partition) {
+void ConfigCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string config_ret;
   if (!strcasecmp(config_args_v_[0].data(), "get")) {
     ConfigGet(config_ret);
@@ -1907,7 +1907,7 @@ void MonitorCmd::DoInitial() {
   }
 }
 
-void MonitorCmd::Do(std::shared_ptr<Partition> partition) {
+void MonitorCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<pink::PinkConn> conn_repl = GetConn();
   if (!conn_repl) {
     res_.SetRes(CmdRes::kErrOther, kCmdNameMonitor);
@@ -1929,7 +1929,7 @@ void DbsizeCmd::DoInitial() {
   }
 }
 
-void DbsizeCmd::Do(std::shared_ptr<Partition> partition) {
+void DbsizeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table = g_pika_server->GetTable(table_name_);
   if (!table) {
     res_.SetRes(CmdRes::kInvalidTable);
@@ -1956,7 +1956,7 @@ void TimeCmd::DoInitial() {
   }
 }
 
-void TimeCmd::Do(std::shared_ptr<Partition> partition) {
+void TimeCmd::Do(const std::shared_ptr<Partition>& partition) {
   struct timeval tv;
   if (gettimeofday(&tv, NULL) == 0) {
     res_.AppendArrayLen(2);
@@ -1980,7 +1980,7 @@ void DelbackupCmd::DoInitial() {
   }
 }
 
-void DelbackupCmd::Do(std::shared_ptr<Partition> partition) {
+void DelbackupCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string db_sync_prefix = g_pika_conf->bgsave_prefix();
   std::string db_sync_path = g_pika_conf->bgsave_path();
   std::vector<std::string> dump_dir;
@@ -2031,7 +2031,7 @@ void EchoCmd::DoInitial() {
   return;
 }
 
-void EchoCmd::Do(std::shared_ptr<Partition> partition) {
+void EchoCmd::Do(const std::shared_ptr<Partition>& partition) {
   res_.AppendString(body_);
   return;
 }
@@ -2061,7 +2061,7 @@ void ScandbCmd::DoInitial() {
   return;
 }
 
-void ScandbCmd::Do(std::shared_ptr<Partition> partition) {
+void ScandbCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table = g_pika_server->GetTable(table_name_);
   if (!table) {
     res_.SetRes(CmdRes::kInvalidTable);
@@ -2093,7 +2093,7 @@ void SlowlogCmd::DoInitial() {
   }
 }
 
-void SlowlogCmd::Do(std::shared_ptr<Partition> partition) {
+void SlowlogCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (condition_ == SlowlogCmd::kRESET) {
     g_pika_server->SlowlogReset();
     res_.SetRes(CmdRes::kOk);
@@ -2124,7 +2124,7 @@ void PaddingCmd::DoInitial() {
   }
 }
 
-void PaddingCmd::Do(std::shared_ptr<Partition> partition) {
+void PaddingCmd::Do(const std::shared_ptr<Partition>& partition) {
   res_.SetRes(CmdRes::kOk);
 }
 
@@ -2166,7 +2166,7 @@ void TcmallocCmd::DoInitial() {
   }
 }
 
-void TcmallocCmd::Do(std::shared_ptr<Partition> partition) {
+void TcmallocCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<MallocExtension::FreeListInfo> fli;
   std::vector<std::string> elems;
   switch(type_) {
@@ -2222,7 +2222,7 @@ void PKPatternMatchDelCmd::DoInitial() {
   }
 }
 
-void PKPatternMatchDelCmd::Do(std::shared_ptr<Partition> partition) {
+void PKPatternMatchDelCmd::Do(const std::shared_ptr<Partition>& partition) {
   int ret = 0;
   rocksdb::Status s = partition->db()->PKPatternMatchDel(type_, pattern_, &ret);
   if (s.ok()) {
@@ -2235,5 +2235,5 @@ void PKPatternMatchDelCmd::Do(std::shared_ptr<Partition> partition) {
 void DummyCmd::DoInitial() {
 }
 
-void DummyCmd::Do(std::shared_ptr<Partition> partition) {
+void DummyCmd::Do(const std::shared_ptr<Partition>& partition) {
 }

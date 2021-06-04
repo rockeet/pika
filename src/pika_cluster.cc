@@ -45,7 +45,7 @@ void PkClusterInfoCmd::DoInitial() {
   return;
 }
 
-void PkClusterInfoCmd::Do(std::shared_ptr<Partition> partition) {
+void PkClusterInfoCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string info;
   switch (info_section_) {
     case kInfoSlot:
@@ -311,7 +311,7 @@ void PkClusterAddSlotsCmd::DoInitial() {
   }
 }
 
-void PkClusterAddSlotsCmd::Do(std::shared_ptr<Partition> partition) {
+void PkClusterAddSlotsCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(table_name_);
   if (!table_ptr) {
     res_.SetRes(CmdRes::kErrOther, "Internal error: table not found!");
@@ -400,7 +400,7 @@ void PkClusterDelSlotsCmd::DoInitial() {
   }
 }
 
-void PkClusterDelSlotsCmd::Do(std::shared_ptr<Partition> partition) {
+void PkClusterDelSlotsCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(table_name_);
   if (!table_ptr) {
     res_.SetRes(CmdRes::kErrOther, "Internal error: default table not found!");
@@ -570,7 +570,7 @@ void PkClusterSlotsSlaveofCmd::DoInitial() {
   }
 }
 
-void PkClusterSlotsSlaveofCmd::Do(std::shared_ptr<Partition> partition) {
+void PkClusterSlotsSlaveofCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<uint32_t> to_del_slots;
   for (const auto& slot : slots_) {
     std::shared_ptr<SyncSlavePartition> slave_partition =
@@ -653,7 +653,7 @@ void PkClusterAddTableCmd::DoInitial() {
   }
 }
 
-void PkClusterAddTableCmd::Do(std::shared_ptr<Partition> partition) {
+void PkClusterAddTableCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(table_name_);
   if (table_ptr) {
     res_.SetRes(CmdRes::kErrOther, "Internal error: table already exist!");
@@ -734,7 +734,7 @@ void PkClusterDelTableCmd::DoInitial() {
 }
 
 
-void PkClusterDelTableCmd::Do(std::shared_ptr<Partition> partition) {
+void PkClusterDelTableCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(table_name_);
   if (!table_ptr) {
     res_.SetRes(CmdRes::kErrOther, "Internal error: table not found!");

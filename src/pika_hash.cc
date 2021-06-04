@@ -24,7 +24,7 @@ void HDelCmd::DoInitial() {
   return;
 }
 
-void HDelCmd::Do(std::shared_ptr<Partition> partition) {
+void HDelCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t num = 0;
   rocksdb::Status s = partition->db()->HDel(key_, fields_, &num);
   if (s.ok() || s.IsNotFound()) {
@@ -46,7 +46,7 @@ void HSetCmd::DoInitial() {
   return;
 }
 
-void HSetCmd::Do(std::shared_ptr<Partition> partition) {
+void HSetCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t ret = 0;
   rocksdb::Status s = partition->db()->HSet(key_, field_, value_, &ret);
   if (s.ok()) {
@@ -67,7 +67,7 @@ void HGetCmd::DoInitial() {
   return;
 }
 
-void HGetCmd::Do(std::shared_ptr<Partition> partition) {
+void HGetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->HGet(key_, field_, &value);
   if (s.ok()) {
@@ -89,7 +89,7 @@ void HGetallCmd::DoInitial() {
   return;
 }
 
-void HGetallCmd::Do(std::shared_ptr<Partition> partition) {
+void HGetallCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t total_fv = 0;
   int64_t cursor = 0, next_cursor = 0;
   size_t raw_limit = g_pika_conf->max_client_response_size();
@@ -140,7 +140,7 @@ void HExistsCmd::DoInitial() {
   return;
 }
 
-void HExistsCmd::Do(std::shared_ptr<Partition> partition) {
+void HExistsCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->HExists(key_, field_);
   if (s.ok()) {
     res_.AppendContent(":1");
@@ -165,7 +165,7 @@ void HIncrbyCmd::DoInitial() {
   return;
 }
 
-void HIncrbyCmd::Do(std::shared_ptr<Partition> partition) {
+void HIncrbyCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t new_value;
   rocksdb::Status s = partition->db()->HIncrby(key_, field_, by_, &new_value);
   if (s.ok() || s.IsNotFound()) {
@@ -191,7 +191,7 @@ void HIncrbyfloatCmd::DoInitial() {
   return;
 }
 
-void HIncrbyfloatCmd::Do(std::shared_ptr<Partition> partition) {
+void HIncrbyfloatCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string new_value;
   rocksdb::Status s = partition->db()->HIncrbyfloat(key_, field_, by_, &new_value);
   if (s.ok()) {
@@ -216,7 +216,7 @@ void HKeysCmd::DoInitial() {
   return;
 }
 
-void HKeysCmd::Do(std::shared_ptr<Partition> partition) {
+void HKeysCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<std::string> fields;
   rocksdb::Status s = partition->db()->HKeys(key_, &fields);
   if (s.ok() || s.IsNotFound()) {
@@ -239,7 +239,7 @@ void HLenCmd::DoInitial() {
   return;
 }
 
-void HLenCmd::Do(std::shared_ptr<Partition> partition) {
+void HLenCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t len = 0;
   rocksdb::Status s = partition->db()->HLen(key_, &len);
   if (s.ok() || s.IsNotFound()) {
@@ -263,7 +263,7 @@ void HMgetCmd::DoInitial() {
   return;
 }
 
-void HMgetCmd::Do(std::shared_ptr<Partition> partition) {
+void HMgetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ValueStatus> vss;
   rocksdb::Status s = partition->db()->HMGet(key_, fields_, &vss);
   if (s.ok() || s.IsNotFound()) {
@@ -301,7 +301,7 @@ void HMsetCmd::DoInitial() {
   return;
 }
 
-void HMsetCmd::Do(std::shared_ptr<Partition> partition) {
+void HMsetCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->HMSet(key_, fvs_);
   if (s.ok()) {
     res_.SetRes(CmdRes::kOk);
@@ -322,7 +322,7 @@ void HSetnxCmd::DoInitial() {
   return;
 }
 
-void HSetnxCmd::Do(std::shared_ptr<Partition> partition) {
+void HSetnxCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t ret = 0;
   rocksdb::Status s = partition->db()->HSetnx(key_, field_, value_, &ret);
   if (s.ok()) {
@@ -342,7 +342,7 @@ void HStrlenCmd::DoInitial() {
   return;
 }
 
-void HStrlenCmd::Do(std::shared_ptr<Partition> partition) {
+void HStrlenCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t len = 0;
   rocksdb::Status s = partition->db()->HStrlen(key_, field_, &len);
   if (s.ok() || s.IsNotFound()) {
@@ -362,7 +362,7 @@ void HValsCmd::DoInitial() {
   return;
 }
 
-void HValsCmd::Do(std::shared_ptr<Partition> partition) {
+void HValsCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<std::string> values;
   rocksdb::Status s = partition->db()->HVals(key_, &values);
   if (s.ok() || s.IsNotFound()) {
@@ -417,7 +417,7 @@ void HScanCmd::DoInitial() {
   return;
 }
 
-void HScanCmd::Do(std::shared_ptr<Partition> partition) {
+void HScanCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t next_cursor = 0;
   std::vector<blackwidow::FieldValue> field_values;
   rocksdb::Status s = partition->db()->HScan(key_, cursor_, pattern_, count_, &field_values, &next_cursor);
@@ -477,7 +477,7 @@ void HScanxCmd::DoInitial() {
   return;
 }
 
-void HScanxCmd::Do(std::shared_ptr<Partition> partition) {
+void HScanxCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string next_field;
   std::vector<blackwidow::FieldValue> field_values;
   rocksdb::Status s = partition->db()->HScanx(key_, start_field_, pattern_, count_, &field_values, &next_field);
@@ -532,7 +532,7 @@ void PKHScanRangeCmd::DoInitial() {
   return;
 }
 
-void PKHScanRangeCmd::Do(std::shared_ptr<Partition> partition) {
+void PKHScanRangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string next_field;
   std::vector<blackwidow::FieldValue> field_values;
   rocksdb::Status s = partition->db()->PKHScanRange(key_, field_start_, field_end_,
@@ -587,7 +587,7 @@ void PKHRScanRangeCmd::DoInitial() {
   return;
 }
 
-void PKHRScanRangeCmd::Do(std::shared_ptr<Partition> partition) {
+void PKHRScanRangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string next_field;
   std::vector<blackwidow::FieldValue> field_values;
   rocksdb::Status s = partition->db()->PKHRScanRange(key_, field_start_, field_end_,

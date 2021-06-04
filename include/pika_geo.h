@@ -57,8 +57,8 @@ class GeoAddCmd : public Cmd {
     res.push_back(key_);
     return res;
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new GeoAddCmd(*this);
@@ -78,8 +78,8 @@ class GeoPosCmd : public Cmd {
     res.push_back(key_);
     return res;
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new GeoPosCmd(*this);
@@ -99,8 +99,8 @@ class GeoDistCmd : public Cmd {
     res.push_back(key_);
     return res;
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new GeoDistCmd(*this);
@@ -119,8 +119,8 @@ class GeoHashCmd : public Cmd {
     res.push_back(key_);
     return res;
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new GeoHashCmd(*this);
@@ -135,8 +135,8 @@ class GeoRadiusCmd : public Cmd {
  public:
   GeoRadiusCmd(const std::string& name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new GeoRadiusCmd(*this);
@@ -162,8 +162,8 @@ class GeoRadiusByMemberCmd : public Cmd {
  public:
   GeoRadiusByMemberCmd(const std::string& name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new GeoRadiusByMemberCmd(*this);

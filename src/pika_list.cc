@@ -20,7 +20,7 @@ void LIndexCmd::DoInitial() {
   }
   return;
 }
-void LIndexCmd::Do(std::shared_ptr<Partition> partition) {
+void LIndexCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->LIndex(key_, index_, &value);
   if (s.ok()) {
@@ -50,7 +50,7 @@ void LInsertCmd::DoInitial() {
   pivot_ = argv_[3];
   value_ = argv_[4];
 }
-void LInsertCmd::Do(std::shared_ptr<Partition> partition) {
+void LInsertCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t llen = 0;
   rocksdb::Status s = partition->db()->LInsert(key_, dir_, pivot_, value_, &llen);
   if (s.ok() || s.IsNotFound()) {
@@ -67,7 +67,7 @@ void LLenCmd::DoInitial() {
   }
   key_ = argv_[1];
 }
-void LLenCmd::Do(std::shared_ptr<Partition> partition) {
+void LLenCmd::Do(const std::shared_ptr<Partition>& partition) {
   uint64_t llen = 0;
   rocksdb::Status s = partition->db()->LLen(key_, &llen);
   if (s.ok() || s.IsNotFound()){
@@ -88,7 +88,7 @@ void LPushCmd::DoInitial() {
     values_.push_back(argv_[pos++]);
   }
 }
-void LPushCmd::Do(std::shared_ptr<Partition> partition) {
+void LPushCmd::Do(const std::shared_ptr<Partition>& partition) {
   uint64_t llen = 0;
   rocksdb::Status s = partition->db()->LPush(key_, values_, &llen);
   if (s.ok()) {
@@ -105,7 +105,7 @@ void LPopCmd::DoInitial() {
   }
   key_ = argv_[1];
 }
-void LPopCmd::Do(std::shared_ptr<Partition> partition) {
+void LPopCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->LPop(key_, &value);
   if (s.ok()) {
@@ -125,7 +125,7 @@ void LPushxCmd::DoInitial() {
   key_ = argv_[1];
   value_ = argv_[2];
 }
-void LPushxCmd::Do(std::shared_ptr<Partition> partition) {
+void LPushxCmd::Do(const std::shared_ptr<Partition>& partition) {
   uint64_t llen = 0;
   rocksdb::Status s = partition->db()->LPushx(key_, value_, &llen);
   if (s.ok() || s.IsNotFound()) {
@@ -152,7 +152,7 @@ void LRangeCmd::DoInitial() {
   }
   return;
 }
-void LRangeCmd::Do(std::shared_ptr<Partition> partition) {
+void LRangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<std::string> values;
   rocksdb::Status s = partition->db()->LRange(key_, left_, right_, &values);
   if (s.ok()) {
@@ -180,7 +180,7 @@ void LRemCmd::DoInitial() {
   }
   value_ = argv_[3];
 }
-void LRemCmd::Do(std::shared_ptr<Partition> partition) {
+void LRemCmd::Do(const std::shared_ptr<Partition>& partition) {
   uint64_t res = 0;
   rocksdb::Status s = partition->db()->LRem(key_, count_, value_, &res);
   if (s.ok() || s.IsNotFound()) {
@@ -203,7 +203,7 @@ void LSetCmd::DoInitial() {
   }
   value_ = argv_[3];
 }
-void LSetCmd::Do(std::shared_ptr<Partition> partition) {
+void LSetCmd::Do(const std::shared_ptr<Partition>& partition) {
     rocksdb::Status s = partition->db()->LSet(key_, index_, value_);
     if (s.ok()) {
       res_.SetRes(CmdRes::kOk);
@@ -234,7 +234,7 @@ void LTrimCmd::DoInitial() {
   }
   return;
 }
-void LTrimCmd::Do(std::shared_ptr<Partition> partition) {
+void LTrimCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->LTrim(key_, start_, stop_);
   if (s.ok() || s.IsNotFound()) {
     res_.SetRes(CmdRes::kOk);
@@ -250,7 +250,7 @@ void RPopCmd::DoInitial() {
   }
   key_ = argv_[1];
 }
-void RPopCmd::Do(std::shared_ptr<Partition> partition) {
+void RPopCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->RPop(key_, &value);
   if (s.ok()) {
@@ -273,7 +273,7 @@ void RPopLPushCmd::DoInitial() {
     res_.SetRes(CmdRes::kInconsistentHashTag);
   }
 }
-void RPopLPushCmd::Do(std::shared_ptr<Partition> partition) {
+void RPopLPushCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->RPoplpush(source_, receiver_, &value);
   if (s.ok()) {
@@ -296,7 +296,7 @@ void RPushCmd::DoInitial() {
     values_.push_back(argv_[pos++]);
   }
 }
-void RPushCmd::Do(std::shared_ptr<Partition> partition) {
+void RPushCmd::Do(const std::shared_ptr<Partition>& partition) {
   uint64_t llen = 0;
   rocksdb::Status s = partition->db()->RPush(key_, values_, &llen);
   if (s.ok()) {
@@ -314,7 +314,7 @@ void RPushxCmd::DoInitial() {
   key_ = argv_[1];
   value_ = argv_[2];
 }
-void RPushxCmd::Do(std::shared_ptr<Partition> partition) {
+void RPushxCmd::Do(const std::shared_ptr<Partition>& partition) {
   uint64_t llen = 0;
   rocksdb::Status s = partition->db()->RPushx(key_, value_, &llen);
   if (s.ok() || s.IsNotFound()) {

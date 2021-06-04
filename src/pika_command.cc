@@ -631,7 +631,7 @@ void Cmd::ProcessSinglePartitionCmd() {
   ProcessCommand(partition, sync_partition);
 }
 
-void Cmd::ProcessCommand(std::shared_ptr<Partition> partition,
+void Cmd::ProcessCommand(const std::shared_ptr<Partition>& partition,
     std::shared_ptr<SyncMasterPartition> sync_partition,
     const HintKeys& hint_keys) {
   if (stage_ == kNone) {
@@ -645,7 +645,7 @@ void Cmd::ProcessCommand(std::shared_ptr<Partition> partition,
   }
 }
 
-void Cmd::InternalProcessCommand(std::shared_ptr<Partition> partition,
+void Cmd::InternalProcessCommand(const std::shared_ptr<Partition>& partition,
     std::shared_ptr<SyncMasterPartition> sync_partition, const HintKeys& hint_keys) {
   slash::lock::MultiRecordLock record_lock(partition->LockMgr());
   if (is_write()) {
@@ -677,7 +677,7 @@ void Cmd::InternalProcessCommand(std::shared_ptr<Partition> partition,
   }
 }
 
-void Cmd::DoCommand(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {
+void Cmd::DoCommand(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {
   if (!is_suspend()) {
     partition->DbRWLockReader();
   }
@@ -694,7 +694,7 @@ void Cmd::DoCommand(std::shared_ptr<Partition> partition, const HintKeys& hint_k
   }
 }
 
-void Cmd::DoBinlog(std::shared_ptr<SyncMasterPartition> partition) {
+void Cmd::DoBinlog(const std::shared_ptr<SyncMasterPartition>& partition) {
   if (res().ok()
     && is_write()
     && g_pika_conf->write_binlog()) {

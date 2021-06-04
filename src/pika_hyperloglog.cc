@@ -19,7 +19,7 @@ void PfAddCmd::DoInitial() {
   }
 }
 
-void PfAddCmd::Do(std::shared_ptr<Partition> partition) {
+void PfAddCmd::Do(const std::shared_ptr<Partition>& partition) {
   bool update = false;
   rocksdb::Status s = partition->db()->PfAdd(key_, values_, &update);
   if (s.ok() && update) {
@@ -42,7 +42,7 @@ void PfCountCmd::DoInitial() {
   }
 }
 
-void PfCountCmd::Do(std::shared_ptr<Partition> partition) {
+void PfCountCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t value_ = 0;
   rocksdb::Status s = partition->db()->PfCount(keys_, &value_);
   if (s.ok()) {
@@ -63,7 +63,7 @@ void PfMergeCmd::DoInitial() {
   }
 }
 
-void PfMergeCmd::Do(std::shared_ptr<Partition> partition) {
+void PfMergeCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->PfMerge(keys_);
   if (s.ok()) {
     res_.SetRes(CmdRes::kOk);

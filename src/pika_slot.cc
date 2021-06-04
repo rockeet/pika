@@ -29,7 +29,7 @@ void SlotsInfoCmd::DoInitial() {
   return;
 }
 
-void SlotsInfoCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsInfoCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(g_pika_conf->default_table());
   if (!table_ptr) {
     res_.SetRes(CmdRes::kNotFound, kCmdNameSlotsInfo);
@@ -73,7 +73,7 @@ void SlotsHashKeyCmd::DoInitial() {
   return;
 }
 
-void SlotsHashKeyCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsHashKeyCmd::Do(const std::shared_ptr<Partition>& partition) {
   res_.AppendArrayLen(argv_.size() - 1);
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(g_pika_conf->default_table());
   uint32_t partition_num = table_ptr->PartitionNum();
@@ -103,7 +103,7 @@ void SlotsMgrtSlotAsyncCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtSlotAsyncCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtSlotAsyncCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t moved = 0;
   int64_t remained = 0;
   res_.AppendArrayLen(2);
@@ -162,7 +162,7 @@ void SlotsMgrtTagSlotAsyncCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtTagSlotAsyncCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtTagSlotAsyncCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t moved = 0;
   int64_t remained = 0;
   // check if this slave node exist.
@@ -239,7 +239,7 @@ void SlotsScanCmd::DoInitial() {
   return;
 }
 
-void SlotsScanCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsScanCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(g_pika_conf->default_table());
   if (!table_ptr) {
     res_.SetRes(CmdRes::kNotFound, kCmdNameSlotsScan);
@@ -295,7 +295,7 @@ void SlotsDelCmd::DoInitial() {
   return;
 }
 
-void SlotsDelCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsDelCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::shared_ptr<Table> table_ptr = g_pika_server->GetTable(g_pika_conf->default_table());
   if (!table_ptr) {
     res_.SetRes(CmdRes::kNotFound, kCmdNameSlotsDel);
@@ -341,7 +341,7 @@ void SlotsMgrtExecWrapperCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtExecWrapperCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtExecWrapperCmd::Do(const std::shared_ptr<Partition>& partition) {
   // return 0 means proxy will request to new slot server
   // return 1 means proxy will keey trying
   // return 2 means return this key directly
@@ -366,7 +366,7 @@ void SlotsMgrtAsyncStatusCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtAsyncStatusCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtAsyncStatusCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string status;
   std::string ip = "none";
   int64_t port = -1, slot = -1, moved = -1, remained = -1;
@@ -405,7 +405,7 @@ void SlotsMgrtAsyncCancelCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtAsyncCancelCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtAsyncCancelCmd::Do(const std::shared_ptr<Partition>& partition) {
   res_.SetRes(CmdRes::kOk);
   return;
 }
@@ -416,7 +416,7 @@ void SlotsMgrtSlotCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtSlotCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtSlotCmd::Do(const std::shared_ptr<Partition>& partition) {
   return;
 }
 
@@ -426,7 +426,7 @@ void SlotsMgrtTagSlotCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtTagSlotCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtTagSlotCmd::Do(const std::shared_ptr<Partition>& partition) {
   return;
 }
 
@@ -436,7 +436,7 @@ void SlotsMgrtOneCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtOneCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtOneCmd::Do(const std::shared_ptr<Partition>& partition) {
   return;
 }
 
@@ -446,6 +446,6 @@ void SlotsMgrtTagOneCmd::DoInitial() {
   return;
 }
 
-void SlotsMgrtTagOneCmd::Do(std::shared_ptr<Partition> partition) {
+void SlotsMgrtTagOneCmd::Do(const std::shared_ptr<Partition>& partition) {
   return;
 }

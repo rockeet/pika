@@ -27,8 +27,8 @@ class PkClusterInfoCmd : public Cmd {
   PkClusterInfoCmd(const std::string& name, int arity, uint16_t flag)
     : Cmd(name, arity, flag),
       info_section_(kInfoErr), info_range_(kAll) {}
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new PkClusterInfoCmd(*this);
@@ -80,12 +80,12 @@ class PkClusterAddSlotsCmd : public SlotParentCmd {
  public:
   PkClusterAddSlotsCmd(const std::string& name, int arity, uint16_t flag)
       : SlotParentCmd(name, arity, flag) {}
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new PkClusterAddSlotsCmd(*this);
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
  private:
   virtual void DoInitial() override;
   Status AddSlotsSanityCheck();
@@ -95,8 +95,8 @@ class PkClusterDelSlotsCmd : public SlotParentCmd {
  public:
   PkClusterDelSlotsCmd(const std::string& name, int32_t arity, uint16_t flag)
       : SlotParentCmd(name, arity, flag) {}
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new PkClusterDelSlotsCmd(*this);
@@ -110,8 +110,8 @@ class PkClusterSlotsSlaveofCmd : public Cmd {
  public:
   PkClusterSlotsSlaveofCmd(const std::string& name , int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   virtual Cmd* Clone() override {
     return new PkClusterSlotsSlaveofCmd(*this);
@@ -138,12 +138,12 @@ class PkClusterAddTableCmd : public Cmd {
  public:
   PkClusterAddTableCmd(const std::string& name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), slot_num_(0) {}
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   Cmd* Clone() override {
     return new PkClusterAddTableCmd(*this);
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
  private:
   uint64_t  slot_num_;
   void DoInitial() override;
@@ -158,12 +158,12 @@ class PkClusterDelTableCmd : public PkClusterDelSlotsCmd {
  public:
   PkClusterDelTableCmd(const std::string& name, int arity, uint16_t flag)
       : PkClusterDelSlotsCmd(name, arity, flag) {}
-  virtual void Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
   virtual void Merge() {};
   Cmd* Clone() override {
     return new PkClusterDelTableCmd(*this);
   }
-  virtual void Do(std::shared_ptr<Partition> partition = nullptr);
+  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
  private:
   void DoInitial() override;
   Status DelTableSanityCheck(const std::string& table_name);

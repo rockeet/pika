@@ -491,7 +491,7 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   void InternalProcessCommand(const std::shared_ptr<Partition>&,
       std::shared_ptr<SyncMasterPartition> sync_partition, const HintKeys& hint_key);
   void DoCommand(const std::shared_ptr<Partition>&, const HintKeys& hint_key);
-  void DoBinlog(const std::shared_ptr<Partition>&);
+  void DoBinlog(const std::shared_ptr<SyncMasterPartition>&);
   bool CheckArg(int num) const;
   void LogCommand() const;
 

@@ -66,7 +66,7 @@ void SetCmd::DoInitial() {
   return;
 }
 
-void SetCmd::Do(std::shared_ptr<Partition> partition) {
+void SetCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s;
   int32_t res = 1;
   switch (condition_) {
@@ -152,7 +152,7 @@ void GetCmd::DoInitial() {
   return;
 }
 
-void GetCmd::Do(std::shared_ptr<Partition> partition) {
+void GetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->Get(key_, &value);
   if (s.ok()) {
@@ -175,7 +175,7 @@ void DelCmd::DoInitial() {
   return;
 }
 
-void DelCmd::Do(std::shared_ptr<Partition> partition) {
+void DelCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, blackwidow::Status> type_status;
   int64_t count = partition->db()->Del(keys_, &type_status);
   if (count >= 0) {
@@ -186,7 +186,7 @@ void DelCmd::Do(std::shared_ptr<Partition> partition) {
   return;
 }
 
-void DelCmd::Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {
+void DelCmd::Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {
   std::map<blackwidow::DataType, blackwidow::Status> type_status;
   int64_t count = partition->db()->Del(hint_keys.keys, &type_status);
   if (count >= 0) {
@@ -211,7 +211,7 @@ void IncrCmd::DoInitial() {
   return;
 }
 
-void IncrCmd::Do(std::shared_ptr<Partition> partition) {
+void IncrCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Incrby(key_, 1, &new_value_);
   if (s.ok()) {
    res_.AppendContent(":" + std::to_string(new_value_));
@@ -238,7 +238,7 @@ void IncrbyCmd::DoInitial() {
   return;
 }
 
-void IncrbyCmd::Do(std::shared_ptr<Partition> partition) {
+void IncrbyCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Incrby(key_, by_, &new_value_);
   if (s.ok()) {
     res_.AppendContent(":" + std::to_string(new_value_));
@@ -266,7 +266,7 @@ void IncrbyfloatCmd::DoInitial() {
   return;
 }
 
-void IncrbyfloatCmd::Do(std::shared_ptr<Partition> partition) {
+void IncrbyfloatCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Incrbyfloat(key_, value_, &new_value_);
   if (s.ok()) {
     res_.AppendStringLen(new_value_.size());
@@ -290,7 +290,7 @@ void DecrCmd::DoInitial() {
   return;
 }
 
-void DecrCmd::Do(std::shared_ptr<Partition> partition) {
+void DecrCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Decrby(key_, 1, &new_value_);
   if (s.ok()) {
    res_.AppendContent(":" + std::to_string(new_value_));
@@ -317,7 +317,7 @@ void DecrbyCmd::DoInitial() {
   return;
 }
 
-void DecrbyCmd::Do(std::shared_ptr<Partition> partition) {
+void DecrbyCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Decrby(key_, by_, &new_value_);
   if (s.ok()) {
     res_.AppendContent(":" + std::to_string(new_value_));
@@ -341,7 +341,7 @@ void GetsetCmd::DoInitial() {
   return;
 }
 
-void GetsetCmd::Do(std::shared_ptr<Partition> partition) {
+void GetsetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string old_value;
   rocksdb::Status s = partition->db()->GetSet(key_, new_value_, &old_value);
   if (s.ok()) {
@@ -367,7 +367,7 @@ void AppendCmd::DoInitial() {
   return;
 }
 
-void AppendCmd::Do(std::shared_ptr<Partition> partition) {
+void AppendCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t new_len = 0;
   rocksdb::Status s = partition->db()->Append(key_, value_, &new_len);
   if (s.ok() || s.IsNotFound()) {
@@ -389,7 +389,7 @@ void MgetCmd::DoInitial() {
   return;
 }
 
-void MgetCmd::Do(std::shared_ptr<Partition> partition) {
+void MgetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ValueStatus> vss;
   rocksdb::Status s = partition->db()->MGet(keys_, &vss);
   if (s.ok()) {
@@ -408,7 +408,7 @@ void MgetCmd::Do(std::shared_ptr<Partition> partition) {
   return;
 }
 
-void MgetCmd::Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {
+void MgetCmd::Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {
   std::vector<blackwidow::ValueStatus> vss;
   const std::vector<std::string>& keys = hint_keys.keys;
   rocksdb::Status s = partition->db()->MGet(keys, &vss);
@@ -465,7 +465,7 @@ void KeysCmd::DoInitial() {
   return;
 }
 
-void KeysCmd::Do(std::shared_ptr<Partition> partition) {
+void KeysCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t total_key = 0;
   int64_t cursor = 0;
   size_t raw_limit = g_pika_conf->max_client_response_size();
@@ -500,7 +500,7 @@ void SetnxCmd::DoInitial() {
   return;
 }
 
-void SetnxCmd::Do(std::shared_ptr<Partition> partition) {
+void SetnxCmd::Do(const std::shared_ptr<Partition>& partition) {
   success_ = 0;
   rocksdb::Status s = partition->db()->Setnx(key_, value_, &success_);
   if (s.ok()) {
@@ -557,7 +557,7 @@ void SetexCmd::DoInitial() {
   return;
 }
 
-void SetexCmd::Do(std::shared_ptr<Partition> partition) {
+void SetexCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Setex(key_, value_, sec_);
   if (s.ok()) {
     res_.SetRes(CmdRes::kOk);
@@ -618,7 +618,7 @@ void PsetexCmd::DoInitial() {
   return;
 }
 
-void PsetexCmd::Do(std::shared_ptr<Partition> partition) {
+void PsetexCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Setex(key_, value_, usec_ / 1000);
   if (s.ok()) {
     res_.SetRes(CmdRes::kOk);
@@ -675,7 +675,7 @@ void DelvxCmd::DoInitial() {
   return;
 }
 
-void DelvxCmd::Do(std::shared_ptr<Partition> partition) {
+void DelvxCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->Delvx(key_, value_, &success_);
   if (s.ok() || s.IsNotFound()) {
     res_.AppendInteger(success_);
@@ -701,7 +701,7 @@ void MsetCmd::DoInitial() {
   return;
 }
 
-void MsetCmd::Do(std::shared_ptr<Partition> partition) {
+void MsetCmd::Do(const std::shared_ptr<Partition>& partition) {
   blackwidow::Status s = partition->db()->MSet(kvs_);
   if (s.ok()) {
     res_.SetRes(CmdRes::kOk);
@@ -710,7 +710,7 @@ void MsetCmd::Do(std::shared_ptr<Partition> partition) {
   }
 }
 
-void MsetCmd::Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {
+void MsetCmd::Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {
   std::vector<blackwidow::KeyValue> kvs;
   const std::vector<std::string>& keys = hint_keys.keys;
   const std::vector<int>& hints = hint_keys.hints;
@@ -754,7 +754,7 @@ void MsetnxCmd::DoInitial() {
   return;
 }
 
-void MsetnxCmd::Do(std::shared_ptr<Partition> partition) {
+void MsetnxCmd::Do(const std::shared_ptr<Partition>& partition) {
   success_ = 0;
   rocksdb::Status s = partition->db()->MSetnx(kvs_, &success_);
   if (s.ok()) {
@@ -781,7 +781,7 @@ void GetrangeCmd::DoInitial() {
   return;
 }
 
-void GetrangeCmd::Do(std::shared_ptr<Partition> partition) {
+void GetrangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string substr;
   rocksdb::Status s = partition->db()->Getrange(key_, start_, end_, &substr);
   if (s.ok() || s.IsNotFound()) {
@@ -806,7 +806,7 @@ void SetrangeCmd::DoInitial() {
   return;
 }
 
-void SetrangeCmd::Do(std::shared_ptr<Partition> partition) {
+void SetrangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t new_len;
   rocksdb::Status s = partition->db()->Setrange(key_, offset_, value_, &new_len);
   if (s.ok()) {
@@ -826,7 +826,7 @@ void StrlenCmd::DoInitial() {
   return;
 }
 
-void StrlenCmd::Do(std::shared_ptr<Partition> partition) {
+void StrlenCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t len = 0;
   rocksdb::Status s = partition->db()->Strlen(key_, &len);
   if (s.ok() || s.IsNotFound()) {
@@ -847,7 +847,7 @@ void ExistsCmd::DoInitial() {
   return;
 }
 
-void ExistsCmd::Do(std::shared_ptr<Partition> partition) {
+void ExistsCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int64_t res = partition->db()->Exists(keys_, &type_status);
   if (res != -1) {
@@ -858,7 +858,7 @@ void ExistsCmd::Do(std::shared_ptr<Partition> partition) {
   return;
 }
 
-void ExistsCmd::Split(std::shared_ptr<Partition> partition, const HintKeys& hint_keys) {
+void ExistsCmd::Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int64_t res = partition->db()->Exists(hint_keys.keys, &type_status);
   if (res != -1) {
@@ -886,7 +886,7 @@ void ExpireCmd::DoInitial() {
   return;
 }
 
-void ExpireCmd::Do(std::shared_ptr<Partition> partition) {
+void ExpireCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int64_t res = partition->db()->Expire(key_, sec_, &type_status);
   if (res != -1) {
@@ -945,7 +945,7 @@ void PexpireCmd::DoInitial() {
   return;
 }
 
-void PexpireCmd::Do(std::shared_ptr<Partition> partition) {
+void PexpireCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int64_t res = partition->db()->Expire(key_, msec_/1000, &type_status);
   if (res != -1) {
@@ -1004,7 +1004,7 @@ void ExpireatCmd::DoInitial() {
   return;
 }
 
-void ExpireatCmd::Do(std::shared_ptr<Partition> partition) {
+void ExpireatCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int32_t res = partition->db()->Expireat(key_, time_stamp_, &type_status);
   if (res != -1) {
@@ -1062,7 +1062,7 @@ std::string PexpireatCmd::ToBinlog(
                                              {});
 }
 
-void PexpireatCmd::Do(std::shared_ptr<Partition> partition) {
+void PexpireatCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int32_t res = partition->db()->Expireat(key_, time_stamp_ms_/1000, &type_status);
   if (res != -1) {
@@ -1082,7 +1082,7 @@ void TtlCmd::DoInitial() {
   return;
 }
 
-void TtlCmd::Do(std::shared_ptr<Partition> partition) {
+void TtlCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, int64_t> type_timestamp;
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   type_timestamp = partition->db()->TTL(key_, &type_status);
@@ -1119,7 +1119,7 @@ void PttlCmd::DoInitial() {
   return;
 }
 
-void PttlCmd::Do(std::shared_ptr<Partition> partition) {
+void PttlCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, int64_t> type_timestamp;
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   type_timestamp = partition->db()->TTL(key_, &type_status);
@@ -1176,7 +1176,7 @@ void PersistCmd::DoInitial() {
   return;
 }
 
-void PersistCmd::Do(std::shared_ptr<Partition> partition) {
+void PersistCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::map<blackwidow::DataType, rocksdb::Status> type_status;
   int32_t res = partition->db()->Persist(key_, &type_status);
   if (res != -1) {
@@ -1196,7 +1196,7 @@ void TypeCmd::DoInitial() {
   return;
 }
 
-void TypeCmd::Do(std::shared_ptr<Partition> partition) {
+void TypeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string res;
   rocksdb::Status s = partition->db()->Type(key_, &res);
   if (s.ok()) {
@@ -1242,7 +1242,7 @@ void ScanCmd::DoInitial() {
   return;
 }
 
-void ScanCmd::Do(std::shared_ptr<Partition> partition) {
+void ScanCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t total_key = 0;
   int64_t batch_count = 0;
   int64_t left = count_;
@@ -1326,7 +1326,7 @@ void ScanxCmd::DoInitial() {
   return;
 }
 
-void ScanxCmd::Do(std::shared_ptr<Partition> partition) {
+void ScanxCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string next_key;
   std::vector<std::string> keys;
   rocksdb::Status s = partition->db()->Scanx(type_, start_key_, pattern_, count_, &keys, &next_key);
@@ -1362,7 +1362,7 @@ void PKSetexAtCmd::DoInitial() {
   return;
 }
 
-void PKSetexAtCmd::Do(std::shared_ptr<Partition> partition) {
+void PKSetexAtCmd::Do(const std::shared_ptr<Partition>& partition) {
   rocksdb::Status s = partition->db()->PKSetexAt(key_, value_, time_stamp_);
   if (s.ok()) {
     res_.SetRes(CmdRes::kOk);
@@ -1427,7 +1427,7 @@ void PKScanRangeCmd::DoInitial() {
   return;
 }
 
-void PKScanRangeCmd::Do(std::shared_ptr<Partition> partition) {
+void PKScanRangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string next_key;
   std::vector<std::string> keys;
   std::vector<blackwidow::KeyValue> kvs;
@@ -1513,7 +1513,7 @@ void PKRScanRangeCmd::DoInitial() {
   return;
 }
 
-void PKRScanRangeCmd::Do(std::shared_ptr<Partition> partition) {
+void PKRScanRangeCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string next_key;
   std::vector<std::string> keys;
   std::vector<blackwidow::KeyValue> kvs;

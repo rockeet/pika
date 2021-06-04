@@ -39,7 +39,7 @@ void BitSetCmd::DoInitial() {
   return;
 }
 
-void BitSetCmd::Do(std::shared_ptr<Partition> partition) {
+void BitSetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   int32_t bit_val = 0;
   rocksdb::Status s = partition->db()->SetBit(key_, bit_offset_, on_, &bit_val);
@@ -67,7 +67,7 @@ void BitGetCmd::DoInitial() {
   return;
 }
 
-void BitGetCmd::Do(std::shared_ptr<Partition> partition) {
+void BitGetCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t bit_val = 0;
   rocksdb::Status s = partition->db()->GetBit(key_, bit_offset_, &bit_val);
   if (s.ok()) {
@@ -101,7 +101,7 @@ void BitCountCmd::DoInitial() {
   return;
 }
 
-void BitCountCmd::Do(std::shared_ptr<Partition> partition) {
+void BitCountCmd::Do(const std::shared_ptr<Partition>& partition) {
   int32_t count = 0;
   rocksdb::Status s;
   if (count_all_) {
@@ -157,7 +157,7 @@ void BitPosCmd::DoInitial() {
   return;
 }
 
-void BitPosCmd::Do(std::shared_ptr<Partition> partition) {
+void BitPosCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t pos = 0;
   rocksdb::Status s;
   if (pos_all_) {
@@ -210,7 +210,7 @@ void BitOpCmd::DoInitial() {
   return;
 }
 
-void BitOpCmd::Do(std::shared_ptr<Partition> partition) {
+void BitOpCmd::Do(const std::shared_ptr<Partition>& partition) {
   int64_t result_length;
   rocksdb::Status s = partition->db()->BitOp(op_, dest_key_, src_keys_, &result_length);
   if (s.ok()) {

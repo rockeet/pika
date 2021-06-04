@@ -42,7 +42,7 @@ void GeoAddCmd::DoInitial() {
   return;
 }
 
-void GeoAddCmd::Do(std::shared_ptr<Partition> partition) {
+void GeoAddCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::vector<blackwidow::ScoreMember> score_members;
   for (const auto& geo_point : pos_) {
     // Convert coordinates to geohash
@@ -78,7 +78,7 @@ void GeoPosCmd::DoInitial() {
   }
 }
 
-void GeoPosCmd::Do(std::shared_ptr<Partition> partition) {
+void GeoPosCmd::Do(const std::shared_ptr<Partition>& partition) {
   double score;
   res_.AppendArrayLen(members_.size());
   for (const auto& member : members_) {
@@ -157,7 +157,7 @@ void GeoDistCmd::DoInitial() {
   }
 }
 
-void GeoDistCmd::Do(std::shared_ptr<Partition> partition) {
+void GeoDistCmd::Do(const std::shared_ptr<Partition>& partition) {
   double first_score, second_score, first_xy[2], second_xy[2];
   rocksdb::Status s = partition->db()->ZScore(key_, first_pos_, &first_score);
   if (s.ok()) {
@@ -204,7 +204,7 @@ void GeoHashCmd::DoInitial() {
   }
 }
 
-void GeoHashCmd::Do(std::shared_ptr<Partition> partition) {
+void GeoHashCmd::Do(const std::shared_ptr<Partition>& partition) {
   const char * geoalphabet= "0123456789bcdefghjkmnpqrstuvwxyz";
   res_.AppendArrayLen(members_.size());
   for (const auto& member : members_) {
@@ -250,7 +250,7 @@ static bool sort_distance_desc(const NeighborPoint & pos1, const NeighborPoint &
   return pos1.distance > pos2.distance;
 }
 
-static void GetAllNeighbors(std::shared_ptr<Partition> partition, std::string & key, GeoRange & range, CmdRes & res) {
+static void GetAllNeighbors(const std::shared_ptr<Partition>& partition, std::string & key, GeoRange & range, CmdRes & res) {
   rocksdb::Status s;
   double longitude = range.longitude, latitude = range.latitude, distance = range.distance;
   int count_limit = 0;
@@ -465,7 +465,7 @@ void GeoRadiusCmd::DoInitial() {
   }
 }
 
-void GeoRadiusCmd::Do(std::shared_ptr<Partition> partition) {
+void GeoRadiusCmd::Do(const std::shared_ptr<Partition>& partition) {
   GetAllNeighbors(partition, key_, range_, this->res_);
 }
 
@@ -537,7 +537,7 @@ void GeoRadiusByMemberCmd::DoInitial() {
   }
 }
 
-void GeoRadiusByMemberCmd::Do(std::shared_ptr<Partition> partition) {
+void GeoRadiusByMemberCmd::Do(const std::shared_ptr<Partition>& partition) {
   double score;
   rocksdb::Status s = partition->db()->ZScore(key_, range_.member, &score);
   if (s.ok()) {
