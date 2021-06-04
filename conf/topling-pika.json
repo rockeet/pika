@@ -1,0 +1,294 @@
+﻿{
+  "http": {
+    "document_root": "/",
+    "num_threads": "5",
+    "listening_ports": "8088"
+  },
+  "setenv": {
+    "DictZipBlobStore_zipThreads_nouse": 8
+  },
+  "//AnyPlugin": {
+    "server_param": "ServerParamsShowPlugin"
+  },
+  "Cache": {
+    "lru-cache": {
+      "class": "LRUCache",
+      "params": {
+        "capacity": "512M",
+        "num_shard_bits": -1,
+        "strict_capacity_limit": false,
+        "high_pri_pool_ratio": 0.5,
+        "use_adaptive_mutex": false,
+        "metadata_charge_policy": "kFullChargeCacheMetadata"
+      }
+    }
+  },
+  "Statistics": {
+    "stat": "default"
+  },
+  "CompactionFilterFactory": {
+    "strings"  :   "StringsFilterFactory",
+    "base-data":  "BaseDataFilterFactory",
+    "base-meta":  "BaseMetaFilterFactory",
+    "list-data": "ListsDataFilterFactory",
+    "list-meta": "ListsMetaFilterFactory",
+    "hash-data":  "BaseDataFilterFactory",
+    "hash-meta":  "BaseMetaFilterFactory",
+     "set-data":  "BaseDataFilterFactory",
+     "set-meta":  "BaseMetaFilterFactory",
+    "zset-data":  "BaseDataFilterFactory",
+    "zset-meta":  "BaseMetaFilterFactory",
+    "zset-score":"ZSetsScoreFilterFactory"
+  },
+  "TableFactory": {
+    "terark-fast": {
+      "class": "TerarkFastTable",
+      "params": {
+        "indexType": "MainPatricia",
+        "keyPrefixLen": 0
+      }
+    },
+    "terark-zip": {
+      "class": "TerarkZipTable",
+      "params": {
+        "localTempDir": "/tmp",
+        "indexType": "Mixed_XL_256_32_FL",
+        "indexNestLevel": 3,
+        "indexNestScale": 8,
+        "indexTempLevel": 0,
+        "indexCacheRatio": 0.0,
+        "warmupLevel": "kIndex",
+        "disableCompressDict": true,
+        "optimizeCpuL3Cache": true,
+        "enableEntropyStore": false,
+        "offsetArrayBlockUnits": 128,
+        "sampleRatio": 0.01,
+        "checksumLevel": 0,
+        "entropyAlgo": "kNoEntropy",
+        "debugLevel": 0,
+        "softZipWorkingMemLimit": "16G",
+        "hardZipWorkingMemLimit": "32G",
+        "smallTaskMemory": "1G",
+        "minDictZipValueSize": "30",
+        "keyPrefixLen": 0,
+        "minPreadLen": -1
+      }
+    },
+    "block-based": {
+      "class": "BlockBasedTable",
+      "params": {
+        "checksum": "kCRC32c",
+        "block_size": "4K",
+        "block_restart_interval": 16,
+        "index_block_restart_interval": 1,
+        "metadata_block_size": "4K",
+        "enable_index_compression": true,
+        "block_cache": "${lru-cache}",
+        "block_cache_compressed": null,
+        "persistent_cache": null,
+        "filter_policy": null
+      }
+    },
+    "dispatch": {
+      "class": "DispatcherTable",
+      "params": {
+        "default": "terark-fast",
+        "readers": {
+          "TerarkFastTable": "terark-fast",
+          "TerarkZipTable": "terark-zip",
+          "BlockBasedTable": "block-based"
+        },
+        "level_writers": [
+          "terark-fast", "terark-fast",
+          "terark-zip", "terark-zip", "terark-zip", "terark-zip", "terark-zip"
+        ]
+      }
+    }
+  },
+  "CFOptions": {
+    "base-data": {
+      "max_write_buffer_number": 4, "write_buffer_size": "128M",
+      "target_file_size_base": "16M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${base-data}"
+    },
+    "base-meta": {
+      "max_write_buffer_number": 4, "write_buffer_size": "16M",
+      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${base-meta}"
+    },
+    "strings": {
+      "max_write_buffer_number": 4, "write_buffer_size": "16M",
+      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${strings}"
+    },
+    "list-data": {
+      "comparator": "blackwidow.ListsDataKeyComparator",
+      "max_write_buffer_number": 4, "write_buffer_size": "16M",
+      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${list-data}"
+    },
+    "list-meta": {
+      "max_write_buffer_number": 4, "write_buffer_size": "16M",
+      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${list-meta}"
+    },
+    "zset-score": {
+      "comparator": "blackwidow.ZSetsScoreKeyComparator",
+      "max_write_buffer_number": 4, "write_buffer_size": "16M",
+      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "table_factory": "${block-based}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${zset-score}"
+    }
+  },
+  "databases": {
+    "strings": {
+      "method": "DB::Open",
+      "params": {
+        "db_options": {
+          "advise_random_on_open": true,
+          "create_if_missing": true,
+          "create_missing_column_families": true,
+          "max_background_flushes": 1,
+          "max_background_compactions": 20,
+          "max_subcompactions": 1,
+          "max_level1_subcompactions": 3,
+          "inplace_update_support": false,
+          "WAL_size_limit_MB": 0,
+          "statistics": "${stat}",
+          "allow_mmap_reads": true
+        },
+        "column_families": {
+          "default": "${strings}"
+        },
+        "path": "db/db0/strings"
+      }
+    },
+    "hashes": {
+      "method": "DB::Open",
+      "params": {
+        "db_options": {
+          "advise_random_on_open": true,
+          "create_if_missing": true,
+          "create_missing_column_families": true,
+          "max_background_flushes": 1,
+          "max_background_compactions": 20,
+          "max_subcompactions": 1,
+          "max_level1_subcompactions": 3,
+          "inplace_update_support": false,
+          "WAL_size_limit_MB": 0,
+          "statistics": "${stat}",
+          "allow_mmap_reads": true
+        },
+        "column_families": {
+          "default": "${base-meta}",
+          "data_cf": "${base-data}"
+        },
+        "path": "db/db0/hashes"
+      }
+    },
+    "sets": {
+      "method": "DB::Open",
+      "params": {
+        "db_options": {
+          "advise_random_on_open": true,
+          "create_if_missing": true,
+          "create_missing_column_families": true,
+          "max_background_flushes": 1,
+          "max_background_compactions": 20,
+          "max_subcompactions": 1,
+          "max_level1_subcompactions": 3,
+          "inplace_update_support": false,
+          "WAL_size_limit_MB": 0,
+          "statistics": "${stat}",
+          "allow_mmap_reads": true
+        },
+        "column_families": {
+          "default": "${base-meta}",
+          "data_cf": "${base-data}"
+        },
+        "path": "db/db0/sets"
+      }
+    },
+    "zsets": {
+      "method": "DB::Open",
+      "params": {
+        "db_options": {
+          "advise_random_on_open": true,
+          "create_if_missing": true,
+          "create_missing_column_families": true,
+          "max_background_flushes": 1,
+          "max_background_compactions": 20,
+          "max_subcompactions": 1,
+          "max_level1_subcompactions": 3,
+          "inplace_update_support": false,
+          "WAL_size_limit_MB": 0,
+          "statistics": "${stat}",
+          "allow_mmap_reads": true
+        },
+        "column_families": {
+          "default": "${base-meta}",
+          "data_cf": "${base-data}",
+          "score_cf": "${zset-score}"
+        },
+        "path": "db/db0/zsets"
+      }
+    },
+    "lists": {
+      "method": "DB::Open",
+      "params": {
+        "db_options": {
+          "create_if_missing": true,
+          "create_missing_column_families": true,
+          "max_background_flushes": 1,
+          "max_background_compactions": 20,
+          "max_subcompactions": 1,
+          "max_level1_subcompactions": 3,
+          "inplace_update_support": false,
+          "WAL_size_limit_MB": 0,
+          "statistics": "$stat",
+          "allow_mmap_reads": true
+        },
+        "column_families": {
+          "default": "${list-meta}",
+          "data_cf": "${list-data}"
+        },
+        "path": "db/db0/lists"
+      }
+    }
+  }
+}
