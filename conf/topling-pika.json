@@ -28,17 +28,41 @@
   },
   "CompactionFilterFactory": {
     "strings"  :   "StringsFilterFactory",
-    "base-data":  "BaseDataFilterFactory",
     "base-meta":  "BaseMetaFilterFactory",
-    "list-data": "ListsDataFilterFactory",
     "list-meta": "ListsMetaFilterFactory",
-    "hash-data":  "BaseDataFilterFactory",
-    "hash-meta":  "BaseMetaFilterFactory",
-     "set-data":  "BaseDataFilterFactory",
-     "set-meta":  "BaseMetaFilterFactory",
-    "zset-data":  "BaseDataFilterFactory",
-    "zset-meta":  "BaseMetaFilterFactory",
-    "zset-score":"ZSetsScoreFilterFactory"
+    "list-data": {
+      "class": "ListsDataFilterFactory",
+      "params": {
+        "type": "lists"
+      }
+    },
+    "hash-meta": "BaseMetaFilterFactory",
+    "hash-data": {
+      "class": "BaseDataFilterFactory",
+      "params": {
+        "type": "hashes"
+      }
+    },
+    "set-meta": "BaseMetaFilterFactory",
+    "set-data": {
+      "class": "BaseDataFilterFactory",
+      "params": {
+        "type": "sets"
+      }
+    },
+    "zset-meta": "BaseMetaFilterFactory",
+    "zset-data": {
+      "class": "BaseDataFilterFactory",
+      "params": {
+        "type": "zsets"
+      }
+    },
+    "zset-score": {
+      "class": "ZSetsScoreFilterFactory",
+      "params": {
+        "type": "zsets"
+      }
+    }
   },
   "TableFactory": {
     "terark-fast": {
@@ -106,7 +130,7 @@
     }
   },
   "CFOptions": {
-    "base-data": {
+    "hash-data": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
@@ -115,7 +139,29 @@
         "kZlibCompression", "kZlibCompression", "kZlibCompression",
         "kZlibCompression", "kZlibCompression", "kZlibCompression"
       ],
-      "compaction_filter_factory": "${base-data}"
+      "compaction_filter_factory": "${hash-data}"
+    },
+    "set-data": {
+      "max_write_buffer_number": 4, "write_buffer_size": "128M",
+      "target_file_size_base": "16M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${set-data}"
+    },
+    "zset-data": {
+      "max_write_buffer_number": 4, "write_buffer_size": "128M",
+      "target_file_size_base": "16M", "target_file_size_multiplier": 2,
+      "table_factory": "${dispatch}",
+      "compression_per_level": [
+        "kNoCompression", "kNoCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression",
+        "kZlibCompression", "kZlibCompression", "kZlibCompression"
+      ],
+      "compaction_filter_factory": "${zset-data}"
     },
     "base-meta": {
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
@@ -216,7 +262,7 @@
         },
         "column_families": {
           "default": "${base-meta}",
-          "data_cf": "${base-data}"
+          "data_cf": "${hash-data}"
         },
         "path": "db/db0/hashes"
       }
@@ -239,7 +285,7 @@
         },
         "column_families": {
           "default": "${base-meta}",
-          "data_cf": "${base-data}"
+          "data_cf": "${set-data}"
         },
         "path": "db/db0/sets"
       }
@@ -262,7 +308,7 @@
         },
         "column_families": {
           "default": "${base-meta}",
-          "data_cf": "${base-data}",
+          "data_cf": "${zset-data}",
           "score_cf": "${zset-score}"
         },
         "path": "db/db0/zsets"
