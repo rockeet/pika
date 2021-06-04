@@ -44,7 +44,7 @@
       }
     },
     "set-meta": "BaseMetaFilterFactory",
-    "set-data": {
+    "set-member": {
       "class": "BaseDataFilterFactory",
       "params": {
         "type": "sets"
@@ -141,7 +141,7 @@
       ],
       "compaction_filter_factory": "${hash-data}"
     },
-    "set-data": {
+    "set-member": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
@@ -150,7 +150,7 @@
         "kZlibCompression", "kZlibCompression", "kZlibCompression",
         "kZlibCompression", "kZlibCompression", "kZlibCompression"
       ],
-      "compaction_filter_factory": "${set-data}"
+      "compaction_filter_factory": "${set-member}"
     },
     "zset-data": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
@@ -285,7 +285,7 @@
         },
         "column_families": {
           "default": "${base-meta}",
-          "data_cf": "${set-data}"
+          "member_cf": "${set-member}"
         },
         "path": "db/db0/sets"
       }
