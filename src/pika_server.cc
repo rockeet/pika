@@ -101,7 +101,7 @@ PikaServer::PikaServer() :
                                              g_pika_conf->port() + kPortShiftRSync);
 */
   pika_pubsub_thread_ = new pink::PubSubThread();
-  pika_auxiliary_thread_ = new PikaAuxiliaryThread();
+  pika_auxiliary_thread_ = new PikaAuxiliaryThread(); // g_pika_rm, replication
 
   pika_client_processor_ = new PikaClientProcessor(g_pika_conf->thread_pool_size(), 100000);
 
