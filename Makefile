@@ -151,7 +151,7 @@ am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $(notdir $@);
 am__v_CCLD_1 =
 
-AM_LINK = $(AM_V_CCLD)$(CXX) $^ $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
+AM_LINK = $(AM_V_CCLD)$(CXX) $^ $(BLACKWIDOW_PATH)/src/bw_json_plugin.o $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
 
 CXXFLAGS += -g
 
@@ -218,7 +218,7 @@ $(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
 	$(AM_V_at)mkdir -p $(OUTPUT)/bin
 	$(AM_V_at)mv $@ $(OUTPUT)/bin
 	$(AM_V_at)cp -r $(CURDIR)/conf $(OUTPUT)
-	
+
 
 $(SLASH): $(shell find $(SLASH_PATH)/slash -name '*.cc' -o -name '*.h')
 	$(AM_V_at)+make -C $(SLASH_PATH)/slash/ DEBUG_LEVEL=$(DEBUG_LEVEL)
