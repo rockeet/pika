@@ -101,7 +101,7 @@ class PikaServer {
   void Start();
   void Exit();
 
-  std::string host();
+  const std::string& host() const;
   int port();
   time_t start_time_s();
   std::string master_ip();
@@ -120,8 +120,8 @@ class PikaServer {
    * Table use
    */
   void InitTableStruct();
-  Status AddTableStruct(std::string table_name, uint32_t num);
-  Status DelTableStruct(std::string table_name);
+  Status AddTableStruct(const std::string& table_name, uint32_t num);
+  Status DelTableStruct(const std::string& table_name);
   std::shared_ptr<Table> GetTable(const std::string& table_name);
   std::set<uint32_t> GetTablePartitionIds(const std::string& table_name);
   bool IsBgSaving();

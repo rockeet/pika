@@ -255,8 +255,8 @@ enum CmdFlags {
 };
 
 
-void inline RedisAppendContent(std::string& str, const std::string& value);
-void inline RedisAppendLen(std::string& str, int64_t ori, const std::string &prefix);
+void inline RedisAppendContent(std::string& str, const rocksdb::Slice& value);
+void inline RedisAppendLen(std::string& str, int64_t ori, const rocksdb::Slice &prefix);
 
 const std::string kNewLine = "\r\n";
 
@@ -300,7 +300,7 @@ public:
     message_.clear();
     ret_ = kNone;
   }
-  std::string raw_message() const {
+  const std::string& raw_message() const {
     return message_;
   }
   std::string message() const {
@@ -522,15 +522,15 @@ void InitCmdTable(CmdTable* cmd_table);
 Cmd* GetCmdFromTable(const std::string& opt, const CmdTable& cmd_table);
 void DestoryCmdTable(CmdTable* cmd_table);
 
-void RedisAppendContent(std::string& str, const std::string& value) {
+void RedisAppendContent(std::string& str, const rocksdb::Slice& value) {
   str.append(value.data(), value.size());
   str.append(kNewLine);
 }
 
-void RedisAppendLen(std::string& str, int64_t ori, const std::string &prefix) {
+void RedisAppendLen(std::string& str, int64_t ori, const rocksdb::Slice& prefix) {
   char buf[32];
   slash::ll2string(buf, 32, static_cast<long long>(ori));
-  str.append(prefix);
+  str.append(prefix.data(), prefix.size());
   str.append(buf);
   str.append(kNewLine);
 }

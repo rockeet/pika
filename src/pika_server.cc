@@ -290,7 +290,7 @@ void PikaServer::Exit() {
   exit_ = true;
 }
 
-std::string PikaServer::host() {
+const std::string& PikaServer::host() const {
   return host_;
 }
 
@@ -308,7 +308,6 @@ std::string PikaServer::master_ip() {
 }
 
 int PikaServer::master_port() {
-  slash::RWLock(&state_protector_, false);
   return master_port_;
 }
 
@@ -437,8 +436,8 @@ void PikaServer::InitTableStruct() {
   }
 }
 
-Status PikaServer::AddTableStruct(std::string table_name, uint32_t num) {
-  std::shared_ptr<Table> table = g_pika_server->GetTable(table_name);
+Status PikaServer::AddTableStruct(const std::string& table_name, uint32_t num) {
+  std::shared_ptr<Table> table = GetTable(table_name);
   if (table) {
     return Status::Corruption("table already exist");
   }
@@ -451,8 +450,8 @@ Status PikaServer::AddTableStruct(std::string table_name, uint32_t num) {
   return  Status::OK();
 }
 
-Status PikaServer::DelTableStruct(std::string table_name) {
-  std::shared_ptr<Table> table = g_pika_server->GetTable(table_name);
+Status PikaServer::DelTableStruct(const std::string& table_name) {
+  std::shared_ptr<Table> table = GetTable(table_name);
   if (!table) {
     return Status::Corruption("table not found");
   }
@@ -608,8 +607,7 @@ void PikaServer::PreparePartitionTrySync() {
   for (const auto& table_item : tables_) {
     for (const auto& partition_item : table_item.second->partitions_) {
       Status s = g_pika_rm->ActivateSyncSlavePartition(
-          RmNode(g_pika_server->master_ip(),
-            g_pika_server->master_port(),
+          RmNode(master_ip(), master_port(),
             table_item.second->GetTableName(),
             partition_item.second->GetPartitionId()), state);
       if (!s.ok()) {
