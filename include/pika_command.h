@@ -392,9 +392,10 @@ public:
     AppendContent(value);
   }
   void AppendString(std::string&& value) {
-    if (message_.empty() && value.size() + 10 < value.capacity()) {
+    if (message_.empty() && value.size() + 12 < value.capacity()) {
       char buf[16]; // insert prefix inplace, more cache friendly
       value.insert(0, buf, sprintf(buf, "$%zd\r\n", value.size()));
+      value.append("\r\n", 2);
       message_ = std::move(value);
     } else {
       AppendStringLen(value.size());

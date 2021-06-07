@@ -900,6 +900,9 @@ void InfoCmd::InfoReplication(std::string& info) {
   bool all_partition_sync = true;
   slash::RWLock table_rwl(&g_pika_server->tables_rw_, false);
   for (const auto& table_item : g_pika_server->tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     slash::RWLock partition_rwl(&table_item.second->partitions_rw_, false);
     for (const auto& partition_item : table_item.second->partitions_) {
       std::shared_ptr<SyncSlavePartition> slave_partition =
