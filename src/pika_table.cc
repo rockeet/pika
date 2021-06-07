@@ -27,6 +27,7 @@ Table::Table(const std::string& table_name,
   table_name_(table_name),
   partition_num_(partition_num) {
 
+  partitions_.resize(partition_num);
   db_path_ = TablePath(db_path, table_name_);
   log_path_ = TablePath(log_path, "log_" + table_name_);
 
@@ -104,15 +105,15 @@ Status Table::AddPartitions(const std::set<uint32_t>& partition_ids) {
     if (id >= partition_num_) {
       return Status::Corruption("partition index out of range[0, "
               + std::to_string(partition_num_ - 1) + "]");
-    } else if (partitions_.find(id) != partitions_.end()) {
+    } else if (partitions_[id].second) {
       return Status::Corruption("partition "
               + std::to_string(id) + " already exist");
     }
   }
 
   for (const uint32_t& id : partition_ids) {
-    partitions_.emplace(id, std::make_shared<Partition>(
-          table_name_, id, db_path_));
+    partitions_[id] = {id, std::make_shared<Partition>(
+          table_name_, id, db_path_)};
   }
   return Status::OK();
 }
@@ -120,14 +121,14 @@ Status Table::AddPartitions(const std::set<uint32_t>& partition_ids) {
 Status Table::RemovePartitions(const std::set<uint32_t>& partition_ids) {
   slash::RWLock l(&partitions_rw_, true);
   for (const uint32_t& id : partition_ids) {
-    if (partitions_.find(id) == partitions_.end()) {
+    if (partitions_[id].second.get() == nullptr) {
       return Status::Corruption("partition " + std::to_string(id) + " not found");
     }
   }
 
   for (const uint32_t& id : partition_ids) {
-    partitions_[id]->Leave();
-    partitions_.erase(id);
+    partitions_[id].second->Leave();
+    partitions_[id].second.reset();
   }
   return Status::OK();
 }
@@ -255,18 +256,28 @@ std::set<uint32_t> Table::GetPartitionIds() {
   return ids;
 }
 
-std::shared_ptr<Partition> Table::GetPartitionById(uint32_t partition_id) {
+const std::shared_ptr<Partition>& Table::GetPartitionById(uint32_t partition_id) {
+#if 1
+  assert(partition_id < partitions_.size());
+  return partitions_[partition_id].second;
+#else
   slash::RWLock rwl(&partitions_rw_, false);
   auto iter = partitions_.find(partition_id);
   return (iter == partitions_.end()) ? NULL : iter->second;
+#endif
 }
 
-std::shared_ptr<Partition> Table::GetPartitionByKey(const std::string& key) {
+const std::shared_ptr<Partition>& Table::GetPartitionByKey(const std::string& key) {
   assert(partition_num_ != 0);
   uint32_t index = g_pika_cmd_table_manager->DistributeKey(key, partition_num_);
+#if 1
+  assert(index < partitions_.size());
+  return partitions_[index].second;
+#else
   slash::RWLock rwl(&partitions_rw_, false);
   auto iter = partitions_.find(index);
   return (iter == partitions_.end()) ? NULL : iter->second;
+#endif
 }
 
 bool Table::TableIsEmpty() {

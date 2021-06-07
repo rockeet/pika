@@ -578,6 +578,9 @@ void Cmd::ProcessFlushDBCmd() {
 void Cmd::ProcessFlushAllCmd() {
   slash::RWLock l_trw(&g_pika_server->tables_rw_, true);
   for (const auto& table_item : g_pika_server->tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     if (table_item.second->IsKeyScaning()) {
       res_.SetRes(CmdRes::kErrOther, "The keyscan operation is executing, Try again later");
       return;
@@ -585,6 +588,9 @@ void Cmd::ProcessFlushAllCmd() {
   }
 
   for (const auto& table_item : g_pika_server->tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     slash::RWLock l_prw(&table_item.second->partitions_rw_, true);
     slash::RWLock s_prw(&g_pika_rm->partitions_rw_, true);
     for (const auto& partition_item : table_item.second->partitions_) {
@@ -602,10 +608,10 @@ void Cmd::ProcessFlushAllCmd() {
 }
 
 void Cmd::ProcessSinglePartitionCmd() {
-  std::shared_ptr<Partition> partition;
+  const std::shared_ptr<Partition>* partitionpp = nullptr;
   if (g_pika_conf->classic_mode()) {
     // in classic mode a table has only one partition
-    partition = g_pika_server->GetPartitionByDbName(table_name_);
+    partitionpp = &g_pika_server->GetPartitionByDbName(table_name_);
   } else {
     std::vector<std::string> cur_key = current_key();
     if (cur_key.empty()) {
@@ -613,15 +619,16 @@ void Cmd::ProcessSinglePartitionCmd() {
       return;
     }
     // in sharding mode we select partition by key
-    partition = g_pika_server->GetTablePartitionByKey(table_name_, cur_key.front());
+    partitionpp = &g_pika_server->GetTablePartitionByKey(table_name_, cur_key.front());
   }
 
+  const auto& partition = *partitionpp;
   if (!partition) {
     res_.SetRes(CmdRes::kErrOther, "Partition not found");
     return;
   }
 
-  std::shared_ptr<SyncMasterPartition> sync_partition =
+  std::shared_ptr<SyncMasterPartition>& sync_partition =
     g_pika_rm->GetSyncMasterPartitionByName(
         PartitionInfo(partition->GetTableName(), partition->GetPartitionId()));
   if (!sync_partition) {

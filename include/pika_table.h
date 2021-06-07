@@ -52,8 +52,8 @@ class Table : public std::enable_shared_from_this<Table>{
 
   void LeaveAllPartition();
   std::set<uint32_t> GetPartitionIds();
-  std::shared_ptr<Partition> GetPartitionById(uint32_t partition_id);
-  std::shared_ptr<Partition> GetPartitionByKey(const std::string& key);
+  const std::shared_ptr<Partition>& GetPartitionById(uint32_t partition_id);
+  const std::shared_ptr<Partition>& GetPartitionByKey(const std::string& key);
   bool TableIsEmpty();
   Status MovetoToTrash(const std::string& path);
   Status Leave();
@@ -69,7 +69,7 @@ class Table : public std::enable_shared_from_this<Table>{
   // partitions_rw_ > key_scan_protector_
 
   pthread_rwlock_t partitions_rw_;
-  std::map<uint32_t, std::shared_ptr<Partition>> partitions_;
+  std::vector<std::pair<uint32_t, std::shared_ptr<Partition>>> partitions_;
 
   /*
    * KeyScan use

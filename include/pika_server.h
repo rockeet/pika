@@ -122,7 +122,7 @@ class PikaServer {
   void InitTableStruct();
   Status AddTableStruct(const std::string& table_name, uint32_t num);
   Status DelTableStruct(const std::string& table_name);
-  std::shared_ptr<Table> GetTable(const std::string& table_name);
+  const std::shared_ptr<Table>& GetTable(const std::string& table_name);
   std::set<uint32_t> GetTablePartitionIds(const std::string& table_name);
   bool IsBgSaving();
   bool IsKeyScaning();
@@ -142,11 +142,11 @@ class PikaServer {
   bool GetTablePartitionBinlogOffset(const std::string& table_name,
                                      uint32_t partition_id,
                                      BinlogOffset* const boffset);
-  std::shared_ptr<Partition> GetPartitionByDbName(const std::string& db_name);
-  std::shared_ptr<Partition> GetTablePartitionById(
+  const std::shared_ptr<Partition>& GetPartitionByDbName(const std::string& db_name);
+  const std::shared_ptr<Partition>& GetTablePartitionById(
                                   const std::string& table_name,
                                   uint32_t partition_id);
-  std::shared_ptr<Partition> GetTablePartitionByKey(
+  const std::shared_ptr<Partition>& GetTablePartitionByKey(
                                   const std::string& table_name,
                                   const std::string& key);
   Status DoSameThingEveryPartition(const TaskType& type);
@@ -342,7 +342,7 @@ class PikaServer {
    */
   std::atomic<SlotState> slot_state_;
   pthread_rwlock_t tables_rw_;
-  std::map<std::string, std::shared_ptr<Table>> tables_;
+  std::vector<std::pair<std::string, std::shared_ptr<Table>>> tables_;
 
   /*
    * CronTask used

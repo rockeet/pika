@@ -208,7 +208,7 @@ class PikaReplicaManager {
   Status SendSlaveBinlogChipsRequest(const std::string& ip, int port, const std::vector<WriteTask>& tasks);
 
   // For SyncMasterPartition
-  std::shared_ptr<SyncMasterPartition> GetSyncMasterPartitionByName(const PartitionInfo& p_info);
+  std::shared_ptr<SyncMasterPartition>& GetSyncMasterPartitionByName(const PartitionInfo& p_info);
 
   // For SyncSlavePartition
   std::shared_ptr<SyncSlavePartition> GetSyncSlavePartitionByName(const PartitionInfo& p_info);
@@ -262,7 +262,46 @@ class PikaReplicaManager {
                        std::string* const local_ip);
 
   pthread_rwlock_t partitions_rw_;
+
+  using FuckShaBiPartitionMap_base = std::vector<std::pair<PartitionInfo, std::shared_ptr<SyncMasterPartition> > >;
+  class FuckShaBiPartitionMap : public FuckShaBiPartitionMap_base {
+    using FuckShaBiPartitionMap_base::operator[];
+  public:
+    FuckShaBiPartitionMap() {
+      // pre alloc, avoid locks
+      size_t num = 256;
+      this->resize(num);
+      auto dptr = &(*this)[0];
+      for (size_t i = 0; i < num; ++i) {
+        dptr[i].first.table_name_ = std::string("db") + std::to_string(i);
+        dptr[i].first.partition_id_ = 0;
+      }
+    }
+    // emulate find, to avoid many code changes
+    iterator find(const PartitionInfo& key) {
+      int idx = atoi(key.table_name_.c_str() + 2);
+      ROCKSDB_VERIFY_LT(size_t(idx), this->size());
+      if ((*this)[idx].second) {
+        return this->begin() + idx;
+      }
+      return this->end();
+    }
+    std::shared_ptr<SyncMasterPartition>& operator[](const PartitionInfo& key) {
+      assert(0 == key.partition_id_);
+      int idx = atoi(key.table_name_.c_str() + 2);
+      ROCKSDB_VERIFY_LT(size_t(idx), this->size());
+      assert(key.table_name_ == (*this)[idx].first.table_name_);
+      return (*this)[idx].second;
+    }
+    void erase(const PartitionInfo& key) {
+      (*this)[key].reset();
+    }
+  };
+#if 1
+  FuckShaBiPartitionMap sync_master_partitions_;
+#else
   std::unordered_map<PartitionInfo, std::shared_ptr<SyncMasterPartition>, hash_partition_info> sync_master_partitions_;
+#endif
   std::unordered_map<PartitionInfo, std::shared_ptr<SyncSlavePartition>, hash_partition_info> sync_slave_partitions_;
 
   slash::Mutex  write_queue_mu_;

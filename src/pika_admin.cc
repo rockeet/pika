@@ -978,6 +978,9 @@ void InfoCmd::InfoReplication(std::string& info) {
   std::string safety_purge;
   std::shared_ptr<SyncMasterPartition> master_partition = nullptr;
   for (const auto& t_item : g_pika_server->tables_) {
+    if (!t_item.second) {
+      continue;
+    }
     slash::RWLock partition_rwl(&t_item.second->partitions_rw_, false);
     for (const auto& p_item : t_item.second->partitions_) {
       std::string table_name = p_item.second->GetTableName();
@@ -1017,6 +1020,9 @@ void InfoCmd::InfoKeyspace(std::string& info) {
   tmp_stream << "# Keyspace\r\n";
   slash::RWLock rwl(&g_pika_server->tables_rw_, false);
   for (const auto& table_item : g_pika_server->tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     if (keyspace_scan_tables_.empty()
       || keyspace_scan_tables_.find(table_item.first) != keyspace_scan_tables_.end()) {
       table_name = table_item.second->GetTableName();
@@ -1071,6 +1077,9 @@ void InfoCmd::InfoData(std::string& info) {
   uint64_t total_table_reader_usage = 0, table_reader_usage = 0;
   slash::RWLock table_rwl(&g_pika_server->tables_rw_, false);
   for (const auto& table_item : g_pika_server->tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     slash::RWLock partition_rwl(&table_item.second->partitions_rw_, false);
     for (const auto& patition_item : table_item.second->partitions_) {
       type_result.clear();

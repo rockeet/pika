@@ -60,6 +60,8 @@ PikaServer::PikaServer() :
   force_full_sync_(false),
   slowlog_entry_id_(0) {
 
+  tables_.resize(256); // max table num is 256
+
   //Init server ip host
   if (!ServerInit()) {
     LOG(FATAL) << "ServerInit iotcl error";
@@ -432,7 +434,9 @@ void PikaServer::InitTableStruct() {
     std::shared_ptr<Table> table_ptr = std::make_shared<Table>(
         name, num, db_path, log_path);
     table_ptr->AddPartitions(table.partition_ids);
-    tables_.emplace(name, table_ptr);
+    auto idx = atoi(name.c_str() + 2); // db0, db1, ..., db255
+    ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
+    tables_[idx] = {name, table_ptr};
   }
 }
 
@@ -446,12 +450,16 @@ Status PikaServer::AddTableStruct(const std::string& table_name, uint32_t num) {
   std::shared_ptr<Table> table_ptr = std::make_shared<Table>(
       table_name, num, db_path, log_path);
   slash::RWLock rwl(&tables_rw_, true);
-  tables_.emplace(table_name, table_ptr);
+  int idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
+  tables_[idx] = {table_name, table_ptr};
   return  Status::OK();
 }
 
 Status PikaServer::DelTableStruct(const std::string& table_name) {
-  std::shared_ptr<Table> table = GetTable(table_name);
+  auto idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
+  auto table = tables_[idx].second.get();
   if (!table) {
     return Status::Corruption("table not found");
   }
@@ -462,26 +470,42 @@ Status PikaServer::DelTableStruct(const std::string& table_name) {
   if (!s.ok()) {
     return s;
   }
-  tables_.erase(table_name);
+  tables_[idx].second.reset();
   return  Status::OK();
 }
 
-std::shared_ptr<Table> PikaServer::GetTable(const std::string &table_name) {
+const std::shared_ptr<Table>& PikaServer::GetTable(const std::string &table_name) {
+#if 1
+  int idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
+  return tables_[idx].second;
+#else
   slash::RWLock l(&tables_rw_, false);
   auto iter = tables_.find(table_name);
   return (iter == tables_.end()) ? NULL : iter->second;
+#endif
 }
 
 std::set<uint32_t> PikaServer::GetTablePartitionIds(const std::string& table_name) {
   std::set<uint32_t> empty;
+#if 1
+  int idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
+  auto tab = tables_[idx].second.get();
+  return nullptr == tab ? empty : tab->GetPartitionIds();
+#else
   slash::RWLock l(&tables_rw_, false);
   auto iter = tables_.find(table_name);
   return (iter == tables_.end()) ? empty : iter->second->GetPartitionIds();
+#endif
 }
 
 bool PikaServer::IsBgSaving() {
   slash::RWLock table_rwl(&tables_rw_, false);
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     slash::RWLock partition_rwl(&table_item.second->partitions_rw_, false);
     for (const auto& patition_item : table_item.second->partitions_) {
       if (patition_item.second->IsBgSaving()) {
@@ -495,6 +519,9 @@ bool PikaServer::IsBgSaving() {
 bool PikaServer::IsKeyScaning() {
   slash::RWLock table_rwl(&tables_rw_, false);
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     if (table_item.second->IsKeyScaning()) {
       return true;
     }
@@ -505,6 +532,9 @@ bool PikaServer::IsKeyScaning() {
 bool PikaServer::IsCompacting() {
   slash::RWLock table_rwl(&tables_rw_, false);
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     slash::RWLock partition_rwl(&table_item.second->partitions_rw_, false);
     for (const auto& partition_item : table_item.second->partitions_) {
       partition_item.second->DbRWLockReader();
@@ -560,6 +590,9 @@ bool PikaServer::IsTableBinlogIoError(const std::string& table_name) {
 Status PikaServer::DoSameThingSpecificTable(const TaskType& type, const std::set<std::string>& tables) {
   slash::RWLock rwl(&tables_rw_, false);
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     if (!tables.empty()
       && tables.find(table_item.first) == tables.end()) {
       continue;
@@ -605,6 +638,9 @@ void PikaServer::PreparePartitionTrySync() {
   ReplState state = force_full_sync_ ?
       ReplState::kTryDBSync : ReplState::kTryConnect;
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     for (const auto& partition_item : table_item.second->partitions_) {
       Status s = g_pika_rm->ActivateSyncSlavePartition(
           RmNode(master_ip(), master_port(),
@@ -623,6 +659,9 @@ void PikaServer::PreparePartitionTrySync() {
 void PikaServer::PartitionSetMaxCacheStatisticKeys(uint32_t max_cache_statistic_keys) {
   slash::RWLock rwl(&tables_rw_, false);
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     for (const auto& partition_item : table_item.second->partitions_) {
       partition_item.second->DbRWLockReader();
       partition_item.second->db()->SetMaxCacheStatisticKeys(max_cache_statistic_keys);
@@ -634,6 +673,9 @@ void PikaServer::PartitionSetMaxCacheStatisticKeys(uint32_t max_cache_statistic_
 void PikaServer::PartitionSetSmallCompactionThreshold(uint32_t small_compaction_threshold) {
   slash::RWLock rwl(&tables_rw_, false);
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     for (const auto& partition_item : table_item.second->partitions_) {
       partition_item.second->DbRWLockReader();
       partition_item.second->db()->SetSmallCompactionThreshold(small_compaction_threshold);
@@ -658,21 +700,23 @@ bool PikaServer::GetTablePartitionBinlogOffset(const std::string& table_name,
 }
 
 // Only use in classic mode
-std::shared_ptr<Partition> PikaServer::GetPartitionByDbName(const std::string& db_name) {
-  std::shared_ptr<Table> table = GetTable(db_name);
-  return table ? table->GetPartitionById(0) : NULL;
+const std::shared_ptr<Partition>& PikaServer::GetPartitionByDbName(const std::string& db_name) {
+  const std::shared_ptr<Table>& table = GetTable(db_name);
+  return table->GetPartitionById(0);
 }
 
-std::shared_ptr<Partition> PikaServer::GetTablePartitionById(
+const std::shared_ptr<Partition>& PikaServer::GetTablePartitionById(
                                     const std::string& table_name,
                                     uint32_t partition_id) {
+  ROCKSDB_DIE("Should not goes here");
   std::shared_ptr<Table> table = GetTable(table_name);
   return table ? table->GetPartitionById(partition_id) : NULL;
 }
 
-std::shared_ptr<Partition> PikaServer::GetTablePartitionByKey(
+const std::shared_ptr<Partition>& PikaServer::GetTablePartitionByKey(
                                     const std::string& table_name,
                                     const std::string& key) {
+  ROCKSDB_DIE("Should not goes here");
   std::shared_ptr<Table> table = GetTable(table_name);
   return table ? table->GetPartitionByKey(key) : NULL;
 }
@@ -681,6 +725,9 @@ Status PikaServer::DoSameThingEveryPartition(const TaskType& type) {
   slash::RWLock rwl(&tables_rw_, false);
   std::shared_ptr<SyncSlavePartition> slave_partition = nullptr;
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     for (const auto& partition_item : table_item.second->partitions_) {
       switch (type) {
         case TaskType::kResetReplState:
@@ -930,6 +977,9 @@ bool PikaServer::AllPartitionConnectSuccess() {
   slash::RWLock rwl(&tables_rw_, false);
   std::shared_ptr<SyncSlavePartition> slave_partition = nullptr;
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     for (const auto& partition_item : table_item.second->partitions_) {
       slave_partition = g_pika_rm->GetSyncSlavePartitionByName(
           PartitionInfo(table_item.second->GetTableName(),
@@ -1674,6 +1724,9 @@ blackwidow::Status PikaServer::RewriteBlackwidowOptions(const blackwidow::Option
     const std::unordered_map<std::string, std::string>& options_map) {
   blackwidow::Status s;
   for (const auto& table_item : tables_) {
+    if (!table_item.second) {
+      continue;
+    }
     slash::RWLock partition_rwl(&table_item.second->partitions_rw_, true);
     for (const auto& partition_item: table_item.second->partitions_) {
       partition_item.second->DbRWLockWriter();

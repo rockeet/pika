@@ -8,6 +8,7 @@
 
 #include <atomic>
 #include <unordered_map>
+#include <vector>
 
 class QpsStatistic {
  public:
@@ -55,7 +56,7 @@ struct Statistic {
 
   // statistic shows accumulated data of every single table
   pthread_rwlock_t table_stat_rw;
-  std::unordered_map<std::string, QpsStatistic> table_stat;
+  std::vector<std::pair<std::string, QpsStatistic> > table_stat;
 };
 
 #endif  // PIKA_STATISTIC_H_

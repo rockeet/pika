@@ -97,39 +97,31 @@ Statistic::Statistic() {
   pthread_rwlockattr_setkind_np(&table_stat_rw_attr,
       PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP);
   pthread_rwlock_init(&table_stat_rw, &table_stat_rw_attr);
+  table_stat.resize(256);
+  for (size_t i = 0; i < table_stat.size(); ++i) {
+    table_stat[i].first = "db" + std::to_string(i);
+  }
 }
 
 QpsStatistic Statistic::TableStat(const std::string& table_name) {
-  slash::RWLock(&table_stat_rw, false);
-  return table_stat[table_name];
+//  slash::RWLock(&table_stat_rw, false);
+  auto idx = atoi(table_name.c_str() + 2);
+  ROCKSDB_VERIFY_LT(size_t(idx), table_stat.size());
+  return table_stat[idx].second;
 }
 
 std::unordered_map<std::string, QpsStatistic> Statistic::AllTableStat() {
   slash::RWLock(&table_stat_rw, false);
-  return table_stat;
+  std::unordered_map<std::string, QpsStatistic> res;
+  res.emplace(table_stat[0]);
+  return res;
 }
 
 void Statistic::UpdateTableQps(
     const std::string& table_name, const std::string& command, bool is_write) {
-  bool table_exist = true;
-  std::unordered_map<std::string, QpsStatistic>::iterator iter;
-  {
-    slash::RWLock(&table_stat_rw, false);
-    auto search = table_stat.find(table_name);
-    if (search == table_stat.end()) {
-      table_exist = false;
-    } else {
-      iter = search;
-    }
-  }
-  if (table_exist) {
-    iter->second.IncreaseQueryNum(is_write);
-  } else {
-    {
-      slash::RWLock(&table_stat_rw, true);
-      table_stat[table_name].IncreaseQueryNum(is_write);
-    }
-  }
+  auto idx = atoi(table_name.c_str() + 2);
+  ROCKSDB_VERIFY_LT(size_t(idx), table_stat.size());
+  table_stat[idx].second.IncreaseQueryNum(is_write);
 }
 
 void Statistic::ResetTableLastSecQuerynum() {
