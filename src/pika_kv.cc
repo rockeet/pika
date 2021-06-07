@@ -156,8 +156,7 @@ void GetCmd::Do(const std::shared_ptr<Partition>& partition) {
   std::string value;
   rocksdb::Status s = partition->db()->Get(key_, &value);
   if (s.ok()) {
-    res_.AppendStringLen(value.size());
-    res_.AppendContent(value);
+    res_.AppendString(std::move(value));
   } else if (s.IsNotFound()) {
     res_.AppendStringLen(-1);
   } else {

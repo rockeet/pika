@@ -391,6 +391,16 @@ public:
     AppendStringLen(value.size());
     AppendContent(value);
   }
+  void AppendString(std::string&& value) {
+    if (message_.empty() && value.size() + 10 < value.capacity()) {
+      char buf[16]; // insert prefix inplace, more cache friendly
+      value.insert(0, buf, sprintf(buf, "$%zd\r\n", value.size()));
+      message_ = std::move(value);
+    } else {
+      AppendStringLen(value.size());
+      AppendContent(value);
+    }
+  }
   void AppendStringRaw(const std::string& value) {
     message_.append(value);
   }
@@ -524,7 +534,7 @@ void DestoryCmdTable(CmdTable* cmd_table);
 
 void RedisAppendContent(std::string& str, const rocksdb::Slice& value) {
   str.append(value.data(), value.size());
-  str.append(kNewLine);
+  str.append("\r\n", 2);
 }
 
 void RedisAppendLen(std::string& str, int64_t ori, const rocksdb::Slice& prefix) {
@@ -532,7 +542,7 @@ void RedisAppendLen(std::string& str, int64_t ori, const rocksdb::Slice& prefix)
   slash::ll2string(buf, 32, static_cast<long long>(ori));
   str.append(prefix.data(), prefix.size());
   str.append(buf);
-  str.append(kNewLine);
+  str.append("\r\n", 2);
 }
 
 void TryAliasChange(std::vector<std::string>* argv);
