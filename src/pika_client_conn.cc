@@ -38,7 +38,7 @@ PikaClientConn::PikaClientConn(int fd, std::string ip_port,
 std::shared_ptr<Cmd> PikaClientConn::DoCmd(
     const PikaCmdArgsType& argv,
     const std::string& opt,
-    std::shared_ptr<std::string> resp_ptr) {
+    const std::shared_ptr<std::string>& resp_ptr) {
   // Get command info
   std::shared_ptr<Cmd> c_ptr = g_pika_cmd_table_manager->GetCmd(opt);
   if (!c_ptr) {
@@ -262,9 +262,8 @@ void PikaClientConn::DoExecTask(void* arg) {
 void PikaClientConn::BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>& argvs) {
   resp_num.store(argvs.size());
   for (size_t i = 0; i < argvs.size(); ++i) {
-    std::shared_ptr<std::string> resp_ptr = std::make_shared<std::string>();
-    resp_array.push_back(resp_ptr);
-    ExecRedisCmd(argvs[i], resp_ptr);
+    resp_array.push_back(std::make_shared<std::string>());
+    ExecRedisCmd(argvs[i], resp_array.back());
   }
   TryWriteResp();
 }
@@ -285,7 +284,7 @@ void PikaClientConn::TryWriteResp() {
 }
 
 
-void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, std::shared_ptr<std::string> resp_ptr) {
+void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared_ptr<std::string>& resp_ptr) {
   // get opt
   std::string opt = argv[0];
   slash::StringToLower(opt);

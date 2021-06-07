@@ -33,8 +33,7 @@ PikaCmdTableManager::~PikaCmdTableManager() {
 }
 
 std::shared_ptr<Cmd> PikaCmdTableManager::GetCmd(const std::string& opt) {
-  std::string internal_opt = opt;
-  return NewCommand(internal_opt);
+  return NewCommand(opt);
 }
 
 std::shared_ptr<Cmd> PikaCmdTableManager::NewCommand(const std::string& opt) {
