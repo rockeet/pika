@@ -63,7 +63,7 @@ void PikaReplServerConn::HandleMetaSyncRequest(void* arg) {
 
   std::string reply_str;
   if (!response.SerializeToString(&reply_str)
-    || conn->WriteResp(reply_str)) {
+    || conn->WriteResp(std::move(reply_str))) {
     LOG(WARNING) << "Process MetaSync request serialization failed";
     conn->NotifyClose();
     delete task_arg;
@@ -142,7 +142,7 @@ void PikaReplServerConn::HandleTrySyncRequest(void* arg) {
 
   std::string reply_str;
   if (!response.SerializeToString(&reply_str)
-    || conn->WriteResp(reply_str)) {
+    || conn->WriteResp(std::move(reply_str))) {
     LOG(WARNING) << "Handle Try Sync Failed";
     conn->NotifyClose();
     delete task_arg;
@@ -373,7 +373,7 @@ void PikaReplServerConn::HandleDBSyncRequest(void* arg) {
 
   std::string reply_str;
   if (!response.SerializeToString(&reply_str)
-    || conn->WriteResp(reply_str)) {
+    || conn->WriteResp(std::move(reply_str))) {
     LOG(WARNING) << "Handle DBSync Failed";
     conn->NotifyClose();
     delete task_arg;
@@ -528,7 +528,7 @@ void PikaReplServerConn::HandleRemoveSlaveNodeRequest(void* arg) {
 
   std::string reply_str;
   if (!response.SerializeToString(&reply_str)
-    || conn->WriteResp(reply_str)) {
+    || conn->WriteResp(std::move(reply_str))) {
     LOG(WARNING) << "Remove Slave Node Failed";
     conn->NotifyClose();
     delete task_arg;
