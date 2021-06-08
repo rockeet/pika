@@ -30,18 +30,18 @@ class PikaConf : public slash::BaseConf {
   ~PikaConf();
 
   // Getter
-  const std::string& json_file()                    { RWLock l(&rwlock_, false); return json_file_; }
-  int port()                                        { RWLock l(&rwlock_, false); return port_; }
+  const std::string& json_file()                    { return json_file_; }
+  int port()                                        { return port_; }
   std::string slaveof()                             { RWLock l(&rwlock_, false); return slaveof_;}
-  int slave_priority()                              { RWLock l(&rwlock_, false); return slave_priority_;}
-  bool write_binlog()                               { RWLock l(&rwlock_, false); return write_binlog_;}
-  int thread_num()                                  { RWLock l(&rwlock_, false); return thread_num_; }
-  int thread_pool_size()                            { RWLock l(&rwlock_, false); return thread_pool_size_; }
-  int sync_thread_num()                             { RWLock l(&rwlock_, false); return sync_thread_num_; }
-  std::string log_path()                            { RWLock l(&rwlock_, false); return log_path_; }
-  std::string db_path()                             { RWLock l(&rwlock_, false); return db_path_; }
-  std::string db_sync_path()                        { RWLock l(&rwlock_, false); return db_sync_path_; }
-  int db_sync_speed()                               { RWLock l(&rwlock_, false); return db_sync_speed_; }
+  int slave_priority()                              { return slave_priority_; }
+  bool write_binlog()                               { return write_binlog_; }
+  int thread_num()                                  { return thread_num_; }
+  int thread_pool_size()                            { return thread_pool_size_; }
+  int sync_thread_num()                             { return sync_thread_num_; }
+  std::string log_path()                            { return log_path_; }
+  std::string db_path()                             { return db_path_; }
+  std::string db_sync_path()                        { return db_sync_path_; }
+  int db_sync_speed()                               { return db_sync_speed_; }
   std::string compact_cron()                        { RWLock l(&rwlock_, false); return compact_cron_; }
   std::string compact_interval()                    { RWLock l(&rwlock_, false); return compact_interval_; }
   int64_t write_buffer_size()                       { RWLock l(&rwlock_, false); return write_buffer_size_; }
@@ -59,8 +59,8 @@ class PikaConf : public slash::BaseConf {
   std::string userpass()                            { RWLock l(&rwlock_, false); return userpass_; }
   const std::string suser_blacklist()               { RWLock l(&rwlock_, false); return slash::StringConcat(user_blacklist_, COMMA); }
   const std::vector<std::string>& vuser_blacklist() { RWLock l(&rwlock_, false); return user_blacklist_;}
-  bool classic_mode()                               { return classic_mode_.load();}
-  int databases()                                   { RWLock l(&rwlock_, false); return databases_;}
+  bool classic_mode()                               { return classic_mode_;}
+  int databases()                                   { return databases_;}
   int default_slot_num()                            { RWLock l(&rwlock_, false); return default_slot_num_;}
   const std::vector<TableStruct>& table_structs()   { RWLock l(&rwlock_, false); return table_structs_; }
   std::string default_table()                       { RWLock l(&rwlock_, false); return default_table_;}
@@ -88,10 +88,10 @@ class PikaConf : public slash::BaseConf {
   int slowlog_slower_than()                         { return slowlog_log_slower_than_.load(); }
   int slowlog_max_len()                             { RWLock L(&rwlock_, false); return slowlog_max_len_; }
   std::string network_interface()                   { RWLock l(&rwlock_, false); return network_interface_; }
-  int sync_window_size()                            { return sync_window_size_.load(); }
-  int max_conn_rbuf_size()                          { return max_conn_rbuf_size_.load(); }
-  int consensus_level()                             { return consensus_level_.load(); }
-  int replication_num()                             { return replication_num_.load(); }
+  int sync_window_size()                            { return sync_window_size_; }
+  int max_conn_rbuf_size()                          { return max_conn_rbuf_size_; }
+  int consensus_level()                             { return consensus_level_; }
+  int replication_num()                             { return replication_num_; }
 
   // Immutable config items, we don't use lock.
   bool daemonize()                                  { return daemonize_; }
@@ -320,7 +320,7 @@ class PikaConf : public slash::BaseConf {
   std::string masterauth_;
   std::string userpass_;
   std::vector<std::string> user_blacklist_;
-  std::atomic<bool> classic_mode_;
+  bool classic_mode_;
   int databases_;
   int default_slot_num_;
   std::vector<TableStruct> table_structs_;
@@ -353,8 +353,8 @@ class PikaConf : public slash::BaseConf {
   bool level_compaction_dynamic_level_bytes_;
   std::atomic<int> sync_window_size_;
   std::atomic<int> max_conn_rbuf_size_;
-  std::atomic<int> consensus_level_;
-  std::atomic<int> replication_num_;
+  int consensus_level_;
+  int replication_num_;
 
   std::string network_interface_;
 

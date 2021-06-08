@@ -256,10 +256,10 @@ int PikaConf::Load()
 
   std::string instance_mode;
   GetConfStr("instance-mode", &instance_mode);
-  classic_mode_.store(instance_mode.empty()
-          || !strcasecmp(instance_mode.data(), "classic"));
+  classic_mode_ = instance_mode.empty()
+          || !strcasecmp(instance_mode.data(), "classic");
 
-  if (classic_mode_.load()) {
+  if (classic_mode_) {
     GetConfInt("databases", &databases_);
     if (databases_ < 1 || databases_ > 8) {
       LOG(FATAL) << "config databases error, limit [1 ~ 8], the actual is: "
@@ -292,20 +292,20 @@ int PikaConf::Load()
     LOG(FATAL) << "replication-num " << tmp_replication_num <<
       "is invalid, please pick from [0...4]";
   }
-  replication_num_.store(tmp_replication_num);
+  replication_num_ = tmp_replication_num;
 
   int tmp_consensus_level = 0;
   GetConfInt("consensus-level", &tmp_consensus_level);
   if (tmp_consensus_level < 0 ||
-      tmp_consensus_level > replication_num_.load()) {
+      tmp_consensus_level > replication_num_) {
     LOG(FATAL) << "consensus-level " << tmp_consensus_level
-      << " is invalid, current replication-num: " << replication_num_.load()
+      << " is invalid, current replication-num: " << replication_num_
       << ", please pick from 0 to replication-num"
-      << " [0..." << replication_num_.load() << "]";
+      << " [0..." << replication_num_ << "]";
   }
-  consensus_level_.store(tmp_consensus_level);
-  if (classic_mode_.load() &&
-      (consensus_level_.load() != 0 || replication_num_.load() != 0)) {
+  consensus_level_ = tmp_consensus_level;
+  if (classic_mode_ &&
+      (consensus_level_ != 0 || replication_num_ != 0)) {
     LOG(FATAL) << "consensus-level & replication-num only configurable under sharding mode,"
       << " set it to be 0 if you are using classic mode";
   }
@@ -557,9 +557,9 @@ int PikaConf::ConfigRewrite() {
   SetConfStr("compact-cron", compact_cron_);
   SetConfStr("compact-interval", compact_interval_);
   SetConfInt("slave-priority", slave_priority_);
-  SetConfInt("sync-window-size", sync_window_size_.load());
-  SetConfInt("consensus-level", consensus_level_.load());
-  SetConfInt("replication-num", replication_num_.load());
+  SetConfInt("sync-window-size", sync_window_size_);
+  SetConfInt("consensus-level", consensus_level_);
+  SetConfInt("replication-num", replication_num_);
   // options for storage engine
   SetConfInt("max-cache-files", max_cache_files_);
   SetConfInt("max-background-compactions", max_background_compactions_);
