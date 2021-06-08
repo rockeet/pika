@@ -10,6 +10,9 @@
   "//AnyPlugin": {
     "server_param": "ServerParamsShowPlugin"
   },
+  "AnyPlugin": {
+    "pika_conf": "PikaConfShowPlugin"
+  },
   "Cache": {
     "lru-cache": {
       "class": "LRUCache",
