@@ -3,6 +3,7 @@
 
 // Date on which the code was compiled:
 extern const char* pika_build_compile_date;
+extern const char* pika_build_compile_time;
 
 // this variable tells us about the git revision
 extern const char* pika_build_git_sha;
@@ -28,7 +29,9 @@ public:
   void Update(const json&, const JsonPluginRepo&) {}
   std::string ToString(const json& dump_options, const JsonPluginRepo&) const {
     json js;
-    js["build_compile_date"] = pika_build_compile_date;
+    std::string datatime = pika_build_compile_date;
+    datatime = datatime + " " + pika_build_compile_time;
+    js["build_compile_datetime"] = datatime;
     js["build_git_sha"] = json::object({
       {"pika", LocateBuildGitSha(pika_build_git_sha)},
       {"slash", LocateBuildGitSha(slash_build_git_sha)},
