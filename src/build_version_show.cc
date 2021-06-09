@@ -26,9 +26,15 @@ public:
   void Update(const json&, const JsonPluginRepo&) {}
   std::string ToString(const json& dump_options, const JsonPluginRepo&) const {
     json js;
-    std::string datatime = pika_build_compile_date;
-    datatime = datatime + " " + pika_build_compile_time;
-    js["build_compile_datetime"] = datatime;
+    
+    tm date_time_tm;
+    char date_time_chs[20];
+    std::string datetime = pika_build_compile_date;
+    datetime = datetime + " " + pika_build_compile_time;
+    strptime(datetime.c_str(), "%b %d %Y %T", &date_time_tm);
+    strftime(date_time_chs, 20, "%Y-%m-%d %T", &date_time_tm);
+    js["build_compile_datetime"] = date_time_chs;
+
     js["build_git_sha"] = json::object({
       {"pika", LocateBuildGitSha(pika_build_git_sha)},
       {"slash", LocateBuildGitSha(slash_build_git_sha)},
