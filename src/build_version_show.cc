@@ -16,12 +16,9 @@ namespace topling {
 using namespace ROCKSDB_NAMESPACE;
 
 const char* LocateBuildGitSha(const char* str) {
-  for (size_t i = 0; str[i] != '\0'; ++i) {
-    if (str[i] == ':') {
-      return str + i + 1;
-    }
-  }
-  return "format error!";
+  size_t i = 0;
+  for (; str[i] != ':'; ++i);
+  return str + i + 1;
 }
 
 class BuildVersionsShowPlugin : public AnyPlugin {
