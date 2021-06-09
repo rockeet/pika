@@ -7,8 +7,8 @@
   "setenv": {
     "DictZipBlobStore_zipThreads_nouse": 8
   },
-  "//AnyPlugin": {
-    "server_param": "ServerParamsShowPlugin"
+  "AnyPlugin": {
+    "pika_conf": "PikaConfShowPlugin"
   },
   "Cache": {
     "lru-cache": {
