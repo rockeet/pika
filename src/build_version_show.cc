@@ -15,22 +15,6 @@ extern const char* blackwidow_build_git_sha;
 namespace topling {
 using namespace ROCKSDB_NAMESPACE;
 
-const char* LocateBuildGitSha(const char* str) {
-  uint i = 0;
-  for (; str[i] != ':'; ++i);
-  return str + i + 1;
-}
-
-void CatDateTime(char chs[], const char* date, const char* time) {
-  uint len_date = strlen(date),
-       len_time = strlen(time);
-  for (uint i = 0; i < len_date; ++i) {
-    chs[i] = date[i];
-  } chs[len_date] = ' ';
-  for (uint i = 0; i <= len_time; ++i) {
-    chs[len_date + i + 1] = time[i];
-  }
-}
 
 class BuildVersionsShowPlugin : public AnyPlugin {
 public:
@@ -38,19 +22,19 @@ public:
   std::string ToString(const json& dump_options, const JsonPluginRepo&) const {
 
     json js;
-    
+
     char date_time_chs[20];
     tm date_time_tm;
-    CatDateTime(date_time_chs, pika_build_compile_date, pika_build_compile_time);
+    sprintf(date_time_chs, "%s %s", pika_build_compile_date, pika_build_compile_time);
     strptime(date_time_chs, "%b %d %Y %T", &date_time_tm);
     strftime(date_time_chs, 20, "%Y-%m-%d %T", &date_time_tm);
     js["build_compile_datetime"] = date_time_chs;
 
     js["build_git_sha"] = json::object({
-      {"pika", LocateBuildGitSha(pika_build_git_sha)},
-      {"slash", LocateBuildGitSha(slash_build_git_sha)},
-      {"pink", LocateBuildGitSha(pink_build_git_sha)},
-      {"blackwidow", LocateBuildGitSha(blackwidow_build_git_sha)},
+      {"pika", strchr(pika_build_git_sha, ':') + 1},
+      {"slash", strchr(slash_build_git_sha, ':') + 1},
+      {"pink", strchr(pink_build_git_sha, ':') + 1},
+      {"blackwidow", strchr(blackwidow_build_git_sha, ':') + 1},
     });
 
     return JsonToString(js, dump_options);
