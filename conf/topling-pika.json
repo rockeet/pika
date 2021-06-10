@@ -186,7 +186,7 @@
       "compaction_filter_factory": "${strings}"
     },
     "list-data": {
-      "comparator": "blackwidow.ListsDataKeyComparator",
+      "//comparator": "blackwidow.ListsDataKeyComparator",
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
@@ -209,10 +209,10 @@
       "compaction_filter_factory": "${list-meta}"
     },
     "zset-score": {
-      "comparator": "blackwidow.ZSetsScoreKeyComparator",
+      "//comparator": "blackwidow.ZSetsScoreKeyComparator",
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
-      "table_factory": "${block-based}",
+      "table_factory": "${dispatch}",
       "compression_per_level": [
         "kNoCompression", "kNoCompression",
         "kZlibCompression", "kZlibCompression", "kZlibCompression",
