@@ -41,27 +41,8 @@ public:
   }
 };
 
-static std::shared_ptr<AnyPlugin> JS_NewBuildVersionsShowPlugin(const json&,
-                                                 const JsonPluginRepo&) {
-  return std::make_shared<BuildVersionsShowPlugin>();
-}
-ROCKSDB_FACTORY_REG("BuildVersionsShowPlugin", JS_NewBuildVersionsShowPlugin);
-
-struct BuildVersionsShowPlugin_Manip : PluginManipFunc<AnyPlugin> {
-  void Update(AnyPlugin *,
-              const json &js,
-              const JsonPluginRepo &repo) const final {}
-  std::string ToString(const AnyPlugin &reader,
-                        const json &dump_options,
-                        const JsonPluginRepo &repo) const final {
-    if (auto rd = dynamic_cast<const BuildVersionsShowPlugin*>(&reader)) {
-      return rd->ToString(dump_options, repo);
-    }
-
-    THROW_InvalidArgument("Unknow BuildVersionsShowPlugin");
-  }
-};
-ROCKSDB_REG_PluginManip("BuildVersionsShowPlugin", BuildVersionsShowPlugin_Manip);
+ROCKSDB_REG_DEFAULT_CONS(BuildVersionsShowPlugin, AnyPlugin);
+ROCKSDB_REG_AnyPluginManip("BuildVersionsShowPlugin");
 
 
 } // namespace topling
