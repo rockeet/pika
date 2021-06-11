@@ -4,7 +4,7 @@ PLATFORM_LDFLAGS= -lpthread -lrt
 PLATFORM_CXXFLAGS= -std=gnu++17 -fno-builtin-memcmp -msse -msse4.2
 PROFILING_FLAGS=-pg
 OPT=
-LDFLAGS += -Wl,-rpath=$(RPATH)
+#LDFLAGS += -Wl,-rpath=$(RPATH)
 
 # DEBUG_LEVEL can have two values:
 # * DEBUG_LEVEL=2; this is the ultimate debug mode. It will compile pika
@@ -81,7 +81,7 @@ endif
 ifndef BLACKWIDOW_PATH
 BLACKWIDOW_PATH = $(THIRD_PATH)/blackwidow
 endif
-BLACKWIDOW = $(BLACKWIDOW_PATH)/lib/libblackwidow$(DEBUG_SUFFIX).a
+BLACKWIDOW = $(BLACKWIDOW_PATH)/lib/libblackwidow$(DEBUG_SUFFIX).so
 
 
 ifeq ($(360), 1)
@@ -109,13 +109,7 @@ ifeq ($(360),1)
 LIB_PATH += -L$(GLOG_PATH)/.libs
 endif
 
-LDFLAGS += $(LIB_PATH) \
-			 		 -lpink$(DEBUG_SUFFIX) \
-			 		 -lslash$(DEBUG_SUFFIX) \
-					 -lblackwidow$(DEBUG_SUFFIX) \
-					 -lrocksdb$(DEBUG_SUFFIX) \
-					 -lglog \
-					 ${PROTO_BUF_LDFLAGS}
+LDFLAGS += ${PROTO_BUF_LDFLAGS}
 
 # ---------------End Dependences----------------
 
@@ -151,7 +145,8 @@ am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $(notdir $@);
 am__v_CCLD_1 =
 
-AM_LINK = $(AM_V_CCLD)$(CXX) $^ $(BLACKWIDOW_PATH)/src/bw_json_plugin.o $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
+AM_LINK = $(AM_V_CCLD)$(CXX) $(filter %.o,$^) $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
+#AM_LINK = $(AM_V_CCLD)$(CXX) $^ $(BLACKWIDOW_PATH)/src/bw_json_plugin.o $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
 
 CXXFLAGS += -g
 
@@ -211,6 +206,7 @@ all: $(BINARY)
 
 dbg: $(BINARY)
 
+$(BINARY): LDFLAGS := $(LIB_PATH) -l{pink,blackwidow,slash,rocksdb,glog}$(DEBUG_SUFFIX) ${LDFLAGS}
 $(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
 	$(AM_V_at)rm -f $@
 	$(AM_V_at)$(AM_LINK)
