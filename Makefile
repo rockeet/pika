@@ -83,11 +83,6 @@ BLACKWIDOW_PATH = $(THIRD_PATH)/blackwidow
 endif
 BLACKWIDOW = $(BLACKWIDOW_PATH)/lib/libblackwidow$(DEBUG_SUFFIX).so
 
-
-ifeq ($(360), 1)
-GLOG := $(GLOG_PATH)/.libs/libglog.a
-endif
-
 INCLUDE_PATH = -I. \
 							 -I$(SLASH_PATH) \
 							 -I$(PINK_PATH) \
@@ -95,19 +90,11 @@ INCLUDE_PATH = -I. \
 							 -I$(ROCKSDB_PATH) \
 							 -I$(ROCKSDB_PATH)/include \
 
-ifeq ($(360),1)
-INCLUDE_PATH += -I$(GLOG_PATH)/src
-endif
-
 LIB_PATH = -L./ \
 					 -L$(SLASH_PATH)/slash/lib \
 					 -L$(PINK_PATH)/pink/lib \
 					 -L$(BLACKWIDOW_PATH)/lib \
 					 -L$(ROCKSDB_PATH)        \
-
-ifeq ($(360),1)
-LIB_PATH += -L$(GLOG_PATH)/.libs
-endif
 
 LDFLAGS += ${PROTO_BUF_LDFLAGS}
 
@@ -206,7 +193,7 @@ all: $(BINARY)
 
 dbg: $(BINARY)
 
-$(BINARY): LDFLAGS := $(LIB_PATH) -l{pink,blackwidow,slash,rocksdb,glog}$(DEBUG_SUFFIX) ${LDFLAGS}
+$(BINARY): LDFLAGS := $(LIB_PATH) -l{pink,blackwidow,slash,rocksdb}$(DEBUG_SUFFIX) -lglog ${LDFLAGS}
 $(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
 	$(AM_V_at)rm -f $@
 	$(AM_V_at)$(AM_LINK)
