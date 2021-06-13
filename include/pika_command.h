@@ -429,7 +429,6 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
     kExecuteStage
   };
   struct HintKeys {
-    HintKeys() {}
     void Push(const std::string& key, int hint) {
       keys.push_back(key);
       hints.push_back(hint);
@@ -450,8 +449,8 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
     std::shared_ptr<SyncMasterPartition> sync_partition;
     HintKeys hint_keys;
   };
-  Cmd(const std::string& name, int arity, uint16_t flag)
-    : name_(name), arity_(arity), flag_(flag), stage_(kNone), do_duration_(0) {}
+  Cmd(std::string name, int arity, uint16_t flag)
+    : name_(std::move(name)), arity_(arity), flag_(flag), stage_(kNone), do_duration_(0) {}
   virtual ~Cmd() {}
 
   virtual std::vector<std::string> current_key() const;
@@ -480,9 +479,9 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   bool HashtagIsConsistent(const std::string& lhs, const std::string& rhs) const;
   uint64_t GetDoDuration() const { return do_duration_; };
 
-  std::string name() const;
-  CmdRes& res();
-  std::string table_name() const;
+  const std::string& name() const { return name_; }
+  CmdRes& res() { return res_; }
+  const std::string& table_name() const { return table_name_; }
   BinlogOffset binlog_offset() const;
   const PikaCmdArgsType& argv() const;
   virtual std::string ToBinlog(uint32_t exec_time,
@@ -491,10 +490,10 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
                                uint32_t filenum,
                                uint64_t offset);
 
-  void SetConn(const std::shared_ptr<pink::PinkConn> conn);
+  void SetConn(const std::shared_ptr<pink::PinkConn>& conn);
   std::shared_ptr<pink::PinkConn> GetConn();
 
-  void SetResp(const std::shared_ptr<std::string> resp);
+  void SetResp(const std::shared_ptr<std::string>& resp);
   std::shared_ptr<std::string> GetResp();
 
   void SetStage(CmdStage stage);

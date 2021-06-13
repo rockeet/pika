@@ -35,6 +35,8 @@ PikaClientConn::PikaClientConn(int fd, std::string ip_port,
   auth_stat_.Init();
 }
 
+PikaClientConn::~PikaClientConn() = default;
+
 std::shared_ptr<Cmd> PikaClientConn::DoCmd(
     const PikaCmdArgsType& argv,
     const std::string& opt,
@@ -315,7 +317,7 @@ void PikaClientConn::AuthStat::Init() {
 }
 
 // Check permission for current command
-bool PikaClientConn::AuthStat::IsAuthed(const std::shared_ptr<Cmd> cmd_ptr) {
+bool PikaClientConn::AuthStat::IsAuthed(const std::shared_ptr<Cmd>& cmd_ptr) {
   std::string opt = cmd_ptr->name();
   if (opt == kCmdNameAuth) {
     return true;

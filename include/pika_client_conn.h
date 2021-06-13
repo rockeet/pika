@@ -27,7 +27,7 @@ class PikaClientConn: public pink::RedisConn {
   class AuthStat {
    public:
     void Init();
-    bool IsAuthed(const std::shared_ptr<Cmd> cmd_ptr);
+    bool IsAuthed(const std::shared_ptr<Cmd>& cmd_ptr);
     bool ChecknUpdate(const std::string& arg);
    private:
     enum StatType {
@@ -43,21 +43,21 @@ class PikaClientConn: public pink::RedisConn {
                  pink::PinkEpoll* pink_epoll,
                  const pink::HandleType& handle_type,
                  int max_conn_rubf_size);
-  virtual ~PikaClientConn() {}
+  ~PikaClientConn() override;
 
-  virtual void ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>& argvs, bool async, std::string* response) override;
+  void ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>& argvs, bool async, std::string* response) override;
 
   void BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>& argvs);
-  int DealMessage(const pink::RedisCmdArgsType& argv, std::string* response) {
+  int DealMessage(const pink::RedisCmdArgsType& argv, std::string* response) override {
     return 0;
   }
   static void DoBackgroundTask(void* arg);
   static void DoExecTask(void* arg);
 
-  bool IsPubSub() { return is_pubsub_; }
+  bool IsPubSub() const { return is_pubsub_; }
   void SetIsPubSub(bool is_pubsub) { is_pubsub_ = is_pubsub; }
   void SetCurrentTable(const std::string& table_name) { current_table_ = table_name; }
-  void SetWriteCompleteCallback(WriteCompleteCallback cb) { write_completed_cb_ = cb; }
+  void SetWriteCompleteCallback(WriteCompleteCallback cb) { write_completed_cb_ = std::move(cb); }
 
   pink::ServerThread* server_thread() {
     return server_thread_;

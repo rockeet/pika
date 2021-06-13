@@ -818,18 +818,6 @@ bool Cmd::HashtagIsConsistent(const std::string& lhs, const std::string& rhs) co
   return true;
 }
 
-
-std::string Cmd::name() const {
-  return name_;
-}
-CmdRes& Cmd::res() {
-  return res_;
-}
-
-std::string Cmd::table_name() const {
-  return table_name_;
-}
-
 const PikaCmdArgsType& Cmd::argv() const {
   return argv_;
 }
@@ -875,7 +863,7 @@ void Cmd::LogCommand() const {
   LOG(INFO) << "command:" << command;
 }
 
-void Cmd::SetConn(const std::shared_ptr<pink::PinkConn> conn) {
+void Cmd::SetConn(const std::shared_ptr<pink::PinkConn>& conn) {
   conn_ = conn;
 }
 
@@ -883,7 +871,7 @@ std::shared_ptr<pink::PinkConn> Cmd::GetConn() {
   return conn_.lock();
 }
 
-void Cmd::SetResp(const std::shared_ptr<std::string> resp) {
+void Cmd::SetResp(const std::shared_ptr<std::string>& resp) {
   resp_ = resp;
 }
 
