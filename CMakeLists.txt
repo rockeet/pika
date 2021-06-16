@@ -14,10 +14,11 @@ include_directories(third/blackwidow)
 include_directories(third/slash)
 include_directories(src)
 include_directories(.)
-include_directories(../topling-core/src)
-include_directories(../topling-core/boost-include)
 include_directories(../rocksdb)
 include_directories(../rocksdb/include)
+include_directories(../rocksdb/sideplugin/rockside/src)
+include_directories(../rocksdb/sideplugin/topling-core/src)
+include_directories(../rocksdb/sideplugin/topling-core/boost-include)
 
 file(GLOB SOURCES0 RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
         third/blackwidow/include/*.h
@@ -27,7 +28,6 @@ file(GLOB SOURCES0 RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
         third/slash/slash/include/*.h
         third/slash/slash/src/*.cc
         src/*.cc
-        src/table/*.cc
         include/*.h
 )
 #list(JOIN SOURCES "\n" TEXT)

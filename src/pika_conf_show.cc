@@ -1,4 +1,4 @@
-#include "utilities/json/json_plugin_factory.h"
+#include "topling/side_plugin_factory.h"
 #include "include/pika_conf.h"
 
 extern PikaConf* g_pika_conf;
