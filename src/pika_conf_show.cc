@@ -39,7 +39,7 @@ public:
     js["bgsave_prefix"] = g_pika_conf->bgsave_prefix();
     js["userpass"] = g_pika_conf->userpass();
     js["suser_blacklist"] = g_pika_conf->suser_blacklist();
-    
+
     // g_pika_conf->vuser_blacklist() // std::vector<std::string>
     if (g_pika_conf->vuser_blacklist().empty()) {
       js["vuser_blacklist"] = "";
@@ -66,7 +66,7 @@ public:
         }));
       }
     }
-    
+
     js["default_table"] = g_pika_conf->default_table();
     js["compression"] = g_pika_conf->compression();
     js["target_file_size_base"] = g_pika_conf->target_file_size_base();
@@ -110,27 +110,8 @@ public:
   }
 };
 
-static std::shared_ptr<AnyPlugin> JS_NewPikaConfShowPlugin(const json&,
-                                                 const SidePluginRepo&) {
-  return std::make_shared<PikaConfShowPlugin>();
-}
-ROCKSDB_FACTORY_REG("PikaConfShowPlugin", JS_NewPikaConfShowPlugin);
-
-struct PikaConfShowPlugin_Manip : PluginManipFunc<AnyPlugin> {
-  void Update(AnyPlugin *,
-              const json &js,
-              const SidePluginRepo &repo) const final {}
-  std::string ToString(const AnyPlugin &reader,
-                        const json &dump_options,
-                        const SidePluginRepo &repo) const final {
-    if (auto rd = dynamic_cast<const PikaConfShowPlugin*>(&reader)) {
-      return rd->ToString(dump_options, repo);
-    }
-
-    THROW_InvalidArgument("Unknow PikaConfShowPlugin");
-  }
-};
-ROCKSDB_REG_PluginManip("PikaConfShowPlugin", PikaConfShowPlugin_Manip);
+ROCKSDB_REG_DEFAULT_CONS(PikaConfShowPlugin, AnyPlugin);
+ROCKSDB_REG_AnyPluginManip("PikaConfShowPlugin");
 
 
 } // namespace topling
