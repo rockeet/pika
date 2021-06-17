@@ -129,14 +129,15 @@ Status ProxyCli::ForwardToBackend(ProxyTask* task) {
     backend_task_queue_[ip_port].push_back(cli_task);
   }
   //TODO to be pipline
-  std::string ip_port = conn_ptr->ip_port();
-  if (task_queue_.find(ip_port) != task_queue_.end()) {
-    ProxyTask* tmp_task = task_queue_[ip_port];
+  const std::string& ip_port = conn_ptr->ip_port();
+  const auto ib = task_queue_.insert({ip_port, nullptr});
+  if (!ib.second) { // existed
+    ProxyTask* tmp_task = ib.first->second;
     if (tmp_task) {
       delete tmp_task;
     }
   }
-  task_queue_[ip_port] = task;
+  ib.first->second = task;
   return Status::OK();
 }
 

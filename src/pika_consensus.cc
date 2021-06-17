@@ -98,10 +98,11 @@ SyncProgress::~SyncProgress() {
 std::shared_ptr<SlaveNode> SyncProgress::GetSlaveNode(const std::string& ip, int port) {
   std::string slave_key = ip + std::to_string(port);
   slash::RWLock l(&rwlock_, false);
-  if (slaves_.find(slave_key) == slaves_.end()) {
+  const auto iter = slaves_.find(slave_key);
+  if (slaves_.end() != iter) {
     return nullptr;
   }
-  return slaves_[slave_key];
+  return iter->second;
 }
 
 std::unordered_map<std::string, std::shared_ptr<SlaveNode>> SyncProgress::GetAllSlaveNodes() {
