@@ -8,8 +8,8 @@ using namespace ROCKSDB_NAMESPACE;
 
 class PikaConfShowPlugin : public AnyPlugin {
 public:
-  void Update(const json&, const JsonPluginRepo&) {}
-  std::string ToString(const json& dump_options, const JsonPluginRepo&) const {
+  void Update(const json&, const SidePluginRepo&) {}
+  std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     json js;
     js["json_file"] = g_pika_conf->json_file();
     js["port"] = g_pika_conf->port();
@@ -111,7 +111,7 @@ public:
 };
 
 static std::shared_ptr<AnyPlugin> JS_NewPikaConfShowPlugin(const json&,
-                                                 const JsonPluginRepo&) {
+                                                 const SidePluginRepo&) {
   return std::make_shared<PikaConfShowPlugin>();
 }
 ROCKSDB_FACTORY_REG("PikaConfShowPlugin", JS_NewPikaConfShowPlugin);
@@ -119,10 +119,10 @@ ROCKSDB_FACTORY_REG("PikaConfShowPlugin", JS_NewPikaConfShowPlugin);
 struct PikaConfShowPlugin_Manip : PluginManipFunc<AnyPlugin> {
   void Update(AnyPlugin *,
               const json &js,
-              const JsonPluginRepo &repo) const final {}
+              const SidePluginRepo &repo) const final {}
   std::string ToString(const AnyPlugin &reader,
                         const json &dump_options,
-                        const JsonPluginRepo &repo) const final {
+                        const SidePluginRepo &repo) const final {
     if (auto rd = dynamic_cast<const PikaConfShowPlugin*>(&reader)) {
       return rd->ToString(dump_options, repo);
     }
