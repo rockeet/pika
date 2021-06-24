@@ -13,12 +13,14 @@ include_directories(third/blackwidow/src)
 include_directories(third/blackwidow)
 include_directories(third/slash)
 include_directories(src)
+include_directories(include)
 include_directories(.)
 include_directories(../rocksdb)
 include_directories(../rocksdb/include)
 include_directories(../rocksdb/sideplugin/rockside/src)
 include_directories(../rocksdb/sideplugin/topling-core/src)
 include_directories(../rocksdb/sideplugin/topling-core/boost-include)
+include_directories(/hddpool/pxe/node-shared/vcpkg/installed/x64-linux/include)
 
 file(GLOB SOURCES0 RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
         third/blackwidow/include/*.h
