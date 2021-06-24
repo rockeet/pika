@@ -17,7 +17,7 @@
 struct ReplServerTaskArg {
   std::shared_ptr<InnerMessage::InnerRequest> req;
   std::shared_ptr<pink::PbConn> conn;
-  ReplServerTaskArg(std::shared_ptr<InnerMessage::InnerRequest> _req, std::shared_ptr<pink::PbConn> _conn)
+  ReplServerTaskArg(const std::shared_ptr<InnerMessage::InnerRequest>& _req, const std::shared_ptr<pink::PbConn>& _conn)
       : req(_req), conn(_conn) {}
 };
 

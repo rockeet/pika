@@ -294,7 +294,7 @@ Status PikaReplClientConn::TrySyncConsensusCheck(
 }
 
 
-void PikaReplClientConn::DispatchBinlogRes(const std::shared_ptr<InnerMessage::InnerResponse> res) {
+void PikaReplClientConn::DispatchBinlogRes(const std::shared_ptr<InnerMessage::InnerResponse>& res) {
   // partition to a bunch of binlog chips
   std::unordered_map<PartitionInfo, std::vector<int>*, hash_partition_info> par_binlog;
   for (int i = 0; i < res->binlog_sync_size(); ++i) {

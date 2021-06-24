@@ -37,12 +37,12 @@ class PikaReplClientConn: public pink::PbConn {
 
  private:
   // dispatch binlog by its table_name + partition
-  void DispatchBinlogRes(const std::shared_ptr<InnerMessage::InnerResponse> response);
+  void DispatchBinlogRes(const std::shared_ptr<InnerMessage::InnerResponse>& response);
 
   struct ReplRespArg {
     std::shared_ptr<InnerMessage::InnerResponse> resp;
     std::shared_ptr<pink::PbConn> conn;
-    ReplRespArg(std::shared_ptr<InnerMessage::InnerResponse> _resp, std::shared_ptr<pink::PbConn> _conn) : resp(_resp), conn(_conn) {
+    ReplRespArg(const std::shared_ptr<InnerMessage::InnerResponse>& _resp, const std::shared_ptr<pink::PbConn>& _conn) : resp(_resp), conn(_conn) {
     }
   };
 };

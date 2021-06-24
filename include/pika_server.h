@@ -244,7 +244,7 @@ class PikaServer {
    */
   bool HasMonitorClients();
   void AddMonitorMessage(const std::string &monitor_message);
-  void AddMonitorClient(std::shared_ptr<PikaClientConn> client_ptr);
+  void AddMonitorClient(const std::shared_ptr<PikaClientConn>& client_ptr);
 
   /*
    * Slowlog used

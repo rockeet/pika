@@ -51,7 +51,7 @@ bool PikaBinlogReader::ReadToTheEnd() {
   return (pro_num == cur_filenum_ && pro_offset == cur_offset_);
 }
 
-int PikaBinlogReader::Seek(std::shared_ptr<Binlog> logger, uint32_t filenum, uint64_t offset) {
+int PikaBinlogReader::Seek(const std::shared_ptr<Binlog>& logger, uint32_t filenum, uint64_t offset) {
   std::string confile = NewFileName(logger->filename(), filenum);
   if (!slash::FileExists(confile)) {
     LOG(WARNING) << confile << " not exits";

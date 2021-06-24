@@ -103,8 +103,8 @@ void PikaProxy::WritebackToCliConn(void* arg) {
 }
 
 void PikaProxy::MayScheduleWritebackToCliConn(
-    std::shared_ptr<PikaProxyConn> conn_ptr,
-    std::shared_ptr<ProxyCli> cli, const std::string res) {
+    const std::shared_ptr<PikaProxyConn>& conn_ptr,
+    const std::shared_ptr<ProxyCli>& cli, const std::string res) {
   bool write_back = false;
   ProxyTask* task = NULL;
   Status s = cli->WritebackUpdate(conn_ptr->ip_port(), res, &write_back, &task);

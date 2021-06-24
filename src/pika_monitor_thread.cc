@@ -28,7 +28,7 @@ PikaMonitorThread::~PikaMonitorThread() {
   LOG(INFO) << "PikaMonitorThread " << pthread_self() << " exit!!!";
 }
 
-void PikaMonitorThread::AddMonitorClient(std::shared_ptr<PikaClientConn> client_ptr) {
+void PikaMonitorThread::AddMonitorClient(const std::shared_ptr<PikaClientConn>& client_ptr) {
   StartThread();
   slash::MutexLock lm(&monitor_mutex_protector_);
   monitor_clients_.push_back(ClientInfo{client_ptr->fd(), client_ptr->ip_port(), 0, client_ptr});

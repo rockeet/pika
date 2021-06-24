@@ -41,8 +41,8 @@ class PikaProxy {
       const std::shared_ptr<PikaClientConn>& conn_ptr,
       const std::vector<pink::RedisCmdArgsType>& redis_cmds,
       const std::vector<Node>& dst);
-  void MayScheduleWritebackToCliConn(std::shared_ptr<PikaProxyConn> conn_ptr,
-      std::shared_ptr<ProxyCli> cli, const std::string res);
+  void MayScheduleWritebackToCliConn(const std::shared_ptr<PikaProxyConn>& conn_ptr,
+      const std::shared_ptr<ProxyCli>& cli, const std::string res);
   std::shared_ptr<ProxyCliManager> cli_manager() {
     return cli_manager_ptr_;
   }

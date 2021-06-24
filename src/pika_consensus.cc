@@ -386,9 +386,9 @@ Status ConsensusCoordinator::Reset(const LogOffset& offset) {
 }
 
 Status ConsensusCoordinator::ProposeLog(
-    std::shared_ptr<Cmd> cmd_ptr,
-    std::shared_ptr<PikaClientConn> conn_ptr,
-    std::shared_ptr<std::string> resp_ptr) {
+    const std::shared_ptr<Cmd>& cmd_ptr,
+    const std::shared_ptr<PikaClientConn>& conn_ptr,
+    const std::shared_ptr<std::string>& resp_ptr) {
   LogOffset log_offset;
 
   stable_logger_->Logger()->Lock();
@@ -419,8 +419,8 @@ Status ConsensusCoordinator::ProposeLog(
 }
 
 Status ConsensusCoordinator::InternalAppendLog(const BinlogItem& item,
-    std::shared_ptr<Cmd> cmd_ptr, std::shared_ptr<PikaClientConn> conn_ptr,
-    std::shared_ptr<std::string> resp_ptr) {
+    const std::shared_ptr<Cmd>& cmd_ptr, const std::shared_ptr<PikaClientConn>& conn_ptr,
+    const std::shared_ptr<std::string>& resp_ptr) {
   LogOffset log_offset;
   Status s = InternalAppendBinlog(item, cmd_ptr, &log_offset);
   if (!s.ok()) {
@@ -434,7 +434,7 @@ Status ConsensusCoordinator::InternalAppendLog(const BinlogItem& item,
 }
 
 // precheck if prev_offset match && drop this log if this log exist
-Status ConsensusCoordinator::ProcessLeaderLog(std::shared_ptr<Cmd> cmd_ptr, const BinlogItem& attribute) {
+Status ConsensusCoordinator::ProcessLeaderLog(const std::shared_ptr<Cmd>& cmd_ptr, const BinlogItem& attribute) {
   LogOffset last_index = mem_logger_->last_offset();
   if (attribute.logic_id() < last_index.l_offset.index) {
     LOG(WARNING) << PartitionInfo(table_name_, partition_id_).ToString()
@@ -526,7 +526,7 @@ bool ConsensusCoordinator::InternalUpdateCommittedIndex(const LogOffset& slave_c
 }
 
 Status ConsensusCoordinator::InternalAppendBinlog(const BinlogItem& item,
-    std::shared_ptr<Cmd> cmd_ptr, LogOffset* log_offset) {
+    const std::shared_ptr<Cmd>& cmd_ptr, LogOffset* log_offset) {
   std::string binlog = cmd_ptr->ToBinlog(item.exec_time(),
                                     item.term_id(),
                                     item.logic_id(),

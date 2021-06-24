@@ -26,7 +26,7 @@ class PikaProxyConn: public pink::RedisConn {
   PikaProxyConn(int fd, const std::string& ip_port,
                  pink::Thread *server_thread,
                  pink::PinkEpoll* pink_epoll,
-                 std::shared_ptr<ProxyCli> proxy_cli);
+                 const std::shared_ptr<ProxyCli>& proxy_cli);
   bool IsAuthed() { return isAuthed_; }
   bool IsSelected() { return isSelected_; }
   bool IsClosed() { return closed_; }
@@ -56,7 +56,7 @@ struct ConnConfig {
 class ParallelConn {
   public:
 ParallelConn(const std::string& addr, ConnConfig& config,
-    std::shared_ptr<pink::BackendThread> client);
+    const std::shared_ptr<pink::BackendThread>& client);
 
     Status Connect();
     Status Start();
@@ -86,7 +86,7 @@ ParallelConn(const std::string& addr, ConnConfig& config,
 class ConnectionPool {
   public:
     ConnectionPool(const ConnConfig& config,
-        std::shared_ptr<pink::BackendThread> client)
+        const std::shared_ptr<pink::BackendThread>& client)
       : config_(config), client_(client) { }
     void Retain(const std::string& addr);
     void Release(const std::string& addr);

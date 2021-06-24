@@ -493,9 +493,9 @@ bool SyncMasterPartition::CheckSessionId(const std::string& ip, int port,
 }
 
 Status SyncMasterPartition::ConsensusProposeLog(
-    std::shared_ptr<Cmd> cmd_ptr,
-    std::shared_ptr<PikaClientConn> conn_ptr,
-    std::shared_ptr<std::string> resp_ptr) {
+    const std::shared_ptr<Cmd>& cmd_ptr,
+    const std::shared_ptr<PikaClientConn>& conn_ptr,
+    const std::shared_ptr<std::string>& resp_ptr) {
   return coordinator_.ProposeLog(cmd_ptr, conn_ptr, resp_ptr);
 }
 
@@ -504,7 +504,7 @@ Status SyncMasterPartition::ConsensusSanityCheck() {
 }
 
 Status SyncMasterPartition::ConsensusProcessLeaderLog(
-    std::shared_ptr<Cmd> cmd_ptr,
+    const std::shared_ptr<Cmd>& cmd_ptr,
     const BinlogItem& attribute) {
   return coordinator_.ProcessLeaderLog(cmd_ptr, attribute);
 }
@@ -810,13 +810,13 @@ void PikaReplicaManager::ScheduleReplClientBGTask(pink::TaskFunc func, void* arg
 }
 
 void PikaReplicaManager::ScheduleWriteBinlogTask(const std::string& table_partition,
-        const std::shared_ptr<InnerMessage::InnerResponse> res,
-        std::shared_ptr<pink::PbConn> conn,
+        const std::shared_ptr<InnerMessage::InnerResponse>& res,
+        const std::shared_ptr<pink::PbConn>& conn,
         void* res_private_data) {
   pika_repl_client_->ScheduleWriteBinlogTask(table_partition, res, conn, res_private_data);
 }
 
-void PikaReplicaManager::ScheduleWriteDBTask(const std::shared_ptr<Cmd> cmd_ptr,
+void PikaReplicaManager::ScheduleWriteDBTask(const std::shared_ptr<Cmd>& cmd_ptr,
         const LogOffset& offset, const std::string& table_name, uint32_t partition_id) {
   pika_repl_client_->ScheduleWriteDBTask(cmd_ptr, offset, table_name, partition_id);
 }

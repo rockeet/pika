@@ -28,8 +28,8 @@ using slash::Status;
 struct ReplClientTaskArg {
   std::shared_ptr<InnerMessage::InnerResponse> res;
   std::shared_ptr<pink::PbConn> conn;
-  ReplClientTaskArg(std::shared_ptr<InnerMessage::InnerResponse> _res,
-                    std::shared_ptr<pink::PbConn> _conn)
+  ReplClientTaskArg(const std::shared_ptr<InnerMessage::InnerResponse>& _res,
+                    const std::shared_ptr<pink::PbConn>& _conn)
       : res(_res), conn(_conn) {}
 };
 
@@ -39,8 +39,8 @@ struct ReplClientWriteBinlogTaskArg {
   void* res_private_data;
   PikaReplBgWorker* worker;
   ReplClientWriteBinlogTaskArg(
-          const std::shared_ptr<InnerMessage::InnerResponse> _res,
-          std::shared_ptr<pink::PbConn> _conn,
+          const std::shared_ptr<InnerMessage::InnerResponse>& _res,
+          const std::shared_ptr<pink::PbConn>& _conn,
           void* _res_private_data,
           PikaReplBgWorker* _worker) :
       res(_res), conn(_conn),
@@ -52,7 +52,7 @@ struct ReplClientWriteDBTaskArg {
   LogOffset offset;
   std::string table_name;
   uint32_t partition_id;
-  ReplClientWriteDBTaskArg(const std::shared_ptr<Cmd> _cmd_ptr,
+  ReplClientWriteDBTaskArg(const std::shared_ptr<Cmd>& _cmd_ptr,
                            const LogOffset _offset,
                            const std::string _table_name,
                            uint32_t _partition_id)
@@ -77,10 +77,10 @@ class PikaReplClient {
 
   void Schedule(pink::TaskFunc func, void* arg);
   void ScheduleWriteBinlogTask(std::string table_partition,
-                               const std::shared_ptr<InnerMessage::InnerResponse> res,
-                               std::shared_ptr<pink::PbConn> conn,
+                               const std::shared_ptr<InnerMessage::InnerResponse>& res,
+                               const std::shared_ptr<pink::PbConn>& conn,
                                void* req_private_data);
-  void ScheduleWriteDBTask(const std::shared_ptr<Cmd> cmd_ptr, const LogOffset& offset,
+  void ScheduleWriteDBTask(const std::shared_ptr<Cmd>& cmd_ptr, const LogOffset& offset,
                            const std::string& table_name, uint32_t partition_id);
 
   Status SendMetaSync();

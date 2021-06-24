@@ -92,11 +92,11 @@ class SyncMasterPartition : public SyncPartition {
       const LogOffset& start,
       const LogOffset& end);
   Status ConsensusProposeLog(
-      std::shared_ptr<Cmd> cmd_ptr,
-      std::shared_ptr<PikaClientConn> conn_ptr,
-      std::shared_ptr<std::string> resp_ptr);
+      const std::shared_ptr<Cmd>& cmd_ptr,
+      const std::shared_ptr<PikaClientConn>& conn_ptr,
+      const std::shared_ptr<std::string>& resp_ptr);
   Status ConsensusSanityCheck();
-  Status ConsensusProcessLeaderLog(std::shared_ptr<Cmd> cmd_ptr, const BinlogItem& attribute);
+  Status ConsensusProcessLeaderLog(const std::shared_ptr<Cmd>& cmd_ptr, const BinlogItem& attribute);
   Status ConsensusProcessLocalUpdate(const LogOffset& leader_commit);
   LogOffset ConsensusCommittedIndex();
   LogOffset ConsensusLastIndex();
@@ -247,9 +247,9 @@ class PikaReplicaManager {
   void ScheduleReplServerBGTask(pink::TaskFunc func, void* arg);
   void ScheduleReplClientBGTask(pink::TaskFunc func, void* arg);
   void ScheduleWriteBinlogTask(const std::string& table_partition,
-                               const std::shared_ptr<InnerMessage::InnerResponse> res,
-                               std::shared_ptr<pink::PbConn> conn, void* res_private_data);
-  void ScheduleWriteDBTask(const std::shared_ptr<Cmd> cmd_ptr, const LogOffset& offset,
+                               const std::shared_ptr<InnerMessage::InnerResponse>& res,
+                               const std::shared_ptr<pink::PbConn>& conn, void* res_private_data);
+  void ScheduleWriteDBTask(const std::shared_ptr<Cmd>& cmd_ptr, const LogOffset& offset,
                            const std::string& table_name, uint32_t partition_id);
 
   void ReplServerRemoveClientConn(int fd);

@@ -639,7 +639,7 @@ void Cmd::ProcessSinglePartitionCmd() {
 }
 
 void Cmd::ProcessCommand(const std::shared_ptr<Partition>& partition,
-    std::shared_ptr<SyncMasterPartition> sync_partition,
+    const std::shared_ptr<SyncMasterPartition>& sync_partition,
     const HintKeys& hint_keys) {
   if (stage_ == kNone) {
     InternalProcessCommand(partition, sync_partition, hint_keys);
@@ -653,7 +653,7 @@ void Cmd::ProcessCommand(const std::shared_ptr<Partition>& partition,
 }
 
 void Cmd::InternalProcessCommand(const std::shared_ptr<Partition>& partition,
-    std::shared_ptr<SyncMasterPartition> sync_partition, const HintKeys& hint_keys) {
+    const std::shared_ptr<SyncMasterPartition>& sync_partition, const HintKeys& hint_keys) {
   slash::lock::MultiRecordLock record_lock(partition->LockMgr());
   if (is_write()) {
     if (!hint_keys.empty() && is_multi_partition() &&

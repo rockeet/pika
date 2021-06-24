@@ -1284,7 +1284,7 @@ void PikaServer::AddMonitorMessage(const std::string& monitor_message) {
   pika_monitor_thread_->AddMonitorMessage(monitor_message);
 }
 
-void PikaServer::AddMonitorClient(std::shared_ptr<PikaClientConn> client_ptr) {
+void PikaServer::AddMonitorClient(const std::shared_ptr<PikaClientConn>& client_ptr) {
   pika_monitor_thread_->AddMonitorClient(client_ptr);
 }
 

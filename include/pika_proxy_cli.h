@@ -15,7 +15,7 @@ using slash::Status;
 class ProxyCli;
 class ProxyFactory : public pink::ConnFactory {
  public:
-  explicit ProxyFactory(std::shared_ptr<ProxyCli> proxy_cli);
+  explicit ProxyFactory(const std::shared_ptr<ProxyCli>& proxy_cli);
   virtual std::shared_ptr<pink::PinkConn> NewPinkConn(
       int connfd,
       const std::string &ip_port,
@@ -32,7 +32,7 @@ class ProxyFactory : public pink::ConnFactory {
 
 class ProxyHandle : public pink::ClientHandle {
  public:
-  explicit ProxyHandle(std::shared_ptr<ProxyCli> proxy_cli) : ClientHandle() {
+  explicit ProxyHandle(const std::shared_ptr<ProxyCli>& proxy_cli) : ClientHandle() {
     proxy_cli_ = proxy_cli;
   }
   ~ProxyHandle() {

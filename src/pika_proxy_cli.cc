@@ -11,7 +11,7 @@
 
 /* ProxyFactory */
 
-ProxyFactory::ProxyFactory(std::shared_ptr<ProxyCli> proxy_cli)
+ProxyFactory::ProxyFactory(const std::shared_ptr<ProxyCli>& proxy_cli)
   : proxy_cli_(proxy_cli) {
 }
 

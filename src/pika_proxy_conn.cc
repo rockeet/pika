@@ -14,7 +14,7 @@ extern PikaProxy* g_pika_proxy;
 PikaProxyConn::PikaProxyConn(int fd, const std::string& ip_port,
                              pink::Thread* thread,
                              pink::PinkEpoll* pink_epoll,
-                             std::shared_ptr<ProxyCli> proxy_cli)
+                             const std::shared_ptr<ProxyCli>& proxy_cli)
       : RedisConn(fd, ip_port, thread, pink_epoll,
         pink::HandleType::kSynchronous, PIKA_MAX_CONN_RBUF_HB),
         proxy_cli_(std::move(proxy_cli)) {
@@ -34,7 +34,7 @@ int PikaProxyConn::DealMessage(
 }
 
 ParallelConn::ParallelConn(const std::string& addr, ConnConfig& config,
-    std::shared_ptr<pink::BackendThread> client)
+    const std::shared_ptr<pink::BackendThread>& client)
   : addr_(addr), config_(config), client_(client) {
     refCount_ = 1;
 }

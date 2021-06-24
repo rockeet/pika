@@ -72,9 +72,9 @@ class MemLog {
   struct LogItem {
     LogItem(
         LogOffset _offset,
-        std::shared_ptr<Cmd> _cmd_ptr,
-        std::shared_ptr<PikaClientConn> _conn_ptr,
-        std::shared_ptr<std::string> _resp_ptr)
+        const std::shared_ptr<Cmd>& _cmd_ptr,
+        const std::shared_ptr<PikaClientConn>& _conn_ptr,
+        const std::shared_ptr<std::string>& _resp_ptr)
       : offset(_offset), cmd_ptr(_cmd_ptr), conn_ptr(_conn_ptr), resp_ptr(_resp_ptr) {
     }
     LogOffset offset;
@@ -124,9 +124,9 @@ class ConsensusCoordinator {
   Status Reset(const LogOffset& offset);
 
   Status ProposeLog(
-      std::shared_ptr<Cmd> cmd_ptr,
-      std::shared_ptr<PikaClientConn> conn_ptr,
-      std::shared_ptr<std::string> resp_ptr);
+      const std::shared_ptr<Cmd>& cmd_ptr,
+      const std::shared_ptr<PikaClientConn>& conn_ptr,
+      const std::shared_ptr<std::string>& resp_ptr);
   Status UpdateSlave(const std::string& ip, int port,
       const LogOffset& start, const LogOffset& end);
   Status AddSlaveNode(const std::string& ip, int port, int session_id);
@@ -136,7 +136,7 @@ class ConsensusCoordinator {
   Status CheckEnoughFollower();
 
   // invoked by follower
-  Status ProcessLeaderLog(std::shared_ptr<Cmd> cmd_ptr,
+  Status ProcessLeaderLog(const std::shared_ptr<Cmd>& cmd_ptr,
       const BinlogItem& attribute);
   Status ProcessLocalUpdate(const LogOffset& leader_commit);
 
@@ -171,7 +171,7 @@ class ConsensusCoordinator {
 
   // redis parser cb
   struct CmdPtrArg {
-    CmdPtrArg(std::shared_ptr<Cmd> ptr) : cmd_ptr(ptr) {
+    CmdPtrArg(const std::shared_ptr<Cmd>& ptr) : cmd_ptr(ptr) {
     }
     std::shared_ptr<Cmd> cmd_ptr;
   };
@@ -206,11 +206,11 @@ class ConsensusCoordinator {
   Status TruncateTo(const LogOffset& offset);
 
   Status InternalAppendLog(const BinlogItem& item,
-      std::shared_ptr<Cmd> cmd_ptr,
-      std::shared_ptr<PikaClientConn> conn_ptr,
-      std::shared_ptr<std::string> resp_ptr);
+      const std::shared_ptr<Cmd>& cmd_ptr,
+      const std::shared_ptr<PikaClientConn>& conn_ptr,
+      const std::shared_ptr<std::string>& resp_ptr);
   Status InternalAppendBinlog(const BinlogItem& item,
-      std::shared_ptr<Cmd> cmd_ptr,
+      const std::shared_ptr<Cmd>& cmd_ptr,
       LogOffset* log_offset);
   void InternalApply(const MemLog::LogItem& log);
   void InternalApplyFollower(const MemLog::LogItem& log);
