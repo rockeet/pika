@@ -6,6 +6,7 @@
 #ifndef PIKA_DEFINE_H_
 #define PIKA_DEFINE_H_
 
+#include <assert.h>
 #include <set>
 #include <glog/logging.h>
 
@@ -26,6 +27,15 @@ class PikaServer;
 /* Port shift */
 const int kPortShiftRSync      = 1000;
 const int kPortShiftReplServer = 2000;
+const int kMaxDbNum = 8;
+inline int DbIdxFromStr(const std::string& strDbIdx) {
+  assert(strDbIdx.size() == 3);
+  assert(strDbIdx[0] == 'd');
+  assert(strDbIdx[1] == 'b');
+  assert(strDbIdx[2] >= '0');
+  assert(strDbIdx[2] <= '7');
+  return strDbIdx[2] - '0';
+}
 
 const std::string kPikaPidFile = "pika.pid";
 const std::string kPikaSecretFile = "rsync.secret";
@@ -255,7 +265,7 @@ const std::string BinlogSyncStateMsg[] = {
 struct BinlogChip {
   LogOffset offset_;
   std::string binlog_;
-  BinlogChip(LogOffset offset, std::string binlog) : offset_(offset), binlog_(binlog) {
+  BinlogChip(LogOffset offset, std::string binlog) : offset_(offset), binlog_(std::move(binlog)) {
   }
   BinlogChip(const BinlogChip& binlog_chip) {
     offset_ = binlog_chip.offset_;

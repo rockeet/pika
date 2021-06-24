@@ -55,7 +55,7 @@ class PkClusterInfoCmd : public Cmd {
   void ClusterInfoSlotRange(const std::string& table_name, const std::set<uint32_t> slots,
       std::string* info);
   void ClusterInfoSlotAll(std::string* info);
-  Status GetSlotInfo(const std::string table_name, uint32_t partition_id, std::string* info);
+  Status GetSlotInfo(const std::string& table_name, uint32_t partition_id, std::string* info);
   bool ParseInfoSlotSubCmd();
   bool ParseInfoTableSubCmd();
 };

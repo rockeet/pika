@@ -17,7 +17,7 @@
 using slash::Status;
 using slash::Slice;
 
-std::string NewFileName(const std::string name, const uint32_t current);
+std::string NewFileName(const std::string& name, const uint32_t current);
 
 class Version {
  public:

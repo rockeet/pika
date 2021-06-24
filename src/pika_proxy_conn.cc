@@ -11,13 +11,13 @@
 
 extern PikaProxy* g_pika_proxy;
 
-PikaProxyConn::PikaProxyConn(int fd, std::string ip_port,
+PikaProxyConn::PikaProxyConn(int fd, const std::string& ip_port,
                              pink::Thread* thread,
                              pink::PinkEpoll* pink_epoll,
                              std::shared_ptr<ProxyCli> proxy_cli)
       : RedisConn(fd, ip_port, thread, pink_epoll,
         pink::HandleType::kSynchronous, PIKA_MAX_CONN_RBUF_HB),
-        proxy_cli_(proxy_cli) {
+        proxy_cli_(std::move(proxy_cli)) {
 }
 
 
@@ -142,7 +142,7 @@ bool ParallelConn::Release() {
 }
 
 
-void ConnectionPool::Release(std::string addr) {
+void ConnectionPool::Release(const std::string& addr) {
   if (pool_.find(addr) == pool_.end()) {
     return;
   }
@@ -162,7 +162,7 @@ void ConnectionPool::AddParallel(const std::string& addr) {
   conns->Start();
 }
 
-void ConnectionPool::Retain(std::string addr) {
+void ConnectionPool::Retain(const std::string& addr) {
   auto iter = pool_.find(addr);
   if (iter != pool_.end()) {
     iter->second->Retain();

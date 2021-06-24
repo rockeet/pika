@@ -121,7 +121,7 @@ class PikaConf : public slash::BaseConf {
     RWLock l(&rwlock_, true);
     thread_pool_size_ = value;
   }
-  void SetSlaveof(const std::string value) {
+  void SetSlaveof(const std::string& value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("slaveof", value);
     slaveof_ = value;

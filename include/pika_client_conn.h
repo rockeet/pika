@@ -38,7 +38,7 @@ class PikaClientConn: public pink::RedisConn {
     StatType stat_;
   };
 
-  PikaClientConn(int fd, std::string ip_port,
+  PikaClientConn(int fd, const std::string& ip_port,
                  pink::Thread *server_thread,
                  pink::PinkEpoll* pink_epoll,
                  const pink::HandleType& handle_type,

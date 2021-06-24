@@ -60,7 +60,7 @@ PikaServer::PikaServer() :
   force_full_sync_(false),
   slowlog_entry_id_(0) {
 
-  tables_.resize(256); // max table num is 256
+  tables_.resize(kMaxDbNum);
 
   //Init server ip host
   if (!ServerInit()) {
@@ -434,7 +434,7 @@ void PikaServer::InitTableStruct() {
     std::shared_ptr<Table> table_ptr = std::make_shared<Table>(
         name, num, db_path, log_path);
     table_ptr->AddPartitions(table.partition_ids);
-    auto idx = atoi(name.c_str() + 2); // db0, db1, ..., db255
+    auto idx = DbIdxFromStr(name); // db0, db1, ..., db7
     ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
     tables_[idx] = {name, table_ptr};
   }
@@ -450,14 +450,14 @@ Status PikaServer::AddTableStruct(const std::string& table_name, uint32_t num) {
   std::shared_ptr<Table> table_ptr = std::make_shared<Table>(
       table_name, num, db_path, log_path);
   slash::RWLock rwl(&tables_rw_, true);
-  int idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  int idx = DbIdxFromStr(table_name); // db0, db1, ..., db7
   ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
   tables_[idx] = {table_name, table_ptr};
   return  Status::OK();
 }
 
 Status PikaServer::DelTableStruct(const std::string& table_name) {
-  auto idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  auto idx = DbIdxFromStr(table_name); // db0, db1, ..., db7
   ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
   auto table = tables_[idx].second.get();
   if (!table) {
@@ -476,7 +476,7 @@ Status PikaServer::DelTableStruct(const std::string& table_name) {
 
 const std::shared_ptr<Table>& PikaServer::GetTable(const std::string &table_name) {
 #if 1
-  int idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  int idx = DbIdxFromStr(table_name); // db0, db1, ..., db7
   ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
   return tables_[idx].second;
 #else
@@ -489,7 +489,7 @@ const std::shared_ptr<Table>& PikaServer::GetTable(const std::string &table_name
 std::set<uint32_t> PikaServer::GetTablePartitionIds(const std::string& table_name) {
   std::set<uint32_t> empty;
 #if 1
-  int idx = atoi(table_name.c_str() + 2); // db0, db1, ..., db255
+  int idx = DbIdxFromStr(table_name); // db0, db1, ..., db7
   ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
   auto tab = tables_[idx].second.get();
   return nullptr == tab ? empty : tab->GetPartitionIds();

@@ -23,7 +23,7 @@ extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
 extern PikaProxy* g_pika_proxy;
 
-PikaClientConn::PikaClientConn(int fd, std::string ip_port,
+PikaClientConn::PikaClientConn(int fd, const std::string& ip_port,
                                pink::Thread* thread,
                                pink::PinkEpoll* pink_epoll,
                                const pink::HandleType& handle_type,

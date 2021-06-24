@@ -23,7 +23,7 @@ struct ProxyTask {
 
 class PikaProxyConn: public pink::RedisConn {
  public:
-  PikaProxyConn(int fd, std::string ip_port,
+  PikaProxyConn(int fd, const std::string& ip_port,
                  pink::Thread *server_thread,
                  pink::PinkEpoll* pink_epoll,
                  std::shared_ptr<ProxyCli> proxy_cli);
@@ -88,8 +88,8 @@ class ConnectionPool {
     ConnectionPool(const ConnConfig& config,
         std::shared_ptr<pink::BackendThread> client)
       : config_(config), client_(client) { }
-    void Retain(std::string addr);
-    void Release(std::string addr);
+    void Retain(const std::string& addr);
+    void Release(const std::string& addr);
     void AddParallel(const std::string& addr);
   private:
     // addr and ptr

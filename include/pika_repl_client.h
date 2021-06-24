@@ -110,7 +110,7 @@ class PikaReplClient {
                              uint32_t partition_id,
                              const std::string& local_ip);
  private:
-  size_t GetHashIndex(std::string key, bool upper_half);
+  size_t GetHashIndex(const std::string& key, bool upper_half);
   void UpdateNextAvail() {
     next_avail_ = (next_avail_ + 1) % bg_workers_.size();
   }

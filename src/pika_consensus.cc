@@ -18,7 +18,7 @@ extern PikaCmdTableManager* g_pika_cmd_table_manager;
 
 /* Context */
 
-Context::Context(const std::string path) : applied_index_(), path_(path), save_(NULL) {
+Context::Context(const std::string& path) : applied_index_(), path_(path), save_(NULL) {
   pthread_rwlock_init(&rwlock_, NULL);
 }
 

@@ -269,17 +269,16 @@ class PikaReplicaManager {
   public:
     FuckShaBiPartitionMap() {
       // pre alloc, avoid locks
-      size_t num = 256;
-      this->resize(num);
+      this->resize(kMaxDbNum);
       auto dptr = &(*this)[0];
-      for (size_t i = 0; i < num; ++i) {
+      for (int i = 0; i < kMaxDbNum; ++i) {
         dptr[i].first.table_name_ = std::string("db") + std::to_string(i);
         dptr[i].first.partition_id_ = 0;
       }
     }
     // emulate find, to avoid many code changes
     iterator find(const PartitionInfo& key) {
-      int idx = atoi(key.table_name_.c_str() + 2);
+      int idx = DbIdxFromStr(key.table_name_);
       ROCKSDB_VERIFY_LT(size_t(idx), this->size());
       if ((*this)[idx].second) {
         return this->begin() + idx;
@@ -288,7 +287,7 @@ class PikaReplicaManager {
     }
     std::shared_ptr<SyncMasterPartition>& operator[](const PartitionInfo& key) {
       assert(0 == key.partition_id_);
-      int idx = atoi(key.table_name_.c_str() + 2);
+      int idx = DbIdxFromStr(key.table_name_);
       ROCKSDB_VERIFY_LT(size_t(idx), this->size());
       assert(key.table_name_ == (*this)[idx].first.table_name_);
       return (*this)[idx].second;

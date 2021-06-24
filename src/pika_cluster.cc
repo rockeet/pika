@@ -186,7 +186,7 @@ void PkClusterInfoCmd::ClusterInfoSlotAll(std::string* info) {
   info->append(tmp_stream.str());
 }
 
-Status PkClusterInfoCmd::GetSlotInfo(const std::string table_name,
+Status PkClusterInfoCmd::GetSlotInfo(const std::string& table_name,
                                      uint32_t partition_id,
                                      std::string* info) {
   std::shared_ptr<SyncMasterPartition> partition =

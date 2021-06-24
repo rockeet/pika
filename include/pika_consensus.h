@@ -14,7 +14,7 @@
 
 class Context {
  public:
-  Context(const std::string path);
+  Context(const std::string& path);
   ~Context();
 
   Status Init();
