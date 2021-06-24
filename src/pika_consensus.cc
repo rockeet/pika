@@ -180,7 +180,7 @@ int SyncProgress::SlaveSize() {
   return slaves_.size();
 }
 
-LogOffset SyncProgress::InternalCalCommittedIndex(std::unordered_map<std::string, LogOffset> match_index) {
+LogOffset SyncProgress::InternalCalCommittedIndex(const std::unordered_map<std::string, LogOffset>& match_index) {
   int consensus_level = g_pika_conf->consensus_level();
   if (consensus_level == 0) {
     return LogOffset();
@@ -745,7 +745,7 @@ Status ConsensusCoordinator::GetBinlogOffset(
 }
 
 Status ConsensusCoordinator::FindBinlogFileNum(
-    const std::map<uint32_t, std::string> binlogs,
+    const std::map<uint32_t, std::string>& binlogs,
     uint64_t target_index, uint32_t start_filenum,
     uint32_t* founded_filenum) {
   // low boundary & high boundary

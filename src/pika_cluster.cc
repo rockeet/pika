@@ -152,7 +152,7 @@ bool PkClusterInfoCmd::ParseInfoTableSubCmd() {
 }
 
 void PkClusterInfoCmd::ClusterInfoSlotRange(const std::string& table_name,
-    const std::set<uint32_t> slots, std::string* info) {
+    const std::set<uint32_t>& slots, std::string* info) {
   std::stringstream tmp_stream;
   for (auto partition_id : slots) {
     std::string p_info;

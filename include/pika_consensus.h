@@ -60,7 +60,7 @@ class SyncProgress {
 
  private:
   LogOffset InternalCalCommittedIndex(
-      std::unordered_map<std::string, LogOffset> match_index);
+      const std::unordered_map<std::string, LogOffset>& match_index);
 
   pthread_rwlock_t rwlock_;
   std::unordered_map<std::string, std::shared_ptr<SlaveNode>> slaves_;
@@ -222,7 +222,7 @@ class ConsensusCoordinator {
       const BinlogOffset& start_offset,
       const BinlogOffset& end_offset, std::vector<LogOffset>* log_offset);
   Status FindBinlogFileNum(
-      const std::map<uint32_t, std::string> binlogs,
+      const std::map<uint32_t, std::string>& binlogs,
       uint64_t target_index, uint32_t start_filenum,
       uint32_t* founded_filenum);
   Status FindLogicOffsetBySearchingBinlog(
