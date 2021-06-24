@@ -135,7 +135,7 @@ am__v_CCLD_1 =
 AM_LINK = $(AM_V_CCLD)$(CXX) $(filter %.o,$^) $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
 #AM_LINK = $(AM_V_CCLD)$(CXX) $^ $(BLACKWIDOW_PATH)/src/bw_json_plugin.o $(EXEC_LDFLAGS) -o $@ $(LDFLAGS)
 
-CXXFLAGS += -g
+CXXFLAGS += -gdwarf -g3
 
 # This (the first rule) must depend on "all".
 default: all
