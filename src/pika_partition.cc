@@ -480,8 +480,8 @@ bool Partition::FlushDB() {
 
   db_ = std::shared_ptr<blackwidow::BlackWidow>(new blackwidow::BlackWidow());
   rocksdb::Status s = db_->Open(g_pika_server->bw_options(), db_path_);
-  assert(db_);
-  assert(s.ok());
+  ROCKSDB_VERIFY(nullptr != db_);
+  ROCKSDB_VERIFY_F(s.ok(), "%s", s.ToString().c_str());
   LOG(INFO) << partition_name_ << " Open new db success";
   g_pika_server->PurgeDir(dbpath);
   return true;
