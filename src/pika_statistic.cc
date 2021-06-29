@@ -104,14 +104,14 @@ Statistic::Statistic() {
 }
 
 QpsStatistic Statistic::TableStat(const std::string& table_name) {
-//  slash::RWLock(&table_stat_rw, false);
+//  slash::RWLock l(&table_stat_rw, false);
   auto idx = DbIdxFromStr(table_name);
   ROCKSDB_VERIFY_LT(size_t(idx), table_stat.size());
   return table_stat[idx].second;
 }
 
 std::unordered_map<std::string, QpsStatistic> Statistic::AllTableStat() {
-  slash::RWLock(&table_stat_rw, false);
+  slash::RWLock l(&table_stat_rw, false);
   std::unordered_map<std::string, QpsStatistic> res;
   res.emplace(table_stat[0]);
   return res;
@@ -125,7 +125,7 @@ void Statistic::UpdateTableQps(
 }
 
 void Statistic::ResetTableLastSecQuerynum() {
-  slash::RWLock(&table_stat_rw, false);
+  slash::RWLock l(&table_stat_rw, false);
   for (auto& stat : table_stat) {
     stat.second.ResetLastSecQuerynum();
   }
