@@ -28,4 +28,4 @@ env PATH=/node-shared/vcpkg/installed/x64-linux/tools/protobuf:$PATH \
     ROCKSDB_PATH="/node-shared/leipeng/osc/rocksdb" \
     make DISABLE_UPDATE_SB=1 DISABLE_WARNING_AS_ERROR=1 $@
 
-cp -ap third/blackwidow/lib/libblackwidow*.so /node-shared/lib
+#cp -ap third/blackwidow/lib/libblackwidow*.so /node-shared/lib

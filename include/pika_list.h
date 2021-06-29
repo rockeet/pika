@@ -17,15 +17,15 @@
 class LIndexCmd : public Cmd {
  public:
   LIndexCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), index_(0) {};
+      : Cmd(name, arity, flag), index_(0) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LIndexCmd(*this);
   }
@@ -41,15 +41,15 @@ class LIndexCmd : public Cmd {
 class LInsertCmd : public Cmd {
  public:
   LInsertCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), dir_(blackwidow::After) {};
+      : Cmd(name, arity, flag), dir_(blackwidow::After) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LInsertCmd(*this);
   }
@@ -64,15 +64,15 @@ class LInsertCmd : public Cmd {
 class LLenCmd : public Cmd {
  public:
   LLenCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LLenCmd(*this);
   }
@@ -84,15 +84,15 @@ class LLenCmd : public Cmd {
 class LPopCmd : public Cmd {
  public:
   LPopCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LPopCmd(*this);
   }
@@ -104,15 +104,15 @@ class LPopCmd : public Cmd {
 class LPushCmd : public Cmd {
  public:
   LPushCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LPushCmd(*this);
   }
@@ -128,15 +128,15 @@ class LPushCmd : public Cmd {
 class LPushxCmd : public Cmd {
  public:
   LPushxCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LPushxCmd(*this);
   }
@@ -149,15 +149,15 @@ class LPushxCmd : public Cmd {
 class LRangeCmd : public Cmd {
  public:
   LRangeCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), left_(0), right_(0) {};
+      : Cmd(name, arity, flag), left_(0), right_(0) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LRangeCmd(*this);
   }
@@ -171,15 +171,15 @@ class LRangeCmd : public Cmd {
 class LRemCmd : public Cmd {
  public:
   LRemCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), count_(0) {};
+      : Cmd(name, arity, flag), count_(0) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LRemCmd(*this);
   }
@@ -193,15 +193,15 @@ class LRemCmd : public Cmd {
 class LSetCmd : public Cmd {
  public:
   LSetCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), index_(0) {};
+      : Cmd(name, arity, flag), index_(0) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LSetCmd(*this);
   }
@@ -215,15 +215,15 @@ class LSetCmd : public Cmd {
 class LTrimCmd : public Cmd {
  public:
   LTrimCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), start_(0), stop_(0) {};
+      : Cmd(name, arity, flag), start_(0), stop_(0) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new LTrimCmd(*this);
   }
@@ -237,15 +237,15 @@ class LTrimCmd : public Cmd {
 class RPopCmd : public Cmd {
  public:
   RPopCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new RPopCmd(*this);
   }
@@ -257,15 +257,15 @@ class RPopCmd : public Cmd {
 class RPopLPushCmd : public Cmd {
  public:
   RPopLPushCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override{
     std::vector<std::string> res;
     res.push_back(source_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new RPopLPushCmd(*this);
   }
@@ -278,15 +278,15 @@ class RPopLPushCmd : public Cmd {
 class RPushCmd : public Cmd {
  public:
   RPushCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new RPushCmd(*this);
   }
@@ -302,15 +302,15 @@ class RPushCmd : public Cmd {
 class RPushxCmd : public Cmd {
  public:
   RPushxCmd(const std::string& name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {};
+      : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new RPushxCmd(*this);
   }

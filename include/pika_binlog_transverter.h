@@ -67,7 +67,7 @@ class BinlogItem {
 
 class PikaBinlogTransverter{
   public:
-    PikaBinlogTransverter() {};
+    PikaBinlogTransverter() {}
     static std::string BinlogEncode(BinlogType type,
                                     uint32_t exec_time,
                                     uint32_t term_id,

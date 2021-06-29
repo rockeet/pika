@@ -524,7 +524,7 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
 
  private:
   virtual void DoInitial() = 0;
-  virtual void Clear() {};
+  virtual void Clear() {}
 
   Cmd& operator=(const Cmd&);
 };

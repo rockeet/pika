@@ -17,15 +17,15 @@
 class BitGetCmd : public Cmd {
  public:
   BitGetCmd(const std::string& name, int arity, uint16_t flag)
-        : Cmd(name, arity, flag) {};
+        : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new BitGetCmd(*this);
   }
@@ -42,15 +42,15 @@ class BitGetCmd : public Cmd {
 class BitSetCmd : public Cmd {
  public:
   BitSetCmd(const std::string& name, int arity, uint16_t flag)
-        : Cmd(name, arity, flag) {};
+        : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new BitSetCmd(*this);
   }
@@ -69,15 +69,15 @@ class BitSetCmd : public Cmd {
 class BitCountCmd : public Cmd {
  public:
   BitCountCmd(const std::string& name, int arity, uint16_t flag)
-        : Cmd(name, arity, flag) {};
+        : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new BitCountCmd(*this);
   }
@@ -98,15 +98,15 @@ class BitCountCmd : public Cmd {
 class BitPosCmd : public Cmd {
  public:
   BitPosCmd(const std::string& name, int arity, uint16_t flag)
-        : Cmd(name, arity, flag) {};
+        : Cmd(name, arity, flag) {}
   virtual std::vector<std::string> current_key() const {
     std::vector<std::string> res;
     res.push_back(key_);
     return res;
   }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new BitPosCmd(*this);
   }
@@ -131,10 +131,10 @@ class BitPosCmd : public Cmd {
 class BitOpCmd : public Cmd {
  public:
   BitOpCmd(const std::string& name, int arity, uint16_t flag)
-        : Cmd(name, arity, flag) {};
+        : Cmd(name, arity, flag) {}
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {};
-  virtual void Merge() {};
+  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
+  virtual void Merge() {}
   virtual Cmd* Clone() override {
     return new BitOpCmd(*this);
   }
