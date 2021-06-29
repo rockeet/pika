@@ -111,7 +111,7 @@ QpsStatistic Statistic::TableStat(const std::string& table_name) {
 }
 
 std::unordered_map<std::string, QpsStatistic> Statistic::AllTableStat() {
-  slash::RWLock l(&table_stat_rw, false);
+  //slash::RWLock l(&table_stat_rw, false);
   std::unordered_map<std::string, QpsStatistic> res;
   res.emplace(table_stat[0]);
   return res;
