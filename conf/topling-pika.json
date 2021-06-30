@@ -102,7 +102,7 @@
         "softZipWorkingMemLimit": "16G",
         "hardZipWorkingMemLimit": "32G",
         "smallTaskMemory": "1G",
-        "minDictZipValueSize": "30",
+        "minDictZipValueSize": 30,
         "keyPrefixLen": 0,
         "minPreadLen": -1
       }
