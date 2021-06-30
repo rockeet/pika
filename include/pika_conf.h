@@ -30,7 +30,7 @@ class PikaConf : public slash::BaseConf {
   ~PikaConf();
 
   // Getter
-  const std::string& json_file()                    { return json_file_; }
+  const std::string& sideplugin_conf()                    { return sideplugin_conf_; }
   int port()                                        { return port_; }
   std::string slaveof()                             { RWLock l(&rwlock_, false); return slaveof_;}
   int slave_priority()                              { return slave_priority_; }
@@ -102,7 +102,7 @@ class PikaConf : public slash::BaseConf {
   // Setter
   void SetJsonFile(const std::string& fname) {
     RWLock l(&rwlock_, true);
-    json_file_ = fname;
+    sideplugin_conf_ = fname;
   }
   void SetPort(const int value) {
     RWLock l(&rwlock_, true);
@@ -294,7 +294,7 @@ class PikaConf : public slash::BaseConf {
   Status InternalGetTargetTable(const std::string& table_name,
                                 uint32_t* const target);
 
-  std::string json_file_;
+  std::string sideplugin_conf_;
   int port_;
   std::string slaveof_;
   int slave_priority_;

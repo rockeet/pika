@@ -11,7 +11,7 @@ public:
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     json js;
-    js["json_file"] = g_pika_conf->json_file();
+    js["sideplugin_conf"] = g_pika_conf->sideplugin_conf();
     js["port"] = g_pika_conf->port();
     js["slaveof"] = g_pika_conf->slaveof();
     js["slave_priority"] = g_pika_conf->slave_priority();

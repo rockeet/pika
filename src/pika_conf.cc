@@ -149,7 +149,7 @@ int PikaConf::Load()
     return ret;
   }
 
-  GetConfStr("json-file", &json_file_);
+  GetConfStr("sideplugin-conf", &sideplugin_conf_);
 
   GetConfInt("timeout", &timeout_);
   if (timeout_ < 0) {
