@@ -29,6 +29,8 @@ extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
 
+const std::shared_ptr<Partition> g_partition_null;
+
 void DoPurgeDir(void* arg) {
   std::string path = *(static_cast<std::string*>(arg));
   LOG(INFO) << "Delete dir: " << path << " start";
@@ -709,16 +711,16 @@ const std::shared_ptr<Partition>& PikaServer::GetTablePartitionById(
                                     const std::string& table_name,
                                     uint32_t partition_id) {
   ROCKSDB_DIE("Should not goes here");
-  std::shared_ptr<Table> table = GetTable(table_name);
-  return table ? table->GetPartitionById(partition_id) : NULL;
+  const std::shared_ptr<Table>& table = GetTable(table_name);
+  return table ? table->GetPartitionById(partition_id) : g_partition_null;
 }
 
 const std::shared_ptr<Partition>& PikaServer::GetTablePartitionByKey(
                                     const std::string& table_name,
                                     const std::string& key) {
   ROCKSDB_DIE("Should not goes here");
-  std::shared_ptr<Table> table = GetTable(table_name);
-  return table ? table->GetPartitionByKey(key) : NULL;
+  const std::shared_ptr<Table>& table = GetTable(table_name);
+  return table ? table->GetPartitionByKey(key) : g_partition_null;
 }
 
 Status PikaServer::DoSameThingEveryPartition(const TaskType& type) {

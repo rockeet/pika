@@ -113,17 +113,12 @@ struct LogicOffset {
     : term(0), index(0) {}
   LogicOffset(uint32_t _term, uint64_t _index)
     : term(_term), index(_index) {}
-  LogicOffset(const LogicOffset& other) {
-    term = other.term;
-    index = other.index;
-  }
   bool operator==(const LogicOffset& other) const {
     return term == other.term && index == other.index;
   }
   bool operator!=(const LogicOffset& other) const {
     return term != other.term || index != other.index;
   }
-
 
   std::string ToString() const {
     return "term: " + std::to_string(term) + " index: " + std::to_string(index);
@@ -137,10 +132,6 @@ struct BinlogOffset {
       : filenum(0), offset(0) {}
   BinlogOffset(uint32_t num, uint64_t off)
       : filenum(num), offset(off) {}
-  BinlogOffset(const BinlogOffset& other) {
-    filenum = other.filenum;
-    offset = other.offset;
-  }
   std::string ToString() const {
     return "filenum: " + std::to_string(filenum) + " offset: " + std::to_string(offset);
   }
@@ -188,10 +179,6 @@ struct BinlogOffset {
 };
 
 struct LogOffset {
-  LogOffset(const LogOffset& _log_offset) {
-    b_offset = _log_offset.b_offset;
-    l_offset = _log_offset.l_offset;
-  }
   LogOffset() : b_offset(), l_offset() {
   }
   LogOffset(BinlogOffset _b_offset, LogicOffset _l_offset)
@@ -433,8 +420,8 @@ struct hash_rm_node {
 };
 
 struct WriteTask {
-  struct RmNode rm_node_;
-  struct BinlogChip binlog_chip_;
+  RmNode rm_node_;
+  BinlogChip binlog_chip_;
   LogOffset prev_offset_;
   WriteTask(RmNode rm_node, BinlogChip binlog_chip, LogOffset prev_offset) :
     rm_node_(rm_node), binlog_chip_(binlog_chip), prev_offset_(prev_offset) {

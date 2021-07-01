@@ -16,22 +16,16 @@ class PfAddCmd : public Cmd {
  public:
   PfAddCmd(const std::string& name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
-  virtual std::vector<std::string> current_key() const {
-    std::vector<std::string> res;
-    res.push_back(key_);
-    return res;
-  }
-  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
-  virtual void Merge() {}
-  virtual Cmd* Clone() override {
-    return new PfAddCmd(*this);
-  }
+  std::vector<std::string> current_key() const override { return {key_}; }
+  void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
+  void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
+  void Merge() override {}
+  Cmd* Clone() override { return new PfAddCmd(*this); }
  private:
   std::string key_;
   std::vector<std::string> values_;
-  virtual void DoInitial() override;
-  virtual void Clear() {
+  void DoInitial() override;
+  void Clear() override {
     values_.clear();
   }
 };
@@ -40,16 +34,14 @@ class PfCountCmd : public Cmd {
  public:
   PfCountCmd(const std::string& name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
-  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
-  virtual void Merge() {}
-  virtual Cmd* Clone() override {
-    return new PfCountCmd(*this);
-  }
+  void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
+  void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
+  void Merge() override {}
+  Cmd* Clone() override { return new PfCountCmd(*this); }
  private:
   std::vector<std::string> keys_;
-  virtual void DoInitial() override;
-  virtual void Clear() {
+  void DoInitial() override;
+  void Clear() override {
     keys_.clear();
   }
 };
@@ -58,16 +50,14 @@ class PfMergeCmd : public Cmd {
  public:
   PfMergeCmd(const std::string& name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
-  virtual void Do(const std::shared_ptr<Partition>& partition = nullptr);
-  virtual void Split(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {}
-  virtual void Merge() {}
-  virtual Cmd* Clone() override {
-    return new PfMergeCmd(*this);
-  }
+  void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
+  void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
+  void Merge() override {}
+  Cmd* Clone() override { return new PfMergeCmd(*this); }
  private:
   std::vector<std::string> keys_;
-  virtual void DoInitial() override;
-  virtual void Clear() {
+  void DoInitial() override;
+  void Clear() override {
     keys_.clear();
   }
 };

@@ -254,7 +254,7 @@ void PikaClientConn::DoExecTask(void* arg) {
     return;
   }
 
-  *resp_ptr = std::move(cmd_ptr->res().message());
+  *resp_ptr = cmd_ptr->res().message();
   // last step to update resp_num, early update may casue another therad may
   // TryWriteResp success with resp_ptr not updated
   conn_ptr->resp_num--;
@@ -300,7 +300,7 @@ void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared
   std::shared_ptr<Cmd> cmd_ptr = DoCmd(argv, opt, resp_ptr);
   // level == 0 or (cmd error) or (is_read)
   if (g_pika_conf->consensus_level() == 0 || !cmd_ptr->res().ok() || !cmd_ptr->is_write()) {
-    *resp_ptr = std::move(cmd_ptr->res().message());
+    *resp_ptr = cmd_ptr->res().message();
     resp_num--;
   }
 }

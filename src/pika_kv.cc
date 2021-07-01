@@ -1336,7 +1336,6 @@ void ScanxCmd::Do(const std::shared_ptr<Partition>& partition) {
     res_.AppendContent(next_key);
 
     res_.AppendArrayLen(keys.size());
-    std::vector<std::string>::iterator iter;
     for (const auto& key : keys){
       res_.AppendString(key);
     }

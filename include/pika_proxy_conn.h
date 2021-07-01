@@ -40,7 +40,6 @@ class PikaProxyConn: public pink::RedisConn {
   std::shared_ptr<ProxyCli> proxy_cli_;
   std::string auth_;
   bool isAuthed_;
-  int table_;
   bool isSelected_;
   bool closed_;
 };

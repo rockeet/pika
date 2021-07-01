@@ -256,7 +256,7 @@ static void GetAllNeighbors(const std::shared_ptr<Partition>& partition, std::st
   int count_limit = 0;
   // Convert other units to meters
   if (range.unit == "m") {
-    distance = distance;
+    //distance = distance;
   } else if (range.unit == "km") {
     distance = distance * 1000;
   } else if (range.unit == "ft") {
