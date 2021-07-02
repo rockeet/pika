@@ -9,7 +9,8 @@
   },
   "AnyPlugin": {
     "pika_conf": "PikaConfShowPlugin",
-    "build_version": "BuildVersionsShowPlugin"
+    "build_version": "BuildVersionsShowPlugin",
+    "html-text-decode": "HtmlTextDecode"
   },
   "Cache": {
     "lru-cache": {
