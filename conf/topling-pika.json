@@ -10,11 +10,11 @@
   "AnyPlugin": {
     "pika_conf": "PikaConfShowPlugin",
     "build_version": "BuildVersionsShowPlugin",
-    "userKeyCoderHtml:hashes:default": "HtmlTextDecode",
-    "userKeyCoderHtml:sets:default": "HtmlTextDecode",
-    "userKeyCoderHtml:lists:default": "HtmlTextDecode",
-    "userKeyCoderHtml:zsets:default": "HtmlTextDecode",
-    "userKeyCoderHtml:string:default": "HtmlTextDecode"
+    "userKeyCoderHtml:hashes:default": "HashesDataKeyDecoder",
+    "userKeyCoderHtml:sets:default":"SetsDataKeyDecoder",
+    "userKeyCoderHtml:zsets:default":"ZSetsDataKeyDecoder",
+    "userKeyCoderHtml:lists:default":"ListsDataKeyDecoder",
+    "userKeyCoderHtml:Strings:default":"StringsDataKeyDecoder"
   },
   "Cache": {
     "lru-cache": {
