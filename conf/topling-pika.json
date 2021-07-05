@@ -10,11 +10,12 @@
   "AnyPlugin": {
     "pika_conf": "PikaConfShowPlugin",
     "build_version": "BuildVersionsShowPlugin",
-    "userKeyCoderHtml:hashes:default": "HashesDataKeyDecoder",
-    "userKeyCoderHtml:sets:default":"SetsDataKeyDecoder",
-    "userKeyCoderHtml:zsets:default":"ZSetsDataKeyDecoder",
-    "userKeyCoderHtml:lists:default":"ListsDataKeyDecoder",
-    "userKeyCoderHtml:Strings:default":"StringsDataKeyDecoder"
+    "userKeyCoderHtml:hashes:data_cf": "HashesDataKeyDecoder",
+    "userKeyCoderHtml:sets:member_cf":"SetsDataKeyDecoder",
+    "userKeyCoderHtml:zsets:data_cf":"ZSetsDataKeyDecoder",
+    "userKeyCoderHtml:zsets:score_cf":"ZSetsScoreKeyDecoder",
+    "userKeyCoderHtml:lists:data_cf":"ListsDataKeyDecoder",
+    "userKeyCoderHtml:strings:default":"StringsDataKeyDecoder"
   },
   "Cache": {
     "lru-cache": {
