@@ -142,56 +142,31 @@
     "hash-data": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
+      "table_factory": "${dispatch}", "#max_bytes_for_level_multiplier": 4,
       "compaction_filter_factory": "${hash-data}"
     },
     "set-member": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${set-member}"
     },
     "zset-data": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${zset-data}"
     },
     "base-meta": {
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${base-meta}"
     },
     "strings": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${strings}"
     },
     "list-data": {
@@ -199,22 +174,12 @@
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${list-data}"
     },
     "list-meta": {
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${list-meta}"
     },
     "zset-score": {
@@ -222,11 +187,6 @@
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
-      "compression_per_level": [
-        "kNoCompression", "kNoCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression",
-        "kZlibCompression", "kZlibCompression", "kZlibCompression"
-      ],
       "compaction_filter_factory": "${zset-score}"
     }
   },
