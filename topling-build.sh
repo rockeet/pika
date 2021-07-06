@@ -4,6 +4,8 @@ if test "${CXX}A" = "A"; then
 	CXX=g++
 fi
 
+set -e
+
 ROCKSDB_DIR=${ROCKSDB_DIR:-"../rocksdb"}
 TOPLING_CORE_DIR=${TOPLING_CORE_DIR:-"../topling-core"}
 WITH_BMI2=`bash ${TOPLING_CORE_DIR}/cpu_has_bmi2.sh`
