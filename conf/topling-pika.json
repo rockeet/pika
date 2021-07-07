@@ -10,11 +10,11 @@
   "AnyPlugin": {
     "pika_conf": "PikaConfShowPlugin",
     "build_version": "BuildVersionsShowPlugin",
-    "userKeyCoderHtml:hashes:data_cf": "BaseDataKeyDecoder",
-    "userKeyCoderHtml:sets:member_cf":"BaseDataKeyDecoder",
-    "userKeyCoderHtml:zsets:data_cf":"BaseDataKeyDecoder",
-    "userKeyCoderHtml:zsets:score_cf":"ZSetsScoreKeyDecoder",
-    "userKeyCoderHtml:lists:data_cf":"ListsDataKeyDecoder",
+    "userKeyCoderHtml:hashes:data_cf":    "BaseDataKeyDecoder",
+    "userKeyCoderHtml:sets:member_cf":    "BaseDataKeyDecoder",
+    "userKeyCoderHtml:zsets:data_cf" :    "BaseDataKeyDecoder",
+    "userKeyCoderHtml:zsets:score_cf":  "ZSetsScoreKeyDecoder",
+    "userKeyCoderHtml:lists:data_cf" :   "ListsDataKeyDecoder",
     "userKeyCoderHtml:strings:default":"StringsDataKeyDecoder"
   },
   "Cache": {
