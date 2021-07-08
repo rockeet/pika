@@ -25,6 +25,8 @@
 #include "include/pika_dispatch_thread.h"
 #include "include/pika_cmd_table_manager.h"
 
+#include <terark/util/function.hpp>
+
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
@@ -227,42 +229,19 @@ bool PikaServer::ServerInit() {
 }
 
 void PikaServer::Start() {
-  int ret = 0;
   // start rsync first, rocksdb opened fd will not appear in this fork
 /*
-  ret = pika_rsync_service_->StartRsync();
-  if (0 != ret) {
-    tables_.clear();
-    LOG(FATAL) << "Start Rsync Error: bind port " +std::to_string(pika_rsync_service_->ListenPort()) + " failed"
-      <<  ", Listen on this port to receive Master FullSync Data";
-  }
+  TERARK_VERIFY_F(0 == pika_rsync_service_->StartRsync(),
+                 "listen port = %d : %m", pika_rsync_service_->ListenPort());
 */
 
   // We Init Table Struct Before Start The following thread
   InitTableStruct();
 
-  ret = pika_client_processor_->Start();
-  if (ret != pink::kSuccess) {
-    tables_.clear();
-    LOG(FATAL) << "Start PikaClientProcessor Error: " << ret << (ret == pink::kCreateThreadError ? ": create thread error " : ": other error");
-  }
-  ret = pika_dispatch_thread_->StartThread();
-  if (ret != pink::kSuccess) {
-    tables_.clear();
-    LOG(FATAL) << "Start Dispatch Error: " << ret << (ret == pink::kBindError ? ": bind port " + std::to_string(port_) + " conflict"
-            : ": other error") << ", Listen on this port to handle the connected redis client";
-  }
-  ret = pika_pubsub_thread_->StartThread();
-  if (ret != pink::kSuccess) {
-    tables_.clear();
-    LOG(FATAL) << "Start Pubsub Error: " << ret << (ret == pink::kBindError ? ": bind port conflict" : ": other error");
-  }
-
-  ret = pika_auxiliary_thread_->StartThread();
-  if (ret != pink::kSuccess) {
-    tables_.clear();
-    LOG(FATAL) << "Start Auxiliary Thread Error: " << ret << (ret == pink::kCreateThreadError ? ": create thread error " : ": other error");
-  }
+  TERARK_VERIFY_F(0 == pika_client_processor_->Start(), "%m");
+  TERARK_VERIFY_F(0 == pika_dispatch_thread_->StartThread(), "listen port = %d : %m", port_);
+  TERARK_VERIFY_F(0 == pika_pubsub_thread_->StartThread(), "%m");
+  TERARK_VERIFY_F(0 == pika_auxiliary_thread_->StartThread(), "%m");
 
   time(&start_time_s_);
 
