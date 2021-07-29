@@ -1,6 +1,10 @@
 
 这里是简单代理服务器，用于将一般网页请求通过这个代理处理后返回请求方
 
+yum install nginx
+
+使用这里的配置文件替换/etc/nginx/nginx.conf
+
 简单用法：
 	http://proxyhost:proxyport/stat?html=1&labour=serverhost:serverport
 
