@@ -12,17 +12,7 @@ using namespace ROCKSDB_NAMESPACE;
 using namespace terark;
 
 extern std::string trim_space(std::string s);
-
-std::string html_style = R"(
-  <style>
-    .sys_info {
-      border: 1px solid rgb(196, 196, 196);
-      border-radius: 5px;
-      padding: 10px;
-      text-align: center;
-    }
-  </style>
-)";
+extern bool JsonSmartBool(const json& js, const char* subname, bool Default);
 
 class SystemInfoShowPlugin : public AnyPlugin {
 public:
@@ -47,10 +37,6 @@ public:
     std::string mem[17];
     for (size_t i = 0; i < 17; ++i)
       ss >> mem[i];   
-    for (size_t i = 0; i < 6; ++i)
-      js["Memory"]["Mem"][mem[i]] = mem[i + 7];
-    for (size_t i = 0; i < 3; ++i)
-      js["Memory"]["Swap"][mem[i]] = mem[i + 14];
 
     m_file.open("env LC_ALL=C lscpu", "r");
     m_reader.attach(&m_file);
@@ -65,90 +51,72 @@ public:
       cpu_map[cpu_info.substr(0, colon_pos)] = cpu_info.substr(colon_pos + 1);
     }
 
-    // return JsonToString(js, dump_options);
+    js["CPU info"]["CPU basic info"]["Architecture"] = cpu_map["Architecture"];
+    js["CPU info"]["CPU basic info"]["CPU(s)"] = cpu_map["CPU(s)"];
+    js["CPU info"]["CPU basic info"]["Thread(s) per core"] = cpu_map["Thread(s) per core"];
+    js["CPU info"]["CPU basic info"]["Core(s) per socket"] = cpu_map["Core(s) per socket"];
+    js["CPU info"]["CPU basic info"]["Socket(s)"] = cpu_map["Socket(s)"];
+    js["CPU info"]["CPU basic info"]["CPU family"] = cpu_map["CPU family"];
+    js["CPU info"]["CPU basic info"]["Model"] = cpu_map["Model"];
+    js["CPU info"]["CPU basic info"]["Model name"] = cpu_map["Model name"];
+    js["CPU info"]["CPU basic info"]["Stepping"] = cpu_map["Stepping"];
+    js["CPU info"]["CPU basic info"]["Virtualization"] = cpu_map["Virtualization"];
 
-    ////////////////
-    
+    js["CPU info"]["NUMA node(s)"]["total"] = cpu_map["NUMA node(s)"];
+    js["CPU info"]["NUMA node(s)"]["node0"] = cpu_map["NUMA node0 CPU(s)"];
+    js["CPU info"]["NUMA node(s)"]["node1"] = cpu_map["NUMA node1 CPU(s)"];
+  
+    js["CPU info"]["CPU Clock Speed"]["MHz"] = cpu_map["CPU MHz"];
+    js["CPU info"]["CPU Clock Speed"]["max MHz"] = cpu_map["CPU max MHz"];
+    js["CPU info"]["CPU Clock Speed"]["min MHz"] = cpu_map["CPU min MHz"];
+
+    js["CPU info"]["cache"]["L1d"] = cpu_map["L1d cache"];
+    js["CPU info"]["cache"]["L1i"] = cpu_map["L1i cache"];
+    js["CPU info"]["cache"]["L2"] = cpu_map["L2 cache"];
+    js["CPU info"]["cache"]["L3"] = cpu_map["L3 cache"];
+
+    js["CPU info"]["Flags"] = cpu_map["Flags"];
+
+    if (dump_options["html"] == "0") {
+      for (size_t i = 0; i < 6; ++i)
+        js["Memory info"]["Mem"][mem[i]] = mem[i + 7];
+      for (size_t i = 0; i < 3; ++i)
+        js["Memory info"]["Swap"][mem[i]] = mem[i + 14];
+      return JsonToString(js, dump_options);
+    }
+
+    // if (dump_options["html"] == "1")
     string_appender<std::string> str;
     str.reserve(5*1024);
 
-    str|"<table>";
-    str|"<caption>" "Memory Info" "</caption>";
-    str|"<tr>" "<th class=\"sys_info\">" ""     "</th>";
-    str|"<th class=\"sys_info\">" "total"       "</th>";
-    str|"<th class=\"sys_info\">" "used"        "</th>";
-    str|"<th class=\"sys_info\">" "free"        "</th>";
-    str|"<th class=\"sys_info\">" "shared"      "</th>";
-    str|"<th class=\"sys_info\">" "buff/cache"  "</th>";
-    str|"<th class=\"sys_info\">" "available"   "</th>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Mem"  "</th>";
-    str|"<td class=\"sys_info\">"|mem[ 7]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[ 8]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[ 9]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[10]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[11]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[12]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Swap" "</th>";
-    str|"<td class=\"sys_info\">"|mem[14]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[15]|"</td>";
-    str|"<td class=\"sys_info\">"|mem[16]|"</td>";
-    str|"<td class=\"sys_info\">" "" "</td>";
-    str|"<td class=\"sys_info\">" "" "</td>";
-    str|"<td class=\"sys_info\">" "" "</td>" "</tr>";
+    str|"<table border=1>";
+    str|"<tr>" "<th>" "Memory Info" "</th>";
+    str|"<td>" "<table border=1>";
+    str|"<tr>" "<th>" ""     "</th>";
+    str|"<th>" "total"       "</th>";
+    str|"<th>" "used"        "</th>";
+    str|"<th>" "free"        "</th>";
+    str|"<th>" "shared"      "</th>";
+    str|"<th>" "buff/cache"  "</th>";
+    str|"<th>" "available"   "</th>" "</tr>";
+    str|"<tr>" "<th>" "Mem"  "</th>";
+    str|"<td>"|mem[ 7]|"</td>";
+    str|"<td>"|mem[ 8]|"</td>";
+    str|"<td>"|mem[ 9]|"</td>";
+    str|"<td>"|mem[10]|"</td>";
+    str|"<td>"|mem[11]|"</td>";
+    str|"<td>"|mem[12]|"</td>" "</tr>";
+    str|"<tr>" "<th>" "Swap" "</th>";
+    str|"<td>"|mem[14]|"</td>";
+    str|"<td>"|mem[15]|"</td>";
+    str|"<td>"|mem[16]|"</td>";
+    str|"<td>" "" "</td>";
+    str|"<td>" "" "</td>";
+    str|"<td>" "" "</td>" "</tr>";
+    str|"</table>" "</td>";
     str|"</table>";
 
-    str|"<table>";
-    str|"<caption>" "CPU Info" "</caption>";
-    str|"<tr>" "<th class=\"sys_info\">" "Architecture" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Architecture"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "CPU(s)" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["CPU(s)"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Thread(s) per core" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Thread(s) per core"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Core(s) per socket" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Core(s) per socket"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Socket(s)" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Socket(s)"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "NUMA node(s)" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["NUMA node(s)"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "CPU family" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["CPU family"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Model" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Model"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Model name" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Model name"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Stepping" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Stepping"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "CPU MHz" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["CPU MHz"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "CPU max MHz" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["CPU max MHz"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "CPU min MHz" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["CPU min MHz"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "BogoMIPS" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["BogoMIPS"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Virtualization" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Virtualization"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "L1d cache" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["L1d cache"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "L1i cache" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["L1i cache"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "L2 cache" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["L2 cache"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "L3 cache" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["L3 cache"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "NUMA node0 CPU(s)" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["NUMA node0 CPU(s)"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "NUMA node1 CPU(s)" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["NUMA node1 CPU(s)"]|"</td>" "</tr>";
-    str|"<tr>" "<th class=\"sys_info\">" "Flags" "</th>";
-    str|"<td class=\"sys_info\">"|cpu_map["Flags"]|"</td>" "</tr>";
-    str|"</table>";
-
-
-
-
-    return std::move(str);
+    return str + JsonToString(js, dump_options);
   }
 };
 
