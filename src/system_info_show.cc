@@ -56,10 +56,7 @@ public:
     js["CPU info"]["CPU basic info"]["Thread(s) per core"] = cpu_map["Thread(s) per core"];
     js["CPU info"]["CPU basic info"]["Core(s) per socket"] = cpu_map["Core(s) per socket"];
     js["CPU info"]["CPU basic info"]["Socket(s)"] = cpu_map["Socket(s)"];
-    js["CPU info"]["CPU basic info"]["CPU family"] = cpu_map["CPU family"];
-    js["CPU info"]["CPU basic info"]["Model"] = cpu_map["Model"];
     js["CPU info"]["CPU basic info"]["Model name"] = cpu_map["Model name"];
-    js["CPU info"]["CPU basic info"]["Stepping"] = cpu_map["Stepping"];
     js["CPU info"]["CPU basic info"]["Virtualization"] = cpu_map["Virtualization"];
 
     js["CPU info"]["NUMA node(s)"]["total"] = cpu_map["NUMA node(s)"];
