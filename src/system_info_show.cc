@@ -74,13 +74,13 @@ public:
 
     js["CPU info"]["Flags"] = cpu_map["Flags"];
 
-    if (dump_options["html"] == "0") {
-      for (size_t i = 0; i < 6; ++i)
-        js["Memory info"]["Mem"][mem[i]] = mem[i + 7];
-      for (size_t i = 0; i < 3; ++i)
-        js["Memory info"]["Swap"][mem[i]] = mem[i + 14];
-      return JsonToString(js, dump_options);
-    }
+    // if (dump_options["html"] == "0") {
+    //   for (size_t i = 0; i < 6; ++i)
+    //     js["Memory info"]["Mem"][mem[i]] = mem[i + 7];
+    //   for (size_t i = 0; i < 3; ++i)
+    //     js["Memory info"]["Swap"][mem[i]] = mem[i + 14];
+    //   return JsonToString(js, dump_options);
+    // }
 
     // if (dump_options["html"] == "1")
     json lmem, jmem;
