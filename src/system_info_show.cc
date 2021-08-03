@@ -83,37 +83,38 @@ public:
     }
 
     // if (dump_options["html"] == "1")
-    string_appender<std::string> str;
-    str.reserve(5*1024);
+    json lmem, jmem;
+    jmem[" "] = "Mem";
+    jmem["total"] = mem[7];
+    jmem["used"] = mem[8];
+    jmem["free"] = mem[9];
+    jmem["shared"] = mem[10];
+    jmem["buff/cache"] = mem[11];
+    jmem["available"] = mem[12];
+    lmem.push_back(std::move(jmem));
 
-    str|"<table border=1>";
-    str|"<tr>" "<th>" "Memory Info" "</th>";
-    str|"<td>" "<table border=1>";
-    str|"<tr>" "<th>" ""     "</th>";
-    str|"<th>" "total"       "</th>";
-    str|"<th>" "used"        "</th>";
-    str|"<th>" "free"        "</th>";
-    str|"<th>" "shared"      "</th>";
-    str|"<th>" "buff/cache"  "</th>";
-    str|"<th>" "available"   "</th>" "</tr>";
-    str|"<tr>" "<th>" "Mem"  "</th>";
-    str|"<td>"|mem[ 7]|"</td>";
-    str|"<td>"|mem[ 8]|"</td>";
-    str|"<td>"|mem[ 9]|"</td>";
-    str|"<td>"|mem[10]|"</td>";
-    str|"<td>"|mem[11]|"</td>";
-    str|"<td>"|mem[12]|"</td>" "</tr>";
-    str|"<tr>" "<th>" "Swap" "</th>";
-    str|"<td>"|mem[14]|"</td>";
-    str|"<td>"|mem[15]|"</td>";
-    str|"<td>"|mem[16]|"</td>";
-    str|"<td>" "" "</td>";
-    str|"<td>" "" "</td>";
-    str|"<td>" "" "</td>" "</tr>";
-    str|"</table>" "</td>";
-    str|"</table>";
+    jmem[" "] = "Swap";
+    jmem["total"] = mem[14];
+    jmem["used"] = mem[15];
+    jmem["free"] = mem[16];
+    jmem["shared"] = "";
+    jmem["buff/cache"] = "";
+    jmem["available"] = "";
+    lmem.push_back(std::move(jmem));
 
-    return str + JsonToString(js, dump_options);
+    auto &cols = lmem[0]["<htmltab:col>"];
+    cols = json::array({
+        " ",
+        "total",
+        "used",
+        "free",
+        "shared",
+        "buff/cache",
+        "available",
+    });
+    js["Memory Info"] = std::move(lmem);
+
+    return JsonToString(js, dump_options);
   }
 };
 
