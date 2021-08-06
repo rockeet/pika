@@ -16,7 +16,17 @@
     "lists_data_key_decoder" :   "ListsDataKeyDecoder"
   },
   "Statistics": {
-    "stat": "default"
+    "stat-hashes" : {
+      "class": "default",
+      "params": {
+        "//comment": "stats_level default is kExceptDetailedTimers",
+        "stats_level": "kExceptDetailedTimers"
+      }
+    },
+    "stat-lists"  : "default",
+    "stat-strings": "default",
+    "stat-sets"   : "default",
+    "stat-zsets"  : "default"
   },
   "WriteBufferManager" : {
     "wbm": {
@@ -185,7 +195,7 @@
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
           "WAL_size_limit_MB": 0,
-          "statistics": "${stat}",
+          "statistics": "${stat-strings}",
           "allow_mmap_reads": true
         },
         "column_families": {
@@ -207,7 +217,7 @@
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
           "WAL_size_limit_MB": 0,
-          "statistics": "${stat}",
+          "statistics": "${stat-hashes}",
           "allow_mmap_reads": true
         },
         "column_families": {
@@ -230,7 +240,7 @@
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
           "WAL_size_limit_MB": 0,
-          "statistics": "${stat}",
+          "statistics": "${stat-sets}",
           "allow_mmap_reads": true
         },
         "column_families": {
@@ -253,7 +263,7 @@
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
           "WAL_size_limit_MB": 0,
-          "statistics": "${stat}",
+          "statistics": "${stat-zsets}",
           "allow_mmap_reads": true
         },
         "column_families": {
@@ -276,7 +286,7 @@
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
           "WAL_size_limit_MB": 0,
-          "statistics": "$stat",
+          "statistics": "${stat-lists}",
           "allow_mmap_reads": true
         },
         "column_families": {
