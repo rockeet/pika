@@ -14,6 +14,7 @@ if test -z "$CXX"; then
     CXX=g++
 fi
 
+if false; then
 # Test whether tcmalloc is available
 if echo 'int main() {}' | $CXX $CFLAGS -x c++ - -o /dev/null \
   -ltcmalloc 2>/dev/null; then
@@ -30,6 +31,7 @@ $CXX $CFLAGS -x c++ - -o /dev/null -ltcmalloc 2>/dev/null  <<EOF
 EOF
 if [ "$?" = 0 ]; then
     TCMALLOC_EXTENSION_FLAGS=" -DTCMALLOC_EXTENSION"
+fi
 fi
 
 # Test whether Snappy library is installed
