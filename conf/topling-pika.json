@@ -8,6 +8,7 @@
     "DictZipBlobStore_zipThreads_nouse": 8
   },
   "AnyPlugin": {
+    "sys_info": "SysInfoShower",
     "pika_conf": "PikaConfShowPlugin",
     "build_version": "BuildVersionsShowPlugin",
     "meta_key_decoder":         "HtmlTextUserKeyCoder",
