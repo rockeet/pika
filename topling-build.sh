@@ -33,9 +33,12 @@ env PATH=/node-shared/vcpkg/installed/x64-linux/tools/protobuf:$PATH \
     ROCKSDB_PATH="/node-shared/leipeng/osc/rocksdb" \
     make DISABLE_UPDATE_SB=1 DISABLE_WARNING_AS_ERROR=1 $@
 
+if test "$USER" = "leipeng"; then
 shopt -s nullglob
 for fpath in third/blackwidow/lib/libblackwidow*.so; do
   fname=`basename $fpath`
   rm -f  /node-shared/lib/$fname
   cp -ap $fpath /node-shared/lib
 done
+cp -rap output/* /node-shared/prog/pika/
+fi
