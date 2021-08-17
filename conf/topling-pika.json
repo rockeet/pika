@@ -1,8 +1,9 @@
 ﻿{
   "http": {
-    "document_root": "/",
+    "document_root": "/nvme-shared/data/db/db0",
+    "hide_files_patterns": "*.sst|*.dbtmp",
     "num_threads": "5",
-    "listening_ports": "8088"
+    "listening_ports": "2011"
   },
   "setenv": {
     "DictZipBlobStore_zipThreads_nouse": 8
@@ -17,23 +18,78 @@
     "lists_data_key_decoder" :   "ListsDataKeyDecoder"
   },
   "Statistics": {
-    "stat-hashes" : {
+    "stat-hashes": {
       "class": "default",
       "params": {
-        "//comment": "stats_level default is kExceptDetailedTimers",
+        "discard_tickers": [
+          "# comment",
+          "// comment: 可以仅指定前缀，必须以 . 为边界的前缀，例如下面两个必须分别指定",
+          "rocksdb.block.cache",
+          "rocksdb.block.cachecompressed",
+          "# comment: 上面两个也可以用下面这一个概括",
+          "rocksdb.block",
+          "# 精确指定",
+          "rocksdb.memtable.payload.bytes.at.flush",
+          "rocksdb.memtable.garbage.bytes.at.flush",
+          "# pika 未使用 txn",
+          "rocksdb.txn",
+          "rocksdb.blobdb",
+          "rocksdb.row.cache",
+          "rocksdb.number.block",
+          "rocksdb.bloom.filter",
+          "rocksdb.persistent",
+          "rocksdb.sim.block.cache"
+        ],
+        "discard_histograms": [
+          "# comment: ....",
+          "rocksdb.blobdb",
+          "rocksdb.bytes.compressed",
+          "rocksdb.bytes.decompressed",
+          "rocksdb.num.index.and.filter.blocks.read.per.level",
+          "rocksdb.num.data.blocks.read.per.level",
+          "rocksdb.compression.times.nanos",
+          "rocksdb.decompression.times.nanos",
+          "rocksdb.read.block.get.micros",
+          "rocksdb.write.raw.block.micros",
+          "# comment end of array"
+        ],
         "stats_level": "kExceptDetailedTimers"
       }
     },
-    "stat-lists"  : "default",
-    "stat-strings": "default",
-    "stat-sets"   : "default",
-    "stat-zsets"  : "default"
+    "stat-lists": {
+      "class": "default",
+      "params": {
+        "discard_tikers": "${stat-hashes}",
+        "discard_histograms": "${stat-hashes}"
+      }
+    },
+    "stat-strings": {
+      "class": "default",
+      "params": {
+        "discard_tikers": "${stat-hashes}",
+        "discard_histograms": "${stat-hashes}"
+      }
+    },
+    "stat-sets": {
+      "class": "default",
+      "params": {
+        "discard_tikers": "${stat-hashes}",
+        "discard_histograms": "${stat-hashes}"
+      }
+    },
+    "stat-zsets": {
+      "class": "default",
+      "params": {
+        "discard_tikers": "${stat-hashes}",
+        "discard_histograms": "${stat-hashes}"
+      }
+    }
   },
   "WriteBufferManager" : {
     "wbm": {
       "class": "WriteBufferManager",
       "params": {
-        "buffer_size": "128M"
+        "buffer_size": "2048M"
       }
     }
   },
@@ -109,6 +165,20 @@
         "minPreadLen": -1
       }
     },
+    "dispatch_data_cf": {
+      "class": "DispatcherTable",
+      "params": {
+        "default": "terark-fast",
+        "readers": {
+          "TerarkFastTable": "terark-fast",
+          "TerarkZipTable": "terark-zip"
+        },
+        "level_writers": [
+          "terark-fast", "terark-fast", "terark-fast", "terark-fast",
+          "terark-zip", "terark-zip", "terark-zip", "terark-zip", "terark-zip"
+        ]
+      }
+    },
     "dispatch": {
       "class": "DispatcherTable",
       "params": {
@@ -128,43 +198,52 @@
     "hash-data": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}", "#max_bytes_for_level_multiplier": 4,
+      "table_factory": "${dispatch_data_cf}",
       "html_user_key_coder": "$base_data_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${hash-data}"
     },
     "set-member": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
+      "table_factory": "${dispatch_data_cf}",
       "html_user_key_coder": "$base_data_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${set-member}"
     },
     "zset-data": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
+      "table_factory": "${dispatch_data_cf}",
       "html_user_key_coder": "$base_data_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${zset-data}"
     },
     "base-meta": {
-      "max_write_buffer_number": 4, "write_buffer_size": "16M",
+      "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
       "html_user_key_coder": "$meta_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${base-meta}"
     },
     "strings": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "soft_pending_compaction_bytes_limit": "1T",
+      "hard_pending_compaction_bytes_limit": "2T",
       "table_factory": "${dispatch}",
       "html_user_key_coder": "$meta_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${strings}"
     },
     "list-data": {
+      "//comparator": "blackwidow.ListsDataKeyComparator",
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
+      "table_factory": "${dispatch_data_cf}",
       "html_user_key_coder": "$lists_data_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${list-data}"
     },
     "list-meta": {
@@ -172,13 +251,16 @@
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
       "html_user_key_coder": "$meta_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${list-meta}"
     },
     "zset-score": {
+      "//comparator": "blackwidow.ZSetsScoreKeyComparator",
       "max_write_buffer_number": 4, "write_buffer_size": "16M",
       "target_file_size_base": "8M", "target_file_size_multiplier": 2,
       "table_factory": "${dispatch}",
       "html_user_key_coder": "$zsets_score_key_decoder",
+      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${zset-score}"
     }
   },
@@ -190,19 +272,22 @@
           "advise_random_on_open": true,
           "create_if_missing": true,
           "create_missing_column_families": true,
-          "max_background_flushes": 1,
+          "max_background_flushes": 2,
           "max_background_compactions": 20,
           "max_subcompactions": 1,
-          "max_level1_subcompactions": 3,
+          "max_level1_subcompactions": 10,
           "write_buffer_manager": "${wbm}",
+          "inplace_update_support": false,
           "WAL_size_limit_MB": 0,
+          "//wal_dir": "/nvmepool/terark/pika-wal/strings",
+          "//db_log_dir": "/nvmepool/terark/pika-wal/strings",
           "statistics": "${stat-strings}",
           "allow_mmap_reads": true
         },
         "column_families": {
           "default": "${strings}"
         },
-        "path": "db/db0/strings"
+        "path": "/nvme-shared/data/db/db0/strings"
       }
     },
     "hashes": {
@@ -212,12 +297,15 @@
           "advise_random_on_open": true,
           "create_if_missing": true,
           "create_missing_column_families": true,
-          "max_background_flushes": 1,
-          "max_background_compactions": 20,
+          "max_background_flushes": 2,
+          "max_background_compactions": 32,
           "max_subcompactions": 1,
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
+          "inplace_update_support": false,
           "WAL_size_limit_MB": 0,
+          "//wal_dir": "/nvmepool/terark/pika-wal/hashes",
+          "//db_log_dir": "/nvmepool/terark/pika-wal/hashes",
           "statistics": "${stat-hashes}",
           "allow_mmap_reads": true
         },
@@ -225,7 +313,7 @@
           "default": "${base-meta}",
           "data_cf": "${hash-data}"
         },
-        "path": "db/db0/hashes"
+        "path": "/nvme-shared/data/db/db0/hashes"
       }
     },
     "sets": {
@@ -240,7 +328,10 @@
           "max_subcompactions": 1,
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
+          "inplace_update_support": false,
           "WAL_size_limit_MB": 0,
+          "//wal_dir": "/nvmepool/terark/pika-wal/sets",
+          "//db_log_dir": "/nvmepool/terark/pika-wal/sets",
           "statistics": "${stat-sets}",
           "allow_mmap_reads": true
         },
@@ -248,7 +339,7 @@
           "default": "${base-meta}",
           "member_cf": "${set-member}"
         },
-        "path": "db/db0/sets"
+        "path": "/nvme-shared/data/db/db0/sets"
       }
     },
     "zsets": {
@@ -263,7 +354,10 @@
           "max_subcompactions": 1,
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
+          "inplace_update_support": false,
           "WAL_size_limit_MB": 0,
+          "//wal_dir": "/nvmepool/terark/pika-wal/zsets",
+          "//db_log_dir": "/nvmepool/terark/pika-wal/zsets",
           "statistics": "${stat-zsets}",
           "allow_mmap_reads": true
         },
@@ -272,7 +366,7 @@
           "data_cf": "${zset-data}",
           "score_cf": "${zset-score}"
         },
-        "path": "db/db0/zsets"
+        "path": "/nvme-shared/data/db/db0/zsets"
       }
     },
     "lists": {
@@ -286,7 +380,10 @@
           "max_subcompactions": 1,
           "max_level1_subcompactions": 3,
           "write_buffer_manager": "${wbm}",
+          "inplace_update_support": false,
           "WAL_size_limit_MB": 0,
+          "//wal_dir": "/nvmepool/terark/pika-wal/lists",
+          "//db_log_dir": "/nvmepool/terark/pika-wal/lists",
           "statistics": "${stat-lists}",
           "allow_mmap_reads": true
         },
@@ -294,7 +391,92 @@
           "default": "${list-meta}",
           "data_cf": "${list-data}"
         },
-        "path": "db/db0/lists"
+        "path": "/nvme-shared/data/db/db0/lists"
+      }
+    }
+  },
+  "CompactionExecutorFactory": {
+    "dcompact": {
+      "class": "DcompactEtcd",
+      "params": {
+        "//2/etcd": {
+          "url": "etcd.topling.cn:2379",
+          "ca": "/node-shared/certs/ca.pem",
+          "cert": "/node-shared/certs/topling-client-chain.pem",
+          "key": "/node-shared/certs/topling-client-key.pem",
+          "//username": "leipeng",
+          "//password": "topling@123",
+          "load_balancer": "round_robin"
+        },
+        "//etcd": {
+          "url": "https://dell2.topling.cn:2379",
+          "ca": "/node-shared/certs/ca.pem",
+          "cert": "/node-shared/certs/topling-client-chain.pem",
+          "key": "/node-shared/certs/topling-client-key.pem",
+          "load_balancer": "round_robin"
+        },
+        "etcd_root": "/dcompact-worker-cluster-1",
+
+        "//hoster_root": "/nvmepool/shared/db1",
+        "hoster_root": "/nvme-shared/data",
+        "instance_name": "data",
+        "nfs_mnt_flags": "",
+        "nfs_mnt_src": "192.168.100.10:/srv/nvme/data",
+        "nfs_mnt_opt": "vers=3,noatime",
+        "web_domain": "topling.in",
+        "http_max_retry": 99,
+        "http_timeout": 3,
+        "http_workers": [
+          "//http://192.168.31.10:8080",
+          "//http://192.168.31.10:8081",
+          "//http://192.168.31.2:8080",
+          "//http://192.168.31.2:8081",
+          "//http://192.168.100.101:8080",
+          "//http://192.168.100.101:8081",
+          { "url": "http://192.168.100.101:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.101:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.103:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.103:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.104:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.104:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.105:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.105:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.106:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.106:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.107:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.107:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.108:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.108:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.109:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.109:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.110:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.110:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.111:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.111:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.112:8080", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.112:8081", "web_url": "http://dell3.topling.in:2011" },
+          "//http://192.168.100.102:8080",
+          "//http://192.168.100.102:8081",
+          "//http://192.168.100.103:8080",
+          "//http://192.168.100.103:8081",
+          "//http://192.168.100.104:8080",
+          "//http://192.168.100.104:8081",
+          "//http://192.168.100.105:8080",
+          "//http://192.168.100.105:8081",
+          "//http://192.168.100.106:8080",
+          "//http://192.168.100.106:8081",
+          "//http://192.168.100.107:8080",
+          "//http://192.168.100.107:8081",
+          "//http://192.168.100.108:8080",
+          "//http://192.168.100.108:8081",
+          "//http://active-host:8080",
+          "//http://commented-host:8080",
+          "//end_http_workers"
+        ],
+        "dbcf_min_level": {
+          ":data_cf": 4
+        },
+        "dcompact_min_level": 2
       }
     }
   }
