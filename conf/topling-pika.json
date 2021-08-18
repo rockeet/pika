@@ -132,14 +132,14 @@
     }
   },
   "TableFactory": {
-    "terark-fast": {
+    "terark_fast": {
       "class": "TerarkFastTable",
       "params": {
         "indexType": "MainPatricia",
         "keyPrefixLen": 0
       }
     },
-    "terark-zip": {
+    "terark_zip": {
       "class": "TerarkZipTable",
       "params": {
         "localTempDir": "/tmp",
@@ -168,28 +168,28 @@
     "dispatch_data_cf": {
       "class": "DispatcherTable",
       "params": {
-        "default": "terark-fast",
+        "default": "terark_fast",
         "readers": {
-          "TerarkFastTable": "terark-fast",
-          "TerarkZipTable": "terark-zip"
+          "TerarkFastTable": "terark_fast",
+          "TerarkZipTable": "terark_zip"
         },
         "level_writers": [
-          "terark-fast", "terark-fast", "terark-fast", "terark-fast",
-          "terark-zip", "terark-zip", "terark-zip", "terark-zip", "terark-zip"
+          "terark_fast", "terark_fast", "terark_fast", "terark_fast",
+          "terark_zip", "terark_zip", "terark_zip", "terark_zip", "terark_zip"
         ]
       }
     },
     "dispatch": {
       "class": "DispatcherTable",
       "params": {
-        "default": "terark-fast",
+        "default": "terark_fast",
         "readers": {
-          "TerarkFastTable": "terark-fast",
-          "TerarkZipTable": "terark-zip"
+          "TerarkFastTable": "terark_fast",
+          "TerarkZipTable": "terark_zip"
         },
         "level_writers": [
-          "terark-fast", "terark-fast",
-          "terark-zip", "terark-zip", "terark-zip", "terark-zip", "terark-zip"
+          "terark_fast", "terark_fast",
+          "terark_zip", "terark_zip", "terark_zip", "terark_zip", "terark_zip"
         ]
       }
     }
