@@ -86,8 +86,7 @@ PikaServer::PikaServer() :
   pthread_rwlock_init(&tables_rw_, &tables_rw_attr);
 
   // Create thread
-  worker_num_ = std::min(g_pika_conf->thread_num(),
-                         PIKA_MAX_WORKER_THREAD_NUM);
+  worker_num_ = g_pika_conf->thread_num();
 
   std::set<std::string> ips;
   if (g_pika_conf->network_interface().empty()) {
