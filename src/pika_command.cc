@@ -28,6 +28,7 @@
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
+extern PikaCmdHistogramManager* g_pika_cmd_histogram_manager;
 
 void InitCmdTable(CmdTable* cmd_table) {
   auto add = [cmd_table](Cmd* cmd) {
@@ -233,6 +234,10 @@ void InitCmdTable(CmdTable* cmd_table) {
 
   // total_key_size() with align = 1960, fit to 2032 = 8*(255-1), ok to use uint8_t for LinkTp
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
+
+  for (auto const iter:*cmd_table) {
+    g_pika_cmd_histogram_manager->Add_Histogram(iter.first);
+  }
 }
 
 Cmd* GetCmdFromTable(const fstring& opt, const CmdTable& cmd_table) {

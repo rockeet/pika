@@ -16,11 +16,13 @@
 #include "include/pika_admin.h"
 #include "include/pika_rm.h"
 #include "include/pika_proxy.h"
+#include "pink/include/pika_cmd_histogram_manager.h"
 
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
+extern PikaCmdHistogramManager* g_pika_cmd_histogram_manager;
 extern PikaProxy* g_pika_proxy;
 
 PikaClientConn::PikaClientConn(int fd, const std::string& ip_port,
@@ -302,12 +304,16 @@ void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared
     }
   }
 
+  auto starttime = std::chrono::high_resolution_clock::now();
   std::shared_ptr<Cmd> cmd_ptr = DoCmd(argv, opt, resp_ptr);
   // level == 0 or (cmd error) or (is_read)
   if (g_pika_conf->consensus_level() == 0 || !cmd_ptr->res().ok() || !cmd_ptr->is_write()) {
     *resp_ptr = cmd_ptr->res().message();
     resp_num--;
   }
+  auto endtime = std::chrono::high_resolution_clock::now();
+  auto metric = std::chrono::duration_cast<std::chrono::microseconds>(endtime - starttime).count();
+  g_pika_cmd_histogram_manager->Add_Histogram_Metric(opt, metric, Process);
 }
 
 // Initial permission status
