@@ -17,6 +17,7 @@
 #include "include/pika_version.h"
 #include "include/pika_cmd_table_manager.h"
 #include "include/build_version.h"
+#include "pink/include/pika_cmd_histogram_manager.h"
 
 #ifdef TCMALLOC_EXTENSION
 #include <gperftools/malloc_extension.h>
@@ -28,6 +29,8 @@ PikaReplicaManager* g_pika_rm;
 PikaProxy* g_pika_proxy;
 
 PikaCmdTableManager* g_pika_cmd_table_manager;
+
+PikaCmdHistogramManager* g_pika_cmd_histogram_manager = new PikaCmdHistogramManager();
 
 static void version() {
     char version[32];

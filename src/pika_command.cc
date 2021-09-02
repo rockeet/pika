@@ -20,10 +20,12 @@
 #include "include/pika_server.h"
 #include "include/pika_rm.h"
 #include "include/pika_cmd_table_manager.h"
+#include "pink/include/pika_cmd_histogram_manager.h"
 
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
+extern PikaCmdHistogramManager* g_pika_cmd_histogram_manager;
 
 void InitCmdTable(std::unordered_map<std::string, Cmd*> *cmd_table) {
   //Admin
@@ -501,6 +503,10 @@ void InitCmdTable(std::unordered_map<std::string, Cmd*> *cmd_table) {
   ////PubSub
   Cmd * pubsubptr = new PubSubCmd(kCmdNamePubSub, -2, kCmdFlagsRead | kCmdFlagsPubSub);
   cmd_table->insert(std::pair<std::string, Cmd*>(kCmdNamePubSub, pubsubptr));
+
+  for (auto const iter:*cmd_table) {
+    g_pika_cmd_histogram_manager->Add_Histogram(iter.first);
+  }
 }
 
 Cmd* GetCmdFromTable(const std::string& opt, const CmdTable& cmd_table) {
