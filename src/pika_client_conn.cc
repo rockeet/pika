@@ -17,6 +17,7 @@
 #include "include/pika_rm.h"
 #include "include/pika_proxy.h"
 #include "pink/include/pika_cmd_histogram_manager.h"
+#include "terark/util/profiling.hpp"
 
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
@@ -181,11 +182,13 @@ void PikaClientConn::ProcessMonitor(const PikaCmdArgsType& argv) {
   g_pika_server->AddMonitorMessage(monitor_message);
 }
 
+static terark::profiling pf;
 void PikaClientConn::ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>& argvs, bool async, std::string* response) {
   if (async) {
     BgTaskArg* arg = new BgTaskArg();
     arg->redis_cmds = std::move(argvs);
     arg->conn_ptr = std::dynamic_pointer_cast<PikaClientConn>(shared_from_this());
+    arg->ScheduleStartTime = pf.now();
     g_pika_server->ScheduleClientPool(&DoBackgroundTask, arg);
     return;
   }
@@ -194,6 +197,11 @@ void PikaClientConn::ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>&
 
 void PikaClientConn::DoBackgroundTask(void* arg) {
   BgTaskArg* bg_arg = reinterpret_cast<BgTaskArg*>(arg);
+  long long curtime = pf.now();
+  auto metric = pf.us(bg_arg->ScheduleStartTime,curtime);
+  std::string cmd_name = bg_arg->redis_cmds[0][0];
+  slash::StringToLower(cmd_name);
+  g_pika_cmd_histogram_manager->Add_Histogram_Metric(cmd_name, metric, Schedule);
   std::shared_ptr<PikaClientConn> conn_ptr = bg_arg->conn_ptr;
   if (bg_arg->redis_cmds.size() == 0) {
     delete bg_arg;
@@ -287,7 +295,6 @@ void PikaClientConn::TryWriteResp() {
   }
 }
 
-
 void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared_ptr<std::string>& resp_ptr) {
   // get opt
   std::string opt = argv[0];
@@ -299,15 +306,15 @@ void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared
     }
   }
 
-  auto starttime = std::chrono::high_resolution_clock::now();
+  long long starttime = pf.now();
   std::shared_ptr<Cmd> cmd_ptr = DoCmd(argv, opt, resp_ptr);
   // level == 0 or (cmd error) or (is_read)
   if (g_pika_conf->consensus_level() == 0 || !cmd_ptr->res().ok() || !cmd_ptr->is_write()) {
     *resp_ptr = cmd_ptr->res().message();
     resp_num--;
   }
-  auto endtime = std::chrono::high_resolution_clock::now();
-  auto metric = std::chrono::duration_cast<std::chrono::microseconds>(endtime - starttime).count();
+  long long endtime = pf.now();
+  auto metric = pf.us(starttime,endtime);
   g_pika_cmd_histogram_manager->Add_Histogram_Metric(opt, metric, Process);
 }
 
