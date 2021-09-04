@@ -28,7 +28,9 @@ extern PikaCmdTableManager* g_pika_cmd_table_manager;
 
 void InitCmdTable(CmdTable* cmd_table) {
   auto add = [cmd_table](Cmd* cmd) {
-    TERARK_VERIFY_S(cmd_table->insert_i(cmd->name(), cmd).second, "%s", cmd->name());
+    auto ib = cmd_table->insert_i(cmd->name(), cmd);
+    TERARK_VERIFY_S(ib.second, "cmdname: %s", cmd->name());
+    cmd->set_cmd_idx(ib.first);
   };
 
   //Admin

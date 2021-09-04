@@ -1361,14 +1361,11 @@ void PikaServer::ResetLastSecQuerynum() {
   statistic_.ResetTableLastSecQuerynum();
 }
 
-void PikaServer::UpdateQueryNumAndExecCountTable(const std::string& table_name,
-    const std::string& command, bool is_write) {
+void PikaServer::UpdateQueryNumAndExecCountTable(const std::string& table_name, const Cmd& cmd) {
   statistic_.server_stat.qps.querynum.fetch_add(1, std::memory_order_relaxed);
-  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
-  size_t idx = cmdtab->find_i(command);
-  TERARK_VERIFY_LT(idx, cmdtab->end_i());
+  const size_t idx = cmd.cmd_idx();
   statistic_.server_stat.exec_count_table[idx]++; // no atomic
-  statistic_.UpdateTableQps(table_name, command, is_write);
+  statistic_.UpdateTableQps(table_name, cmd.name(), cmd.is_write());
 }
 
 std::unordered_map<std::string, uint64_t> PikaServer::ServerExecCountTable() {

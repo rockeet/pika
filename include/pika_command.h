@@ -498,6 +498,9 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   std::shared_ptr<std::string> GetResp();
 
   void SetStage(CmdStage stage);
+  size_t cmd_idx() const { return cmd_idx_; }
+  void set_cmd_idx(size_t idx) { cmd_idx_ = uint16_t(idx); }
+
  protected:
   // enable copy, used default copy
   //Cmd(const Cmd&);
@@ -513,6 +516,7 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   std::string name_;
   int arity_;
   uint16_t flag_;
+  uint16_t cmd_idx_ = UINT16_MAX;
 
   CmdRes res_;
   PikaCmdArgsType argv_;

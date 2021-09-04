@@ -264,9 +264,7 @@ class PikaServer {
   uint64_t accumulative_connections();
   void incr_accumulative_connections();
   void ResetLastSecQuerynum();
-  void UpdateQueryNumAndExecCountTable(
-      const std::string& table_name,
-      const std::string& command, bool is_write);
+  void UpdateQueryNumAndExecCountTable(const std::string& table_name, const Cmd&);
   std::unordered_map<std::string, uint64_t> ServerExecCountTable();
   QpsStatistic ServerTableStat(const std::string& table_name);
   std::unordered_map<std::string, QpsStatistic> ServerAllTableStat();

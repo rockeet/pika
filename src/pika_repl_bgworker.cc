@@ -260,7 +260,7 @@ int PikaReplBgWorker::HandleWriteBinlog(pink::RedisParser* parser, const pink::R
     return -1;
   }
 
-  g_pika_server->UpdateQueryNumAndExecCountTable(worker->table_name_, opt, c_ptr->is_write());
+  g_pika_server->UpdateQueryNumAndExecCountTable(worker->table_name_, *c_ptr);
 
   std::shared_ptr<SyncMasterPartition> partition
     = g_pika_rm->GetSyncMasterPartitionByName(PartitionInfo(worker->table_name_, worker->partition_id_));

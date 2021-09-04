@@ -75,7 +75,7 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
     return c_ptr;
   }
 
-  g_pika_server->UpdateQueryNumAndExecCountTable(current_table_, opt, c_ptr->is_write());
+  g_pika_server->UpdateQueryNumAndExecCountTable(current_table_, *c_ptr);
 
   // PubSub connection
   // (P)SubscribeCmd will set is_pubsub_
