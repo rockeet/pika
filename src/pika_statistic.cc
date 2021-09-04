@@ -77,9 +77,9 @@ ServerStatistic::ServerStatistic()
   CmdTable* cmds = new CmdTable();
   cmds->reserve(300);
   InitCmdTable(cmds);
-  CmdTable::const_iterator it = cmds->begin();
-  for (; it != cmds->end(); ++it) {
-    std::string tmp = it->first;
+  TERARK_VERIFY_EZ(cmds->delcnt());
+  for (size_t i = 0, n = cmds->end_i(); i < n; ++i) {
+    std::string tmp = cmds->key(i).str();
     exec_count_table[slash::StringToUpper(tmp)].store(0);
   }
   DestoryCmdTable(cmds);
