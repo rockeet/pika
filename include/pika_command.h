@@ -530,7 +530,6 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   Cmd& operator=(const Cmd&);
 };
 
-#if 1
 class CmdTable : public terark::hash_strmap<Cmd*> {
   typedef terark::hash_strmap<Cmd*> super;
   using super::erase;
@@ -539,9 +538,6 @@ class CmdTable : public terark::hash_strmap<Cmd*> {
 public:
   using super::super;
 };
-#else
-typedef std::unordered_map<std::string, Cmd*> CmdTable;
-#endif
 
 // Method for Cmd Table
 void InitCmdTable(CmdTable* cmd_table);
