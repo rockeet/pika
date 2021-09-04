@@ -9,7 +9,6 @@
 #include <atomic>
 #include <unordered_map>
 #include <vector>
-#include <terark/hash_strmap.hpp>
 
 class QpsStatistic {
  public:
@@ -38,7 +37,7 @@ struct ServerStatistic {
   ~ServerStatistic();
 
   std::atomic<uint64_t> accumulative_connections;
-  terark::hash_strmap<std::atomic<uint64_t>> exec_count_table;
+  std::vector<uint64_t> exec_count_table;
   QpsStatistic qps;
 };
 

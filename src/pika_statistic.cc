@@ -4,10 +4,11 @@
 // of patent rights can be found in the PATENTS file in the same directory.
 
 #include "include/pika_statistic.h"
-
 #include "slash/include/env.h"
-
 #include "include/pika_command.h"
+#include "include/pika_cmd_table_manager.h"
+
+extern PikaCmdTableManager* g_pika_cmd_table_manager;
 
 /* QpsStatistic */
 
@@ -74,16 +75,18 @@ void QpsStatistic::ResetLastSecQuerynum() {
 
 ServerStatistic::ServerStatistic()
     : accumulative_connections(0) {
-  CmdTable* cmds = new CmdTable();
-  cmds->reserve(300);
-  InitCmdTable(cmds);
+//  CmdTable* cmds = new CmdTable();
+  const CmdTable* cmds = g_pika_cmd_table_manager->cmds();
   TERARK_VERIFY_EZ(cmds->delcnt());
+  exec_count_table.resize(cmds->end_i(), 0);
+/*
   for (size_t i = 0, n = cmds->end_i(); i < n; ++i) {
     terark::fstring name = cmds->key(i);
-    exec_count_table[name].store(0);
+    exec_count_table[i].store(0);
   }
   DestoryCmdTable(cmds);
   delete cmds;
+*/
 }
 
 ServerStatistic::~ServerStatistic() {

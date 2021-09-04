@@ -16,6 +16,7 @@ class PikaCmdTableManager {
   virtual ~PikaCmdTableManager();
   std::shared_ptr<Cmd> GetCmd(const std::string& opt);
   uint32_t DistributeKey(const std::string& key, uint32_t partition_num);
+  const CmdTable* cmds() const { return cmds_; }
  private:
   std::shared_ptr<Cmd> NewCommand(const std::string& opt);
 

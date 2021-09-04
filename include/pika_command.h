@@ -535,6 +535,7 @@ class CmdTable : public terark::hash_strmap<Cmd*> {
   using super::erase;
   using super::find;
   using super::insert;
+  using super::operator[];
 public:
   using super::super;
 };

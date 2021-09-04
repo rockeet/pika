@@ -1364,17 +1364,22 @@ void PikaServer::ResetLastSecQuerynum() {
 void PikaServer::UpdateQueryNumAndExecCountTable(const std::string& table_name,
     const std::string& command, bool is_write) {
   statistic_.server_stat.qps.querynum.fetch_add(1, std::memory_order_relaxed);
-  statistic_.server_stat.exec_count_table[command].fetch_add(1, std::memory_order_relaxed);
+  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
+  size_t idx = cmdtab->find_i(command);
+  TERARK_VERIFY_LT(idx, cmdtab->end_i());
+  statistic_.server_stat.exec_count_table[idx]++; // no atomic
   statistic_.UpdateTableQps(table_name, command, is_write);
 }
 
 std::unordered_map<std::string, uint64_t> PikaServer::ServerExecCountTable() {
   std::unordered_map<std::string, uint64_t> res;
-  TERARK_VERIFY_EZ(statistic_.server_stat.exec_count_table.delcnt());
-  auto& src = statistic_.server_stat.exec_count_table;
-  for (size_t i = 0, n = src.end_i(); i < n; ++i) {
-    auto key = src.key(i).str();
-    auto val = src.val(i).load(std::memory_order_relaxed);
+  auto& exetab = statistic_.server_stat.exec_count_table;
+  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
+  TERARK_VERIFY_EZ(cmdtab->delcnt());
+  TERARK_VERIFY_EQ(cmdtab->end_i(), exetab.size());
+  for (size_t i = 0, n = cmdtab->end_i(); i < n; ++i) {
+    auto key = cmdtab->key(i).str();
+    auto val = exetab[i];
     res[key] = val;
   }
   return res;
