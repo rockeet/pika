@@ -79,8 +79,8 @@ ServerStatistic::ServerStatistic()
   InitCmdTable(cmds);
   TERARK_VERIFY_EZ(cmds->delcnt());
   for (size_t i = 0, n = cmds->end_i(); i < n; ++i) {
-    std::string tmp = cmds->key(i).str();
-    exec_count_table[slash::StringToUpper(tmp)].store(0);
+    terark::fstring name = cmds->key(i);
+    exec_count_table[name].store(0);
   }
   DestoryCmdTable(cmds);
   delete cmds;

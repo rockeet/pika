@@ -1363,16 +1363,19 @@ void PikaServer::ResetLastSecQuerynum() {
 
 void PikaServer::UpdateQueryNumAndExecCountTable(const std::string& table_name,
     const std::string& command, bool is_write) {
-  std::string cmd(command);
-  statistic_.server_stat.qps.querynum++;
-  statistic_.server_stat.exec_count_table[slash::StringToUpper(cmd)]++;
+  statistic_.server_stat.qps.querynum.fetch_add(1, std::memory_order_relaxed);
+  statistic_.server_stat.exec_count_table[command].fetch_add(1, std::memory_order_relaxed);
   statistic_.UpdateTableQps(table_name, command, is_write);
 }
 
 std::unordered_map<std::string, uint64_t> PikaServer::ServerExecCountTable() {
   std::unordered_map<std::string, uint64_t> res;
-  for (auto& cmd : statistic_.server_stat.exec_count_table) {
-    res[cmd.first] = cmd.second.load();
+  TERARK_VERIFY_EZ(statistic_.server_stat.exec_count_table.delcnt());
+  auto& src = statistic_.server_stat.exec_count_table;
+  for (size_t i = 0, n = src.end_i(); i < n; ++i) {
+    auto key = src.key(i).str();
+    auto val = src.val(i).load(std::memory_order_relaxed);
+    res[key] = val;
   }
   return res;
 }
