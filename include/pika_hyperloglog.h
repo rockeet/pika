@@ -14,7 +14,7 @@
  */
 class PfAddCmd : public Cmd {
  public:
-  PfAddCmd(const fstring name, int arity, uint16_t flag)
+  PfAddCmd(fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -32,7 +32,7 @@ class PfAddCmd : public Cmd {
 
 class PfCountCmd : public Cmd {
  public:
-  PfCountCmd(const fstring name, int arity, uint16_t flag)
+  PfCountCmd(fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -48,7 +48,7 @@ class PfCountCmd : public Cmd {
 
 class PfMergeCmd : public Cmd {
  public:
-  PfMergeCmd(const fstring name, int arity, uint16_t flag)
+  PfMergeCmd(fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
