@@ -1365,7 +1365,7 @@ void PikaServer::UpdateQueryNumAndExecCountTable(const std::string& table_name, 
   statistic_.server_stat.qps.querynum.fetch_add(1, std::memory_order_relaxed);
   const size_t idx = cmd.cmd_idx();
   statistic_.server_stat.exec_count_table[idx]++; // no atomic
-  statistic_.UpdateTableQps(table_name, cmd.name(), cmd.is_write());
+  statistic_.UpdateTableQps(table_name, cmd.is_write());
 }
 
 std::unordered_map<std::string, uint64_t> PikaServer::ServerExecCountTable() {

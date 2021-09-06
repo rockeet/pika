@@ -16,7 +16,7 @@
  */
 class LIndexCmd : public Cmd {
  public:
-  LIndexCmd(const std::string& name, int arity, uint16_t flag)
+  LIndexCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), index_(0) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -34,7 +34,7 @@ class LIndexCmd : public Cmd {
 
 class LInsertCmd : public Cmd {
  public:
-  LInsertCmd(const std::string& name, int arity, uint16_t flag)
+  LInsertCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), dir_(blackwidow::After) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -51,7 +51,7 @@ class LInsertCmd : public Cmd {
 
 class LLenCmd : public Cmd {
  public:
-  LLenCmd(const std::string& name, int arity, uint16_t flag)
+  LLenCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -65,7 +65,7 @@ class LLenCmd : public Cmd {
 
 class LPopCmd : public Cmd {
  public:
-  LPopCmd(const std::string& name, int arity, uint16_t flag)
+  LPopCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -79,7 +79,7 @@ class LPopCmd : public Cmd {
 
 class LPushCmd : public Cmd {
  public:
-  LPushCmd(const std::string& name, int arity, uint16_t flag)
+  LPushCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -97,7 +97,7 @@ class LPushCmd : public Cmd {
 
 class LPushxCmd : public Cmd {
  public:
-  LPushxCmd(const std::string& name, int arity, uint16_t flag)
+  LPushxCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -112,7 +112,7 @@ class LPushxCmd : public Cmd {
 
 class LRangeCmd : public Cmd {
  public:
-  LRangeCmd(const std::string& name, int arity, uint16_t flag)
+  LRangeCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_(0), right_(0) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -128,7 +128,7 @@ class LRangeCmd : public Cmd {
 
 class LRemCmd : public Cmd {
  public:
-  LRemCmd(const std::string& name, int arity, uint16_t flag)
+  LRemCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), count_(0) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -144,7 +144,7 @@ class LRemCmd : public Cmd {
 
 class LSetCmd : public Cmd {
  public:
-  LSetCmd(const std::string& name, int arity, uint16_t flag)
+  LSetCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), index_(0) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -160,7 +160,7 @@ class LSetCmd : public Cmd {
 
 class LTrimCmd : public Cmd {
  public:
-  LTrimCmd(const std::string& name, int arity, uint16_t flag)
+  LTrimCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), start_(0), stop_(0) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -176,7 +176,7 @@ class LTrimCmd : public Cmd {
 
 class RPopCmd : public Cmd {
  public:
-  RPopCmd(const std::string& name, int arity, uint16_t flag)
+  RPopCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -190,7 +190,7 @@ class RPopCmd : public Cmd {
 
 class RPopLPushCmd : public Cmd {
  public:
-  RPopLPushCmd(const std::string& name, int arity, uint16_t flag)
+  RPopLPushCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override{
     std::vector<std::string> res;
@@ -209,7 +209,7 @@ class RPopLPushCmd : public Cmd {
 
 class RPushCmd : public Cmd {
  public:
-  RPushCmd(const std::string& name, int arity, uint16_t flag)
+  RPushCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -227,7 +227,7 @@ class RPushCmd : public Cmd {
 
 class RPushxCmd : public Cmd {
  public:
-  RPushxCmd(const std::string& name, int arity, uint16_t flag)
+  RPushxCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;

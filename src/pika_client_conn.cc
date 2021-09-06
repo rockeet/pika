@@ -318,7 +318,7 @@ void PikaClientConn::AuthStat::Init() {
 
 // Check permission for current command
 bool PikaClientConn::AuthStat::IsAuthed(const std::shared_ptr<Cmd>& cmd_ptr) {
-  std::string opt = cmd_ptr->name();
+  fstring opt = cmd_ptr->name();
   if (opt == kCmdNameAuth) {
     return true;
   }

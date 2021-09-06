@@ -48,7 +48,7 @@ static std::set<std::string> MultiKvCommands {kCmdNameDel,
              kCmdNameGeoRadius,   kCmdNameGeoRadiusByMember};
 */
 
-static std::set<std::string> ConsensusNotSupportCommands {
+static std::set<fstring> ConsensusNotSupportCommands {
              kCmdNameMsetnx,      kCmdNameScan,              kCmdNameKeys,
              kCmdNameRPopLPush,   kCmdNameZUnionstore,       kCmdNameZInterstore,
              kCmdNameSUnion,      kCmdNameSUnionstore,       kCmdNameSInter,
@@ -60,7 +60,7 @@ static std::set<std::string> ConsensusNotSupportCommands {
              kCmdNameSlaveof,     kCmdNameDbSlaveof,         kCmdNameMset,
              kCmdNameMget,        kCmdNameScanx};
 
-static std::set<std::string> ShardingModeNotSupportCommands {
+static std::set<fstring> ShardingModeNotSupportCommands {
              kCmdNameMsetnx,      kCmdNameScan,              kCmdNameKeys,
              kCmdNameScanx,       kCmdNameZUnionstore,       kCmdNameZInterstore,
              kCmdNameSUnion,      kCmdNameSUnionstore,       kCmdNameSInter,

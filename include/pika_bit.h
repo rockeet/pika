@@ -16,7 +16,7 @@
  */
 class BitGetCmd : public Cmd {
  public:
-  BitGetCmd(const std::string& name, int arity, uint16_t flag)
+  BitGetCmd(const fstring name, int arity, uint16_t flag)
         : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -35,7 +35,7 @@ class BitGetCmd : public Cmd {
 
 class BitSetCmd : public Cmd {
  public:
-  BitSetCmd(const std::string& name, int arity, uint16_t flag)
+  BitSetCmd(const fstring name, int arity, uint16_t flag)
         : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -56,7 +56,7 @@ class BitSetCmd : public Cmd {
 
 class BitCountCmd : public Cmd {
  public:
-  BitCountCmd(const std::string& name, int arity, uint16_t flag)
+  BitCountCmd(const fstring name, int arity, uint16_t flag)
         : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -79,7 +79,7 @@ class BitCountCmd : public Cmd {
 
 class BitPosCmd : public Cmd {
  public:
-  BitPosCmd(const std::string& name, int arity, uint16_t flag)
+  BitPosCmd(const fstring name, int arity, uint16_t flag)
         : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -106,7 +106,7 @@ class BitPosCmd : public Cmd {
 
 class BitOpCmd : public Cmd {
  public:
-  BitOpCmd(const std::string& name, int arity, uint16_t flag)
+  BitOpCmd(const fstring name, int arity, uint16_t flag)
         : Cmd(name, arity, flag) {}
   virtual void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}

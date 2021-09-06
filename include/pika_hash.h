@@ -16,7 +16,7 @@
  */
 class HDelCmd : public Cmd {
  public:
-  HDelCmd(const std::string& name, int arity, uint16_t flag)
+  HDelCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -31,7 +31,7 @@ class HDelCmd : public Cmd {
 
 class HGetCmd : public Cmd {
  public:
-  HGetCmd(const std::string& name, int arity, uint16_t flag)
+  HGetCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -45,7 +45,7 @@ class HGetCmd : public Cmd {
 
 class HGetallCmd : public Cmd {
  public:
-  HGetallCmd(const std::string& name, int arity, uint16_t flag)
+  HGetallCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -59,7 +59,7 @@ class HGetallCmd : public Cmd {
 
 class HSetCmd : public Cmd {
  public:
-  HSetCmd(const std::string& name, int arity, uint16_t flag)
+  HSetCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -73,7 +73,7 @@ class HSetCmd : public Cmd {
 
 class HExistsCmd : public Cmd {
  public:
-  HExistsCmd(const std::string& name, int arity, uint16_t flag)
+  HExistsCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -87,7 +87,7 @@ class HExistsCmd : public Cmd {
 
 class HIncrbyCmd : public Cmd {
  public:
-  HIncrbyCmd(const std::string& name, int arity, uint16_t flag)
+  HIncrbyCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -102,7 +102,7 @@ class HIncrbyCmd : public Cmd {
 
 class HIncrbyfloatCmd : public Cmd {
  public:
-  HIncrbyfloatCmd(const std::string& name, int arity, uint16_t flag)
+  HIncrbyfloatCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -116,7 +116,7 @@ class HIncrbyfloatCmd : public Cmd {
 
 class HKeysCmd : public Cmd {
  public:
-  HKeysCmd(const std::string& name, int arity, uint16_t flag)
+  HKeysCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -130,7 +130,7 @@ class HKeysCmd : public Cmd {
 
 class HLenCmd : public Cmd {
  public:
-  HLenCmd(const std::string& name, int arity, uint16_t flag)
+  HLenCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -144,7 +144,7 @@ class HLenCmd : public Cmd {
 
 class HMgetCmd : public Cmd {
  public:
-  HMgetCmd(const std::string& name, int arity, uint16_t flag)
+  HMgetCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -159,7 +159,7 @@ class HMgetCmd : public Cmd {
 
 class HMsetCmd : public Cmd {
  public:
-  HMsetCmd(const std::string& name, int arity, uint16_t flag)
+  HMsetCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -174,7 +174,7 @@ class HMsetCmd : public Cmd {
 
 class HSetnxCmd : public Cmd {
  public:
-  HSetnxCmd(const std::string& name, int arity, uint16_t flag)
+  HSetnxCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -188,7 +188,7 @@ class HSetnxCmd : public Cmd {
 
 class HStrlenCmd : public Cmd {
  public:
-  HStrlenCmd(const std::string& name, int arity, uint16_t flag)
+  HStrlenCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -202,7 +202,7 @@ class HStrlenCmd : public Cmd {
 
 class HValsCmd : public Cmd {
  public:
-  HValsCmd(const std::string& name, int arity, uint16_t flag)
+  HValsCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name,  arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -216,7 +216,7 @@ class HValsCmd : public Cmd {
 
 class HScanCmd : public Cmd {
  public:
-  HScanCmd(const std::string& name, int arity, uint16_t flag)
+  HScanCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -235,7 +235,7 @@ class HScanCmd : public Cmd {
 
 class HScanxCmd : public Cmd {
  public:
-  HScanxCmd(const std::string& name, int arity, uint16_t flag)
+  HScanxCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -254,7 +254,7 @@ class HScanxCmd : public Cmd {
 
 class PKHScanRangeCmd : public Cmd {
  public:
-  PKHScanRangeCmd(const std::string& name, int arity, uint16_t flag)
+  PKHScanRangeCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), pattern_("*"), limit_(10) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -276,7 +276,7 @@ class PKHScanRangeCmd : public Cmd {
 
 class PKHRScanRangeCmd : public Cmd {
  public:
-  PKHRScanRangeCmd(const std::string& name, int arity, uint16_t flag)
+  PKHRScanRangeCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), pattern_("*"), limit_(10) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;

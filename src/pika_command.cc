@@ -245,6 +245,15 @@ void DestoryCmdTable(CmdTable* cmd_table) {
   cmd_table->clear();
 }
 
+Cmd::Cmd(fstring name, int arity, uint16_t flag)
+    : stage_(kNone), arity_(arity), flag_(flag), do_duration_(0)
+{
+  TERARK_VERIFY_LT(name.size(), sizeof(name_));
+  memcpy(name_, name.p, name.n);
+  name_len_ = uint8_t(name.n);
+}
+Cmd::~Cmd() = default;
+
 void Cmd::Initial(const PikaCmdArgsType& argv,
                   const std::string& table_name) {
   argv_ = argv;

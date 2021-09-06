@@ -13,7 +13,7 @@
  */
 class PublishCmd : public Cmd {
  public:
-  PublishCmd(const std::string& name, int arity, uint16_t flag)
+  PublishCmd(const fstring name, int arity, uint16_t flag)
      : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -27,7 +27,7 @@ class PublishCmd : public Cmd {
 
 class SubscribeCmd : public Cmd {
  public:
-  SubscribeCmd(const std::string& name, int arity, uint16_t flag)
+  SubscribeCmd(const fstring name, int arity, uint16_t flag)
      : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -39,7 +39,7 @@ class SubscribeCmd : public Cmd {
 
 class UnSubscribeCmd : public Cmd {
  public:
-  UnSubscribeCmd(const std::string& name, int arity, uint16_t flag)
+  UnSubscribeCmd(const fstring name, int arity, uint16_t flag)
      : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -51,7 +51,7 @@ class UnSubscribeCmd : public Cmd {
 
 class PUnSubscribeCmd : public Cmd {
  public:
-  PUnSubscribeCmd(const std::string& name, int arity, uint16_t flag)
+  PUnSubscribeCmd(const fstring name, int arity, uint16_t flag)
      : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -63,7 +63,7 @@ class PUnSubscribeCmd : public Cmd {
 
 class PSubscribeCmd : public Cmd {
  public:
-  PSubscribeCmd(const std::string& name, int arity, uint16_t flag)
+  PSubscribeCmd(const fstring name, int arity, uint16_t flag)
      : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -75,7 +75,7 @@ class PSubscribeCmd : public Cmd {
 
 class PubSubCmd : public Cmd {
  public:
-  PubSubCmd(const std::string& name, int arity, uint16_t flag)
+  PubSubCmd(const fstring name, int arity, uint16_t flag)
      : Cmd(name,  arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}

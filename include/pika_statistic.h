@@ -48,7 +48,7 @@ struct Statistic {
   std::unordered_map<std::string, QpsStatistic> AllTableStat();
 
   void UpdateTableQps(
-      const std::string& table_name, const std::string& command, bool is_write);
+      const std::string& table_name, bool is_write);
   void ResetTableLastSecQuerynum();
 
   // statistic shows accumulated data of all tables

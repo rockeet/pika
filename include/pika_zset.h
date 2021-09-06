@@ -16,7 +16,7 @@
  */
 class ZAddCmd : public Cmd {
  public:
-  ZAddCmd(const std::string& name, int arity, uint16_t flag)
+  ZAddCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -31,7 +31,7 @@ class ZAddCmd : public Cmd {
 
 class ZCardCmd : public Cmd {
  public:
-  ZCardCmd(const std::string& name, int arity, uint16_t flag)
+  ZCardCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -45,7 +45,7 @@ class ZCardCmd : public Cmd {
 
 class ZScanCmd : public Cmd {
  public:
-  ZScanCmd(const std::string& name, int arity, uint16_t flag)
+  ZScanCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -64,7 +64,7 @@ class ZScanCmd : public Cmd {
 
 class ZIncrbyCmd : public Cmd {
  public:
-  ZIncrbyCmd(const std::string& name, int arity, uint16_t flag)
+  ZIncrbyCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -79,7 +79,7 @@ class ZIncrbyCmd : public Cmd {
 
 class ZsetRangeParentCmd : public Cmd {
  public:
-  ZsetRangeParentCmd(const std::string& name, int arity, uint16_t flag)
+  ZsetRangeParentCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), is_ws_(false) {}
  protected:
   std::string key_;
@@ -93,7 +93,7 @@ class ZsetRangeParentCmd : public Cmd {
 
 class ZRangeCmd : public ZsetRangeParentCmd {
  public:
-  ZRangeCmd(const std::string& name, int arity, uint16_t flag)
+  ZRangeCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRangeParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -106,7 +106,7 @@ class ZRangeCmd : public ZsetRangeParentCmd {
 
 class ZRevrangeCmd : public ZsetRangeParentCmd {
  public:
-  ZRevrangeCmd(const std::string& name, int arity, uint16_t flag)
+  ZRevrangeCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRangeParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -119,7 +119,7 @@ class ZRevrangeCmd : public ZsetRangeParentCmd {
 
 class ZsetRangebyscoreParentCmd : public Cmd {
  public:
-  ZsetRangebyscoreParentCmd(const std::string& name, int arity, uint16_t flag)
+  ZsetRangebyscoreParentCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_close_(true), right_close_(true), with_scores_(false), offset_(0), count_(-1) {}
  protected:
   std::string key_;
@@ -137,7 +137,7 @@ class ZsetRangebyscoreParentCmd : public Cmd {
 
 class ZRangebyscoreCmd : public ZsetRangebyscoreParentCmd {
  public:
-  ZRangebyscoreCmd(const std::string& name, int arity, uint16_t flag)
+  ZRangebyscoreCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRangebyscoreParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -150,7 +150,7 @@ class ZRangebyscoreCmd : public ZsetRangebyscoreParentCmd {
 
 class ZRevrangebyscoreCmd : public ZsetRangebyscoreParentCmd {
  public:
-  ZRevrangebyscoreCmd(const std::string& name, int arity, uint16_t flag)
+  ZRevrangebyscoreCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRangebyscoreParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -163,7 +163,7 @@ class ZRevrangebyscoreCmd : public ZsetRangebyscoreParentCmd {
 
 class ZCountCmd : public Cmd {
  public:
-  ZCountCmd(const std::string& name, int arity, uint16_t flag)
+  ZCountCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_close_(true), right_close_(true) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -183,7 +183,7 @@ class ZCountCmd : public Cmd {
 
 class ZRemCmd : public Cmd {
  public:
-  ZRemCmd(const std::string& name, int arity, uint16_t flag)
+  ZRemCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -198,7 +198,7 @@ class ZRemCmd : public Cmd {
 
 class ZsetUIstoreParentCmd : public Cmd {
  public:
-  ZsetUIstoreParentCmd(const std::string& name, int arity, uint16_t flag)
+  ZsetUIstoreParentCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), aggregate_(blackwidow::SUM) {}
  protected:
   std::string dest_key_;
@@ -214,7 +214,7 @@ class ZsetUIstoreParentCmd : public Cmd {
 
 class ZUnionstoreCmd : public ZsetUIstoreParentCmd {
  public:
-  ZUnionstoreCmd(const std::string& name, int arity, uint16_t flag)
+  ZUnionstoreCmd(const fstring name, int arity, uint16_t flag)
       : ZsetUIstoreParentCmd(name, arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -226,7 +226,7 @@ class ZUnionstoreCmd : public ZsetUIstoreParentCmd {
 
 class ZInterstoreCmd : public ZsetUIstoreParentCmd {
  public:
-  ZInterstoreCmd(const std::string& name, int arity, uint16_t flag)
+  ZInterstoreCmd(const fstring name, int arity, uint16_t flag)
       : ZsetUIstoreParentCmd(name, arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -238,7 +238,7 @@ class ZInterstoreCmd : public ZsetUIstoreParentCmd {
 
 class ZsetRankParentCmd : public Cmd {
  public:
-  ZsetRankParentCmd(const std::string& name, int arity, uint16_t flag)
+  ZsetRankParentCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
  protected:
   std::string key_, member_;
@@ -247,7 +247,7 @@ class ZsetRankParentCmd : public Cmd {
 
 class ZRankCmd : public ZsetRankParentCmd {
  public:
-  ZRankCmd(const std::string& name, int arity, uint16_t flag)
+  ZRankCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRankParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -260,7 +260,7 @@ class ZRankCmd : public ZsetRankParentCmd {
 
 class ZRevrankCmd : public ZsetRankParentCmd {
  public:
-  ZRevrankCmd(const std::string& name, int arity, uint16_t flag)
+  ZRevrankCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRankParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -273,7 +273,7 @@ class ZRevrankCmd : public ZsetRankParentCmd {
 
 class ZScoreCmd : public ZsetRankParentCmd {
  public:
-  ZScoreCmd(const std::string& name, int arity, uint16_t flag)
+  ZScoreCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRankParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -288,7 +288,7 @@ class ZScoreCmd : public ZsetRankParentCmd {
 
 class ZsetRangebylexParentCmd : public Cmd {
  public:
-  ZsetRangebylexParentCmd(const std::string& name, int arity, uint16_t flag)
+  ZsetRangebylexParentCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_close_(true), right_close_(true), offset_(0), count_(-1) {}
  protected:
   std::string key_, min_member_, max_member_;
@@ -304,7 +304,7 @@ class ZsetRangebylexParentCmd : public Cmd {
 
 class ZRangebylexCmd : public ZsetRangebylexParentCmd {
  public:
-  ZRangebylexCmd(const std::string& name, int arity, uint16_t flag)
+  ZRangebylexCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRangebylexParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -317,7 +317,7 @@ class ZRangebylexCmd : public ZsetRangebylexParentCmd {
 
 class ZRevrangebylexCmd : public ZsetRangebylexParentCmd {
  public:
-  ZRevrangebylexCmd(const std::string& name, int arity, uint16_t flag)
+  ZRevrangebylexCmd(const fstring name, int arity, uint16_t flag)
       : ZsetRangebylexParentCmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -330,7 +330,7 @@ class ZRevrangebylexCmd : public ZsetRangebylexParentCmd {
 
 class ZLexcountCmd : public Cmd {
  public:
-  ZLexcountCmd(const std::string& name, int arity, uint16_t flag)
+  ZLexcountCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_close_(true), right_close_(true) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -348,7 +348,7 @@ class ZLexcountCmd : public Cmd {
 
 class ZRemrangebyrankCmd : public Cmd {
  public:
-  ZRemrangebyrankCmd(const std::string& name, int arity, uint16_t flag)
+  ZRemrangebyrankCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -363,7 +363,7 @@ class ZRemrangebyrankCmd : public Cmd {
 
 class ZRemrangebyscoreCmd : public Cmd {
  public:
-  ZRemrangebyscoreCmd(const std::string& name, int arity, uint16_t flag)
+  ZRemrangebyscoreCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_close_(true), right_close_(true) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -382,7 +382,7 @@ class ZRemrangebyscoreCmd : public Cmd {
 
 class ZRemrangebylexCmd : public Cmd {
  public:
-  ZRemrangebylexCmd(const std::string& name, int arity, uint16_t flag)
+  ZRemrangebylexCmd(const fstring name, int arity, uint16_t flag)
       : Cmd(name, arity, flag), left_close_(true), right_close_(true) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
@@ -401,7 +401,7 @@ class ZRemrangebylexCmd : public Cmd {
 
 class ZPopmaxCmd : public Cmd {
  public:
-  ZPopmaxCmd(const std::string& name, int arity, uint16_t flag)
+  ZPopmaxCmd(const fstring name, int arity, uint16_t flag)
        : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { 
     std::vector<std::string> res;
@@ -420,7 +420,7 @@ class ZPopmaxCmd : public Cmd {
 
 class ZPopminCmd : public Cmd {
  public:
-  ZPopminCmd(const std::string& name, int arity, uint16_t flag)
+  ZPopminCmd(const fstring name, int arity, uint16_t flag)
        : Cmd(name, arity, flag) {}
   std::vector<std::string> current_key() const override { 
     std::vector<std::string> res;

@@ -120,8 +120,7 @@ std::unordered_map<std::string, QpsStatistic> Statistic::AllTableStat() {
   return res;
 }
 
-void Statistic::UpdateTableQps(
-    const std::string& table_name, const std::string& command, bool is_write) {
+void Statistic::UpdateTableQps(const std::string& table_name, bool is_write) {
   auto idx = DbIdxFromStr(table_name);
   ROCKSDB_VERIFY_LT(size_t(idx), table_stat.size());
   table_stat[idx].second.IncreaseQueryNum(is_write);

@@ -15,205 +15,207 @@
 #include "include/pika_partition.h"
 #include <terark/hash_strmap.hpp>
 
+using terark::fstring;
+
 class SyncMasterPartition;
 class SyncSlavePartition;
 
 //Constant for command name
 //Admin
-const std::string kCmdNameSlaveof = "slaveof";
-const std::string kCmdNameDbSlaveof = "dbslaveof";
-const std::string kCmdNameAuth = "auth";
-const std::string kCmdNameBgsave = "bgsave";
-const std::string kCmdNameCompact = "compact";
-const std::string kCmdNamePurgelogsto = "purgelogsto";
-const std::string kCmdNamePing = "ping";
-const std::string kCmdNameSelect = "select";
-const std::string kCmdNameFlushall = "flushall";
-const std::string kCmdNameFlushdb = "flushdb";
-const std::string kCmdNameClient = "client";
-const std::string kCmdNameShutdown = "shutdown";
-const std::string kCmdNameInfo = "info";
-const std::string kCmdNameConfig = "config";
-const std::string kCmdNameMonitor = "monitor";
-const std::string kCmdNameDbsize = "dbsize";
-const std::string kCmdNameTime = "time";
-const std::string kCmdNameDelbackup = "delbackup";
-const std::string kCmdNameEcho = "echo";
-const std::string kCmdNameScandb = "scandb";
-const std::string kCmdNameSlowlog = "slowlog";
-const std::string kCmdNamePadding = "padding";
+const fstring kCmdNameSlaveof = "slaveof";
+const fstring kCmdNameDbSlaveof = "dbslaveof";
+const fstring kCmdNameAuth = "auth";
+const fstring kCmdNameBgsave = "bgsave";
+const fstring kCmdNameCompact = "compact";
+const fstring kCmdNamePurgelogsto = "purgelogsto";
+const fstring kCmdNamePing = "ping";
+const fstring kCmdNameSelect = "select";
+const fstring kCmdNameFlushall = "flushall";
+const fstring kCmdNameFlushdb = "flushdb";
+const fstring kCmdNameClient = "client";
+const fstring kCmdNameShutdown = "shutdown";
+const fstring kCmdNameInfo = "info";
+const fstring kCmdNameConfig = "config";
+const fstring kCmdNameMonitor = "monitor";
+const fstring kCmdNameDbsize = "dbsize";
+const fstring kCmdNameTime = "time";
+const fstring kCmdNameDelbackup = "delbackup";
+const fstring kCmdNameEcho = "echo";
+const fstring kCmdNameScandb = "scandb";
+const fstring kCmdNameSlowlog = "slowlog";
+const fstring kCmdNamePadding = "padding";
 #ifdef TCMALLOC_EXTENSION
-const std::string kCmdNameTcmalloc = "tcmalloc";
+const fstring kCmdNameTcmalloc = "tcmalloc";
 #endif
-const std::string kCmdNamePKPatternMatchDel = "pkpatternmatchdel";
+const fstring kCmdNamePKPatternMatchDel = "pkpatternmatchdel";
 const std::string kCmdDummy = "dummy";
 
 //Kv
-const std::string kCmdNameSet = "set";
-const std::string kCmdNameGet = "get";
-const std::string kCmdNameDel = "del";
-const std::string kCmdNameIncr = "incr";
-const std::string kCmdNameIncrby = "incrby";
-const std::string kCmdNameIncrbyfloat = "incrbyfloat";
-const std::string kCmdNameDecr = "decr";
-const std::string kCmdNameDecrby = "decrby";
-const std::string kCmdNameGetset = "getset";
-const std::string kCmdNameAppend = "append";
-const std::string kCmdNameMget = "mget";
-const std::string kCmdNameKeys = "keys";
-const std::string kCmdNameSetnx = "setnx";
-const std::string kCmdNameSetex = "setex";
-const std::string kCmdNamePsetex = "psetex";
-const std::string kCmdNameDelvx = "delvx";
-const std::string kCmdNameMset = "mset";
-const std::string kCmdNameMsetnx = "msetnx";
-const std::string kCmdNameGetrange = "getrange";
-const std::string kCmdNameSetrange = "setrange";
-const std::string kCmdNameStrlen = "strlen";
-const std::string kCmdNameExists = "exists";
-const std::string kCmdNameExpire = "expire";
-const std::string kCmdNamePexpire = "pexpire";
-const std::string kCmdNameExpireat = "expireat";
-const std::string kCmdNamePexpireat = "pexpireat";
-const std::string kCmdNameTtl = "ttl";
-const std::string kCmdNamePttl = "pttl";
-const std::string kCmdNamePersist = "persist";
-const std::string kCmdNameType = "type";
-const std::string kCmdNameScan = "scan";
-const std::string kCmdNameScanx = "scanx";
-const std::string kCmdNamePKSetexAt = "pksetexat";
-const std::string kCmdNamePKScanRange = "pkscanrange";
-const std::string kCmdNamePKRScanRange = "pkrscanrange";
+const fstring kCmdNameSet = "set";
+const fstring kCmdNameGet = "get";
+const fstring kCmdNameDel = "del";
+const fstring kCmdNameIncr = "incr";
+const fstring kCmdNameIncrby = "incrby";
+const fstring kCmdNameIncrbyfloat = "incrbyfloat";
+const fstring kCmdNameDecr = "decr";
+const fstring kCmdNameDecrby = "decrby";
+const fstring kCmdNameGetset = "getset";
+const fstring kCmdNameAppend = "append";
+const fstring kCmdNameMget = "mget";
+const fstring kCmdNameKeys = "keys";
+const fstring kCmdNameSetnx = "setnx";
+const fstring kCmdNameSetex = "setex";
+const fstring kCmdNamePsetex = "psetex";
+const fstring kCmdNameDelvx = "delvx";
+const fstring kCmdNameMset = "mset";
+const fstring kCmdNameMsetnx = "msetnx";
+const fstring kCmdNameGetrange = "getrange";
+const fstring kCmdNameSetrange = "setrange";
+const fstring kCmdNameStrlen = "strlen";
+const fstring kCmdNameExists = "exists";
+const fstring kCmdNameExpire = "expire";
+const fstring kCmdNamePexpire = "pexpire";
+const fstring kCmdNameExpireat = "expireat";
+const fstring kCmdNamePexpireat = "pexpireat";
+const fstring kCmdNameTtl = "ttl";
+const fstring kCmdNamePttl = "pttl";
+const fstring kCmdNamePersist = "persist";
+const fstring kCmdNameType = "type";
+const fstring kCmdNameScan = "scan";
+const fstring kCmdNameScanx = "scanx";
+const fstring kCmdNamePKSetexAt = "pksetexat";
+const fstring kCmdNamePKScanRange = "pkscanrange";
+const fstring kCmdNamePKRScanRange = "pkrscanrange";
 
 //Hash
-const std::string kCmdNameHDel = "hdel";
-const std::string kCmdNameHSet = "hset";
-const std::string kCmdNameHGet = "hget";
-const std::string kCmdNameHGetall = "hgetall";
-const std::string kCmdNameHExists = "hexists";
-const std::string kCmdNameHIncrby = "hincrby";
-const std::string kCmdNameHIncrbyfloat = "hincrbyfloat";
-const std::string kCmdNameHKeys = "hkeys";
-const std::string kCmdNameHLen = "hlen";
-const std::string kCmdNameHMget = "hmget";
-const std::string kCmdNameHMset = "hmset";
-const std::string kCmdNameHSetnx = "hsetnx";
-const std::string kCmdNameHStrlen = "hstrlen";
-const std::string kCmdNameHVals = "hvals";
-const std::string kCmdNameHScan = "hscan";
-const std::string kCmdNameHScanx = "hscanx";
-const std::string kCmdNamePKHScanRange = "pkhscanrange";
-const std::string kCmdNamePKHRScanRange = "pkhrscanrange";
+const fstring kCmdNameHDel = "hdel";
+const fstring kCmdNameHSet = "hset";
+const fstring kCmdNameHGet = "hget";
+const fstring kCmdNameHGetall = "hgetall";
+const fstring kCmdNameHExists = "hexists";
+const fstring kCmdNameHIncrby = "hincrby";
+const fstring kCmdNameHIncrbyfloat = "hincrbyfloat";
+const fstring kCmdNameHKeys = "hkeys";
+const fstring kCmdNameHLen = "hlen";
+const fstring kCmdNameHMget = "hmget";
+const fstring kCmdNameHMset = "hmset";
+const fstring kCmdNameHSetnx = "hsetnx";
+const fstring kCmdNameHStrlen = "hstrlen";
+const fstring kCmdNameHVals = "hvals";
+const fstring kCmdNameHScan = "hscan";
+const fstring kCmdNameHScanx = "hscanx";
+const fstring kCmdNamePKHScanRange = "pkhscanrange";
+const fstring kCmdNamePKHRScanRange = "pkhrscanrange";
 
 //List
-const std::string kCmdNameLIndex = "lindex";
-const std::string kCmdNameLInsert = "linsert";
-const std::string kCmdNameLLen = "llen";
-const std::string kCmdNameLPop = "lpop";
-const std::string kCmdNameLPush = "lpush";
-const std::string kCmdNameLPushx = "lpushx";
-const std::string kCmdNameLRange = "lrange";
-const std::string kCmdNameLRem = "lrem";
-const std::string kCmdNameLSet = "lset";
-const std::string kCmdNameLTrim = "ltrim";
-const std::string kCmdNameRPop = "rpop";
-const std::string kCmdNameRPopLPush = "rpoplpush";
-const std::string kCmdNameRPush = "rpush";
-const std::string kCmdNameRPushx = "rpushx";
+const fstring kCmdNameLIndex = "lindex";
+const fstring kCmdNameLInsert = "linsert";
+const fstring kCmdNameLLen = "llen";
+const fstring kCmdNameLPop = "lpop";
+const fstring kCmdNameLPush = "lpush";
+const fstring kCmdNameLPushx = "lpushx";
+const fstring kCmdNameLRange = "lrange";
+const fstring kCmdNameLRem = "lrem";
+const fstring kCmdNameLSet = "lset";
+const fstring kCmdNameLTrim = "ltrim";
+const fstring kCmdNameRPop = "rpop";
+const fstring kCmdNameRPopLPush = "rpoplpush";
+const fstring kCmdNameRPush = "rpush";
+const fstring kCmdNameRPushx = "rpushx";
 
 //BitMap
-const std::string kCmdNameBitSet = "setbit";
-const std::string kCmdNameBitGet = "getbit";
-const std::string kCmdNameBitPos = "bitpos";
-const std::string kCmdNameBitOp = "bitop";
-const std::string kCmdNameBitCount = "bitcount";
+const fstring kCmdNameBitSet = "setbit";
+const fstring kCmdNameBitGet = "getbit";
+const fstring kCmdNameBitPos = "bitpos";
+const fstring kCmdNameBitOp = "bitop";
+const fstring kCmdNameBitCount = "bitcount";
 
 //Zset
-const std::string kCmdNameZAdd = "zadd";
-const std::string kCmdNameZCard = "zcard";
-const std::string kCmdNameZScan = "zscan";
-const std::string kCmdNameZIncrby = "zincrby";
-const std::string kCmdNameZRange = "zrange";
-const std::string kCmdNameZRangebyscore = "zrangebyscore";
-const std::string kCmdNameZCount = "zcount";
-const std::string kCmdNameZRem = "zrem";
-const std::string kCmdNameZUnionstore = "zunionstore";
-const std::string kCmdNameZInterstore = "zinterstore";
-const std::string kCmdNameZRank = "zrank";
-const std::string kCmdNameZRevrank = "zrevrank";
-const std::string kCmdNameZScore = "zscore";
-const std::string kCmdNameZRevrange = "zrevrange";
-const std::string kCmdNameZRevrangebyscore = "zrevrangebyscore";
-const std::string kCmdNameZRangebylex = "zrangebylex";
-const std::string kCmdNameZRevrangebylex = "zrevrangebylex";
-const std::string kCmdNameZLexcount = "zlexcount";
-const std::string kCmdNameZRemrangebyrank = "zremrangebyrank";
-const std::string kCmdNameZRemrangebylex = "zremrangebylex";
-const std::string kCmdNameZRemrangebyscore = "zremrangebyscore";
-const std::string kCmdNameZPopmax = "zpopmax";
-const std::string kCmdNameZPopmin = "zpopmin";
+const fstring kCmdNameZAdd = "zadd";
+const fstring kCmdNameZCard = "zcard";
+const fstring kCmdNameZScan = "zscan";
+const fstring kCmdNameZIncrby = "zincrby";
+const fstring kCmdNameZRange = "zrange";
+const fstring kCmdNameZRangebyscore = "zrangebyscore";
+const fstring kCmdNameZCount = "zcount";
+const fstring kCmdNameZRem = "zrem";
+const fstring kCmdNameZUnionstore = "zunionstore";
+const fstring kCmdNameZInterstore = "zinterstore";
+const fstring kCmdNameZRank = "zrank";
+const fstring kCmdNameZRevrank = "zrevrank";
+const fstring kCmdNameZScore = "zscore";
+const fstring kCmdNameZRevrange = "zrevrange";
+const fstring kCmdNameZRevrangebyscore = "zrevrangebyscore";
+const fstring kCmdNameZRangebylex = "zrangebylex";
+const fstring kCmdNameZRevrangebylex = "zrevrangebylex";
+const fstring kCmdNameZLexcount = "zlexcount";
+const fstring kCmdNameZRemrangebyrank = "zremrangebyrank";
+const fstring kCmdNameZRemrangebylex = "zremrangebylex";
+const fstring kCmdNameZRemrangebyscore = "zremrangebyscore";
+const fstring kCmdNameZPopmax = "zpopmax";
+const fstring kCmdNameZPopmin = "zpopmin";
 
 //Set
-const std::string kCmdNameSAdd = "sadd";
-const std::string kCmdNameSPop = "spop";
-const std::string kCmdNameSCard = "scard";
-const std::string kCmdNameSMembers = "smembers";
-const std::string kCmdNameSScan = "sscan";
-const std::string kCmdNameSRem = "srem";
-const std::string kCmdNameSUnion = "sunion";
-const std::string kCmdNameSUnionstore = "sunionstore";
-const std::string kCmdNameSInter = "sinter";
-const std::string kCmdNameSInterstore = "sinterstore";
-const std::string kCmdNameSIsmember = "sismember";
-const std::string kCmdNameSDiff = "sdiff";
-const std::string kCmdNameSDiffstore = "sdiffstore";
-const std::string kCmdNameSMove = "smove";
-const std::string kCmdNameSRandmember = "srandmember";
+const fstring kCmdNameSAdd = "sadd";
+const fstring kCmdNameSPop = "spop";
+const fstring kCmdNameSCard = "scard";
+const fstring kCmdNameSMembers = "smembers";
+const fstring kCmdNameSScan = "sscan";
+const fstring kCmdNameSRem = "srem";
+const fstring kCmdNameSUnion = "sunion";
+const fstring kCmdNameSUnionstore = "sunionstore";
+const fstring kCmdNameSInter = "sinter";
+const fstring kCmdNameSInterstore = "sinterstore";
+const fstring kCmdNameSIsmember = "sismember";
+const fstring kCmdNameSDiff = "sdiff";
+const fstring kCmdNameSDiffstore = "sdiffstore";
+const fstring kCmdNameSMove = "smove";
+const fstring kCmdNameSRandmember = "srandmember";
 
 //HyperLogLog
-const std::string kCmdNamePfAdd = "pfadd";
-const std::string kCmdNamePfCount = "pfcount";
-const std::string kCmdNamePfMerge = "pfmerge";
+const fstring kCmdNamePfAdd = "pfadd";
+const fstring kCmdNamePfCount = "pfcount";
+const fstring kCmdNamePfMerge = "pfmerge";
 
 //GEO
-const std::string kCmdNameGeoAdd = "geoadd";
-const std::string kCmdNameGeoPos = "geopos";
-const std::string kCmdNameGeoDist = "geodist";
-const std::string kCmdNameGeoHash = "geohash";
-const std::string kCmdNameGeoRadius = "georadius";
-const std::string kCmdNameGeoRadiusByMember = "georadiusbymember";
+const fstring kCmdNameGeoAdd = "geoadd";
+const fstring kCmdNameGeoPos = "geopos";
+const fstring kCmdNameGeoDist = "geodist";
+const fstring kCmdNameGeoHash = "geohash";
+const fstring kCmdNameGeoRadius = "georadius";
+const fstring kCmdNameGeoRadiusByMember = "georadiusbymember";
 
 //Pub/Sub
-const std::string kCmdNamePublish = "publish";
-const std::string kCmdNameSubscribe = "subscribe";
-const std::string kCmdNameUnSubscribe = "unsubscribe";
-const std::string kCmdNamePubSub = "pubsub";
-const std::string kCmdNamePSubscribe = "psubscribe";
-const std::string kCmdNamePUnSubscribe = "punsubscribe";
+const fstring kCmdNamePublish = "publish";
+const fstring kCmdNameSubscribe = "subscribe";
+const fstring kCmdNameUnSubscribe = "unsubscribe";
+const fstring kCmdNamePubSub = "pubsub";
+const fstring kCmdNamePSubscribe = "psubscribe";
+const fstring kCmdNamePUnSubscribe = "punsubscribe";
 
 //Codis Slots
-const std::string kCmdNameSlotsInfo = "slotsinfo";
-const std::string kCmdNameSlotsHashKey = "slotshashkey";
-const std::string kCmdNameSlotsMgrtTagSlotAsync = "slotsmgrttagslot-async";
-const std::string kCmdNameSlotsMgrtSlotAsync = "slotsmgrtslot-async";
-const std::string kCmdNameSlotsDel = "slotsdel";
-const std::string kCmdNameSlotsScan = "slotsscan";
-const std::string kCmdNameSlotsMgrtExecWrapper = "slotsmgrt-exec-wrapper";
-const std::string kCmdNameSlotsMgrtAsyncStatus = "slotsmgrt-async-status";
-const std::string kCmdNameSlotsMgrtAsyncCancel = "slotsmgrt-async-cancel";
-const std::string kCmdNameSlotsMgrtSlot = "slotsmgrtslot";
-const std::string kCmdNameSlotsMgrtTagSlot = "slotsmgrttagslot";
-const std::string kCmdNameSlotsMgrtOne = "slotsmgrtone";
-const std::string kCmdNameSlotsMgrtTagOne = "slotsmgrttagone";
+const fstring kCmdNameSlotsInfo = "slotsinfo";
+const fstring kCmdNameSlotsHashKey = "slotshashkey";
+const fstring kCmdNameSlotsMgrtTagSlotAsync = "slotsmgrttagslot-async";
+const fstring kCmdNameSlotsMgrtSlotAsync = "slotsmgrtslot-async";
+const fstring kCmdNameSlotsDel = "slotsdel";
+const fstring kCmdNameSlotsScan = "slotsscan";
+const fstring kCmdNameSlotsMgrtExecWrapper = "slotsmgrt-exec-wrapper";
+const fstring kCmdNameSlotsMgrtAsyncStatus = "slotsmgrt-async-status";
+const fstring kCmdNameSlotsMgrtAsyncCancel = "slotsmgrt-async-cancel";
+const fstring kCmdNameSlotsMgrtSlot = "slotsmgrtslot";
+const fstring kCmdNameSlotsMgrtTagSlot = "slotsmgrttagslot";
+const fstring kCmdNameSlotsMgrtOne = "slotsmgrtone";
+const fstring kCmdNameSlotsMgrtTagOne = "slotsmgrttagone";
 
 
 //Cluster
-const std::string kCmdNamePkClusterInfo = "pkclusterinfo";
-const std::string kCmdNamePkClusterAddSlots = "pkclusteraddslots";
-const std::string kCmdNamePkClusterDelSlots = "pkclusterdelslots";
-const std::string kCmdNamePkClusterSlotsSlaveof = "pkclusterslotsslaveof";
-const std::string kCmdNamePkClusterAddTable = "pkclusteraddtable";
-const std::string kCmdNamePkClusterDelTable = "pkclusterdeltable";
+const fstring kCmdNamePkClusterInfo = "pkclusterinfo";
+const fstring kCmdNamePkClusterAddSlots = "pkclusteraddslots";
+const fstring kCmdNamePkClusterDelSlots = "pkclusterdelslots";
+const fstring kCmdNamePkClusterSlotsSlaveof = "pkclusterslotsslaveof";
+const fstring kCmdNamePkClusterAddTable = "pkclusteraddtable";
+const fstring kCmdNamePkClusterDelTable = "pkclusterdeltable";
 
 const std::string kClusterPrefix = "pkcluster";
 typedef pink::RedisCmdArgsType PikaCmdArgsType;
@@ -416,6 +418,18 @@ public:
       message_ = content;
     }
   }
+  void SetRes(CmdRet _ret, const fstring content) {
+    ret_ = _ret;
+    if (!content.empty()) {
+      message_.assign(content.p, content.n);
+    }
+  }
+  void SetRes(CmdRet _ret, const char* content) {
+    ret_ = _ret;
+    if (content && *content) {
+      message_.assign(content);
+    }
+  }
 
 private:
   std::string message_;
@@ -424,7 +438,7 @@ private:
 
 class Cmd: public std::enable_shared_from_this<Cmd> {
  public:
-  enum CmdStage {
+  enum CmdStage : unsigned char {
     kNone,
     kBinlogStage,
     kExecuteStage
@@ -450,9 +464,8 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
     std::shared_ptr<SyncMasterPartition> sync_partition;
     HintKeys hint_keys;
   };
-  Cmd(std::string name, int arity, uint16_t flag)
-    : name_(std::move(name)), arity_(arity), flag_(flag), stage_(kNone), do_duration_(0) {}
-  virtual ~Cmd() {}
+  Cmd(fstring name, int arity, uint16_t flag);
+  virtual ~Cmd();
 
   virtual std::vector<std::string> current_key() const;
   virtual void Execute();
@@ -480,7 +493,7 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   bool HashtagIsConsistent(const std::string& lhs, const std::string& rhs) const;
   uint64_t GetDoDuration() const { return do_duration_; };
 
-  const std::string& name() const { return name_; }
+  const fstring name() const { return fstring(name_, name_len_); }
   CmdRes& res() { return res_; }
   const std::string& table_name() const { return table_name_; }
   BinlogOffset binlog_offset() const;
@@ -513,8 +526,10 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   bool CheckArg(int num) const;
   void LogCommand() const;
 
-  std::string name_;
-  int arity_;
+  char name_[31]; uint8_t name_len_;
+  //char padding_;
+  CmdStage stage_;
+  int16_t arity_;
   uint16_t flag_;
   uint16_t cmd_idx_ = UINT16_MAX;
 
@@ -524,14 +539,13 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
 
   std::weak_ptr<pink::PinkConn> conn_;
   std::weak_ptr<std::string> resp_;
-  CmdStage stage_;
   uint64_t do_duration_;
 
  private:
   virtual void DoInitial() = 0;
   virtual void Clear() {}
 
-  Cmd& operator=(const Cmd&);
+  Cmd& operator=(const Cmd&) = delete;
 };
 
 class CmdTable : public terark::hash_strmap<Cmd*> {
