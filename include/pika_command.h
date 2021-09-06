@@ -412,10 +412,10 @@ public:
   void AppendStringRaw(const std::string& value) {
     message_.append(value);
   }
-  void SetRes(CmdRet _ret, const std::string content = "") {
+  void SetRes(CmdRet _ret, std::string&& content = "") {
     ret_ = _ret;
     if (!content.empty()) {
-      message_ = content;
+      message_ = std::move(content);
     }
   }
   void SetRes(CmdRet _ret, const fstring content) {
