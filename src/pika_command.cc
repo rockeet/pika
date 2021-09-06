@@ -438,9 +438,7 @@ void Cmd::DoCommand(const std::shared_ptr<Partition>& partition, const HintKeys&
 }
 
 void Cmd::DoBinlog(const std::shared_ptr<SyncMasterPartition>& partition) {
-  if (res().ok()
-    && is_write()
-    && g_pika_conf->write_binlog()) {
+  if (res().ok() && is_write() && g_pika_conf->write_binlog()) {
     std::shared_ptr<pink::PinkConn> conn_ptr = GetConn();
     std::shared_ptr<std::string> resp_ptr = GetResp();
     // Consider that dummy cmd appended by system, both conn and resp are null.

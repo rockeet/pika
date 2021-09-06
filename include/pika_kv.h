@@ -19,7 +19,7 @@ class SetCmd : public Cmd {
  public:
   enum SetCondition {kNONE, kNX, kXX, kVX, kEXORPX};
   SetCmd(const fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), sec_(0), condition_(kNONE) {}
+      : Cmd(name, arity, flag), condition_(kNONE), success_(0), sec_(0) {}
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -30,9 +30,9 @@ class SetCmd : public Cmd {
   std::string key_;
   std::string value_;
   std::string target_;
+  SetCmd::SetCondition condition_;
   int32_t success_;
   int64_t sec_;
-  SetCmd::SetCondition condition_;
   void DoInitial() override;
   virtual void Clear() override {
     sec_ = 0;
