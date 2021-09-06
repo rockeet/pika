@@ -20,8 +20,7 @@
  */
 class SlaveofCmd : public Cmd {
  public:
-  SlaveofCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), is_noone_(false) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -29,8 +28,8 @@ class SlaveofCmd : public Cmd {
 
  private:
   std::string master_ip_;
-  int64_t master_port_;
-  bool is_noone_;
+  int64_t master_port_ = 0;
+  bool is_noone_ = false;
   void DoInitial() override;
   void Clear() override {
     is_noone_ = false;
@@ -49,9 +48,9 @@ class DbSlaveofCmd : public Cmd {
 
  private:
   std::string db_name_;
-  bool force_sync_;
-  bool is_noone_;
-  bool have_offset_;
+  bool force_sync_ = false;
+  bool is_noone_ = false;
+  bool have_offset_ = false;
   int64_t filenum_;
   int64_t offset_;
   void DoInitial() override;
@@ -112,15 +111,14 @@ class CompactCmd : public Cmd {
 
 class PurgelogstoCmd : public Cmd {
  public:
-  PurgelogstoCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), num_(0) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new PurgelogstoCmd(*this); }
 
  private:
-  uint32_t num_;
+  uint32_t num_ = 0;
   std::string table_;
   void DoInitial() override;
 };
@@ -220,8 +218,7 @@ class InfoCmd : public Cmd {
     kInfoDebug
   };
 
-  InfoCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), rescan_(false), off_(false) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -229,8 +226,8 @@ class InfoCmd : public Cmd {
 
  private:
   InfoSection info_section_;
-  bool rescan_; //whether to rescan the keyspace
-  bool off_;
+  bool rescan_ = false; //whether to rescan the keyspace
+  bool off_ = false;
   std::set<std::string> keyspace_scan_tables_;
 
   const static std::string kInfoSection;
@@ -356,15 +353,14 @@ class EchoCmd : public Cmd {
 
 class ScandbCmd : public Cmd {
  public:
-  ScandbCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), type_(blackwidow::kAll) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new ScandbCmd(*this); }
 
  private:
-  blackwidow::DataType type_;
+  blackwidow::DataType type_ = blackwidow::kAll;
   void DoInitial() override;
   void Clear() override {
     type_ = blackwidow::kAll;
@@ -374,15 +370,14 @@ class ScandbCmd : public Cmd {
 class SlowlogCmd : public Cmd {
  public:
   enum SlowlogCondition{kGET, kLEN, kRESET};
-  SlowlogCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), condition_(kGET) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new SlowlogCmd(*this); }
  private:
   int64_t number_;
-  SlowlogCmd::SlowlogCondition condition_;
+  SlowlogCmd::SlowlogCondition condition_ = kGET;
   void DoInitial() override;
   void Clear() override {
     number_ = 10;

@@ -16,8 +16,7 @@
  */
 class LIndexCmd : public Cmd {
  public:
-  LIndexCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), index_(0) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -25,7 +24,7 @@ class LIndexCmd : public Cmd {
   Cmd* Clone() override { return new LIndexCmd(*this); }
  private:
   std::string key_;
-  int64_t index_;
+  int64_t index_ = 0;
   void DoInitial() override;
   void Clear() override {
     index_ = 0;
@@ -34,8 +33,7 @@ class LIndexCmd : public Cmd {
 
 class LInsertCmd : public Cmd {
  public:
-  LInsertCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), dir_(blackwidow::After) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -43,7 +41,7 @@ class LInsertCmd : public Cmd {
   Cmd* Clone() override { return new LInsertCmd(*this); }
  private:
   std::string key_;
-  blackwidow::BeforeOrAfter dir_;
+  blackwidow::BeforeOrAfter dir_ = blackwidow::After;
   std::string pivot_;
   std::string value_;
   void DoInitial() override;
@@ -108,8 +106,7 @@ class LPushxCmd : public Cmd {
 
 class LRangeCmd : public Cmd {
  public:
-  LRangeCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), left_(0), right_(0) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -117,15 +114,14 @@ class LRangeCmd : public Cmd {
   Cmd* Clone() override { return new LRangeCmd(*this); }
  private:
   std::string key_;
-  int64_t left_;
-  int64_t right_;
+  int64_t left_ = 0;
+  int64_t right_ = 0;
   void DoInitial() override;
 };
 
 class LRemCmd : public Cmd {
  public:
-  LRemCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), count_(0) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -133,15 +129,14 @@ class LRemCmd : public Cmd {
   Cmd* Clone() override { return new LRemCmd(*this); }
  private:
   std::string key_;
-  int64_t count_;
+  int64_t count_ = 0;
   std::string value_;
   void DoInitial() override;
 };
 
 class LSetCmd : public Cmd {
  public:
-  LSetCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), index_(0) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -149,15 +144,14 @@ class LSetCmd : public Cmd {
   Cmd* Clone() override { return new LSetCmd(*this); }
  private:
   std::string key_;
-  int64_t index_;
+  int64_t index_ = 0;
   std::string value_;
   void DoInitial() override;
 };
 
 class LTrimCmd : public Cmd {
  public:
-  LTrimCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), start_(0), stop_(0) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -165,8 +159,8 @@ class LTrimCmd : public Cmd {
   Cmd* Clone() override { return new LTrimCmd(*this); }
  private:
   std::string key_;
-  int64_t start_;
-  int64_t stop_;
+  int64_t start_ = 0;
+  int64_t stop_ = 0;
   void DoInitial() override;
 };
 

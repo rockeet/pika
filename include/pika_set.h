@@ -14,8 +14,7 @@
  */
 class SAddCmd : public Cmd {
  public:
-  SAddCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -29,8 +28,7 @@ class SAddCmd : public Cmd {
 
 class SPopCmd : public Cmd {
  public:
-  SPopCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -43,8 +41,7 @@ class SPopCmd : public Cmd {
 
 class SCardCmd : public Cmd {
  public:
-  SCardCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -57,8 +54,7 @@ class SCardCmd : public Cmd {
 
 class SMembersCmd : public Cmd {
  public:
-  SMembersCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -71,16 +67,15 @@ class SMembersCmd : public Cmd {
 
 class SScanCmd : public Cmd {
  public:
-  SScanCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new SScanCmd(*this); }
  private:
-  std::string key_, pattern_;
-  int64_t cursor_, count_;
+  std::string key_, pattern_ = "*";
+  int64_t cursor_, count_ = 10;
   void DoInitial() override;
   void Clear() override {
     pattern_ = "*";
@@ -90,8 +85,7 @@ class SScanCmd : public Cmd {
 
 class SRemCmd : public Cmd {
  public:
-  SRemCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -105,8 +99,7 @@ class SRemCmd : public Cmd {
 
 class SUnionCmd : public Cmd {
  public:
-  SUnionCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -118,8 +111,7 @@ class SUnionCmd : public Cmd {
 
 class SUnionstoreCmd : public Cmd {
  public:
-  SUnionstoreCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -132,8 +124,7 @@ class SUnionstoreCmd : public Cmd {
 
 class SInterCmd : public Cmd {
  public:
-  SInterCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -145,8 +136,7 @@ class SInterCmd : public Cmd {
 
 class SInterstoreCmd : public Cmd {
  public:
-  SInterstoreCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -159,8 +149,7 @@ class SInterstoreCmd : public Cmd {
 
 class SIsmemberCmd : public Cmd {
  public:
-  SIsmemberCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -173,8 +162,7 @@ class SIsmemberCmd : public Cmd {
 
 class SDiffCmd : public Cmd {
  public:
-  SDiffCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -186,8 +174,7 @@ class SDiffCmd : public Cmd {
 
 class SDiffstoreCmd : public Cmd {
  public:
-  SDiffstoreCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -200,8 +187,7 @@ class SDiffstoreCmd : public Cmd {
 
 class SMoveCmd : public Cmd {
  public:
-  SMoveCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -213,8 +199,7 @@ class SMoveCmd : public Cmd {
 
 class SRandmemberCmd : public Cmd {
  public:
-  SRandmemberCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), count_(1) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -222,8 +207,8 @@ class SRandmemberCmd : public Cmd {
   Cmd* Clone() override { return new SRandmemberCmd(*this); }
  private:
   std::string key_;
-  int64_t count_;
-  bool reply_arr;
+  int64_t count_ = 1;
+  bool reply_arr = false;
   void DoInitial() override;
   void Clear() override {
     count_ = 1;

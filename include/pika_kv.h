@@ -193,15 +193,14 @@ class MgetCmd : public Cmd {
 
 class KeysCmd : public Cmd {
  public:
-  KeysCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), type_(blackwidow::DataType::kAll) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new KeysCmd(*this); }
  private:
   std::string pattern_;
-  blackwidow::DataType type_;
+  blackwidow::DataType type_ = blackwidow::DataType::kAll;
   void DoInitial() override;
   void Clear() override {
     type_ = blackwidow::DataType::kAll;
@@ -363,8 +362,7 @@ class StrlenCmd : public Cmd {
 
 class ExistsCmd : public Cmd {
  public:
-  ExistsCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), split_res_(0) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   std::vector<std::string> current_key() const override { return keys_; }
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override;
@@ -372,7 +370,7 @@ class ExistsCmd : public Cmd {
   Cmd* Clone() override { return new ExistsCmd(*this); }
  private:
   std::vector<std::string> keys_;
-  int64_t split_res_;
+  int64_t split_res_ = 0;
   void DoInitial() override;
 };
 
@@ -504,16 +502,15 @@ class TypeCmd : public Cmd {
 
 class ScanCmd : public Cmd {
  public:
-  ScanCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new ScanCmd(*this); }
  private:
   int64_t cursor_;
-  std::string pattern_;
-  int64_t count_;
+  std::string pattern_ = "*";
+  int64_t count_ = 10;
   void DoInitial() override;
   void Clear() override {
     pattern_ = "*";
@@ -523,8 +520,7 @@ class ScanCmd : public Cmd {
 
 class ScanxCmd : public Cmd {
  public:
-  ScanxCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -532,8 +528,8 @@ class ScanxCmd : public Cmd {
  private:
   blackwidow::DataType type_;
   std::string start_key_;
-  std::string pattern_;
-  int64_t count_;
+  std::string pattern_ = "*";
+  int64_t count_ = 10;
   void DoInitial() override;
   void Clear() override {
     pattern_ = "*";
@@ -543,8 +539,7 @@ class ScanxCmd : public Cmd {
 
 class PKSetexAtCmd : public Cmd {
 public:
-  PKSetexAtCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), time_stamp_(0) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -553,7 +548,7 @@ public:
 private:
   std::string key_;
   std::string value_;
-  int64_t time_stamp_;
+  int64_t time_stamp_ = 0;
   void DoInitial() override;
   void Clear() override {
     time_stamp_ = 0;
@@ -562,8 +557,7 @@ private:
 
 class PKScanRangeCmd : public Cmd {
  public:
-  PKScanRangeCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), pattern_("*"), limit_(10), string_with_value(false) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override {
     std::vector<std::string> res;
     res.push_back(key_start_);
@@ -577,9 +571,9 @@ class PKScanRangeCmd : public Cmd {
   blackwidow::DataType type_;
   std::string key_start_;
   std::string key_end_;
-  std::string pattern_;
-  int64_t limit_;
-  bool string_with_value;
+  std::string pattern_ = "*";
+  int64_t limit_ = 10;
+  bool string_with_value = false;
   void DoInitial() override;
   void Clear() override {
     pattern_ = "*";
@@ -590,8 +584,7 @@ class PKScanRangeCmd : public Cmd {
 
 class PKRScanRangeCmd : public Cmd {
  public:
-  PKRScanRangeCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), pattern_("*"), limit_(10), string_with_value(false) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override {
     std::vector<std::string> res;
     res.push_back(key_start_);
@@ -605,9 +598,9 @@ class PKRScanRangeCmd : public Cmd {
   blackwidow::DataType type_;
   std::string key_start_;
   std::string key_end_;
-  std::string pattern_;
-  int64_t limit_;
-  bool string_with_value;
+  std::string pattern_ = "*";
+  int64_t limit_ = 10;
+  bool string_with_value = false;
   void DoInitial() override;
   void Clear() override {
     pattern_ = "*";

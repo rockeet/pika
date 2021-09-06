@@ -13,8 +13,7 @@
  */
 class PublishCmd : public Cmd {
  public:
-  PublishCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -27,8 +26,7 @@ class PublishCmd : public Cmd {
 
 class SubscribeCmd : public Cmd {
  public:
-  SubscribeCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -39,8 +37,7 @@ class SubscribeCmd : public Cmd {
 
 class UnSubscribeCmd : public Cmd {
  public:
-  UnSubscribeCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -51,8 +48,7 @@ class UnSubscribeCmd : public Cmd {
 
 class PUnSubscribeCmd : public Cmd {
  public:
-  PUnSubscribeCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -63,8 +59,7 @@ class PUnSubscribeCmd : public Cmd {
 
 class PSubscribeCmd : public Cmd {
  public:
-  PSubscribeCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -75,8 +70,7 @@ class PSubscribeCmd : public Cmd {
 
 class PubSubCmd : public Cmd {
  public:
-  PubSubCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name,  arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}

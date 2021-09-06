@@ -43,8 +43,7 @@ class SlotsMgrtSlotAsyncCmd : public Cmd {
 
 class SlotsMgrtTagSlotAsyncCmd : public Cmd {
  public:
-  SlotsMgrtTagSlotAsyncCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag), dest_port_(0), slot_num_(-1) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -52,8 +51,8 @@ class SlotsMgrtTagSlotAsyncCmd : public Cmd {
  private:
   void DoInitial() override;
   std::string dest_ip_;
-  int64_t dest_port_;
-  int64_t slot_num_;
+  int64_t dest_port_ = 0;
+  int64_t slot_num_ = -1;
   void Clear() override {
     dest_ip_.clear();
     dest_port_ = 0;
@@ -63,8 +62,7 @@ class SlotsMgrtTagSlotAsyncCmd : public Cmd {
 
 class SlotsScanCmd : public Cmd {
  public:
-  SlotsScanCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag), pattern_("*"), count_(10) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -72,8 +70,8 @@ class SlotsScanCmd : public Cmd {
  private:
   int64_t cursor_;
   uint32_t slotnum_;
-  std::string pattern_;
-  int64_t count_;
+  std::string pattern_ = "*";
+  int64_t count_ = 10;
   void DoInitial() override;
   void Clear() override {
     pattern_ = "*";
