@@ -551,14 +551,18 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   Cmd& operator=(const Cmd&) = delete;
 };
 
-class CmdTable : public terark::hash_strmap<Cmd*> {
-  typedef terark::hash_strmap<Cmd*> super;
-  using super::erase;
-  using super::find;
-  using super::insert;
-  using super::operator[];
+using CmdTableBase = terark::hash_strmap<Cmd*
+        , terark::fstring_func::IF_SP_ALIGN(hash_align, hash)
+        , terark::fstring_func::IF_SP_ALIGN(equal_align, equal)
+        , terark::ValueOut, terark::FastCopy, uint8_t, size_t
+        >;
+class CmdTable : public CmdTableBase {
+  using CmdTableBase::erase;
+  using CmdTableBase::find;
+  using CmdTableBase::insert;
+  using CmdTableBase::operator[];
 public:
-  using super::super;
+  using CmdTableBase::CmdTableBase;
 };
 
 // Method for Cmd Table
