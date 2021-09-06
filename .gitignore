@@ -54,4 +54,4 @@ src/*.d
 src/build_version.cc
 build
 cmake
-build-cmake-debug
+cmake-build-debug
