@@ -501,11 +501,13 @@ void PkClusterSlotsSlaveofCmd::DoInitial() {
     is_noone_ = true;
   } else {
     ip_ = argv_[2];
-    if (!slash::string2l(argv_[3].data(), argv_[3].size(), &port_)
-      || port_ <= 0) {
+    long tmp_port = 0;
+    if (!slash::string2l(argv_[3].data(), argv_[3].size(), &tmp_port)
+      || tmp_port <= 0) {
       res_.SetRes(CmdRes::kInvalidInt);
       return;
     }
+    port_ = int32_t(tmp_port);
 
     if ((ip_ == "127.0.0.1" || ip_ == g_pika_server->host())
       && port_ == g_pika_server->port()) {

@@ -41,8 +41,7 @@ class SlaveofCmd : public Cmd {
 
 class DbSlaveofCmd : public Cmd {
  public:
-  DbSlaveofCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -66,8 +65,7 @@ class DbSlaveofCmd : public Cmd {
 
 class AuthCmd : public Cmd {
  public:
-  AuthCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -80,8 +78,7 @@ class AuthCmd : public Cmd {
 
 class BgsaveCmd : public Cmd {
  public:
-  BgsaveCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -97,8 +94,7 @@ class BgsaveCmd : public Cmd {
 
 class CompactCmd : public Cmd {
  public:
-  CompactCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -131,8 +127,7 @@ class PurgelogstoCmd : public Cmd {
 
 class PingCmd : public Cmd {
  public:
-  PingCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -144,8 +139,7 @@ class PingCmd : public Cmd {
 
 class SelectCmd : public Cmd {
  public:
-  SelectCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -161,8 +155,7 @@ class SelectCmd : public Cmd {
 
 class FlushallCmd : public Cmd {
  public:
-  FlushallCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -180,8 +173,7 @@ class FlushallCmd : public Cmd {
 
 class FlushdbCmd : public Cmd {
  public:
-  FlushdbCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -197,8 +189,7 @@ class FlushdbCmd : public Cmd {
 
 class ClientCmd : public Cmd {
  public:
-  ClientCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   const static std::string CLIENT_LIST_S;
   const static std::string CLIENT_KILL_S;
@@ -275,8 +266,7 @@ class InfoCmd : public Cmd {
 
 class ShutdownCmd : public Cmd {
  public:
-  ShutdownCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -288,8 +278,7 @@ class ShutdownCmd : public Cmd {
 
 class ConfigCmd : public Cmd {
  public:
-  ConfigCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -306,8 +295,7 @@ class ConfigCmd : public Cmd {
 
 class MonitorCmd : public Cmd {
  public:
-  MonitorCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -319,8 +307,7 @@ class MonitorCmd : public Cmd {
 
 class DbsizeCmd : public Cmd {
  public:
-  DbsizeCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -332,8 +319,7 @@ class DbsizeCmd : public Cmd {
 
 class TimeCmd : public Cmd {
  public:
-  TimeCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -345,8 +331,7 @@ class TimeCmd : public Cmd {
 
 class DelbackupCmd : public Cmd {
  public:
-  DelbackupCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -358,8 +343,7 @@ class DelbackupCmd : public Cmd {
 
 class EchoCmd : public Cmd {
  public:
-  EchoCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -408,8 +392,7 @@ class SlowlogCmd : public Cmd {
 
 class PaddingCmd : public Cmd {
  public:
-  PaddingCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -428,8 +411,7 @@ class PaddingCmd : public Cmd {
 #ifdef TCMALLOC_EXTENSION
 class TcmallocCmd : public Cmd {
  public:
-  TcmallocCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -444,8 +426,7 @@ class TcmallocCmd : public Cmd {
 
 class PKPatternMatchDelCmd : public Cmd {
  public: 
-  PKPatternMatchDelCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -460,8 +441,7 @@ class PKPatternMatchDelCmd : public Cmd {
 class DummyCmd : public Cmd {
  public:
   DummyCmd() : Cmd("", 0, 0) {}
-  DummyCmd(fstring name, int arity, uint16_t flag)
-     : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}

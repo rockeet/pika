@@ -50,8 +50,7 @@ struct GeoRange {
 
 class GeoAddCmd : public Cmd {
  public:
-  GeoAddCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -65,8 +64,7 @@ class GeoAddCmd : public Cmd {
 
 class GeoPosCmd : public Cmd {
  public:
-  GeoPosCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -80,8 +78,7 @@ class GeoPosCmd : public Cmd {
 
 class GeoDistCmd : public Cmd {
  public:
-  GeoDistCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -94,8 +91,7 @@ class GeoDistCmd : public Cmd {
 
 class GeoHashCmd : public Cmd {
  public:
-  GeoHashCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -109,8 +105,7 @@ class GeoHashCmd : public Cmd {
 
 class GeoRadiusCmd : public Cmd {
  public:
-  GeoRadiusCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -134,8 +129,7 @@ class GeoRadiusCmd : public Cmd {
 
 class GeoRadiusByMemberCmd : public Cmd {
  public:
-  GeoRadiusByMemberCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}

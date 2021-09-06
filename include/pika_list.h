@@ -51,8 +51,7 @@ class LInsertCmd : public Cmd {
 
 class LLenCmd : public Cmd {
  public:
-  LLenCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -65,8 +64,7 @@ class LLenCmd : public Cmd {
 
 class LPopCmd : public Cmd {
  public:
-  LPopCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -79,8 +77,7 @@ class LPopCmd : public Cmd {
 
 class LPushCmd : public Cmd {
  public:
-  LPushCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -97,8 +94,7 @@ class LPushCmd : public Cmd {
 
 class LPushxCmd : public Cmd {
  public:
-  LPushxCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -176,8 +172,7 @@ class LTrimCmd : public Cmd {
 
 class RPopCmd : public Cmd {
  public:
-  RPopCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -190,8 +185,7 @@ class RPopCmd : public Cmd {
 
 class RPopLPushCmd : public Cmd {
  public:
-  RPopLPushCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override{
     std::vector<std::string> res;
     res.push_back(source_);
@@ -209,8 +203,7 @@ class RPopLPushCmd : public Cmd {
 
 class RPushCmd : public Cmd {
  public:
-  RPushCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
@@ -227,8 +220,7 @@ class RPushCmd : public Cmd {
 
 class RPushxCmd : public Cmd {
  public:
-  RPushxCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   std::vector<std::string> current_key() const override { return {key_}; }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}

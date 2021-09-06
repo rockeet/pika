@@ -24,17 +24,15 @@ class PkClusterInfoCmd : public Cmd {
     kAll,
     kRange
   };
-  PkClusterInfoCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag),
-      info_section_(kInfoErr), info_range_(kAll) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new PkClusterInfoCmd(*this); }
 
  private:
-  InfoSection info_section_;
-  InfoRange info_range_;
+  InfoSection info_section_ = kInfoErr;
+  InfoRange info_range_ = kAll;
 
   std::string table_name_;
   std::set<uint32_t> slots_;
@@ -60,8 +58,7 @@ class PkClusterInfoCmd : public Cmd {
 
 class SlotParentCmd : public Cmd {
  public:
-  SlotParentCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag)  {}
+  using Cmd::Cmd;
 
  protected:
   std::set<uint32_t> slots_;
@@ -76,8 +73,7 @@ class SlotParentCmd : public Cmd {
 
 class PkClusterAddSlotsCmd : public SlotParentCmd {
  public:
-  PkClusterAddSlotsCmd(fstring name, int arity, uint16_t flag)
-      : SlotParentCmd(name, arity, flag) {}
+  using SlotParentCmd::SlotParentCmd;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new PkClusterAddSlotsCmd(*this); }
@@ -89,8 +85,7 @@ class PkClusterAddSlotsCmd : public SlotParentCmd {
 
 class PkClusterDelSlotsCmd : public SlotParentCmd {
  public:
-  PkClusterDelSlotsCmd(fstring name, int arity, uint16_t flag)
-      : SlotParentCmd(name, arity, flag) {}
+  using SlotParentCmd::SlotParentCmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -102,18 +97,17 @@ class PkClusterDelSlotsCmd : public SlotParentCmd {
 
 class PkClusterSlotsSlaveofCmd : public Cmd {
  public:
-  PkClusterSlotsSlaveofCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new PkClusterSlotsSlaveofCmd(*this); }
  private:
   std::string ip_;
-  int64_t port_;
+  int32_t port_ = 0;
+  bool force_sync_ = false;
+  bool is_noone_ = false;
   std::set<uint32_t> slots_;
-  bool force_sync_;
-  bool is_noone_;
   void DoInitial() override;
   void Clear() override {
     ip_.clear();
@@ -128,14 +122,13 @@ class PkClusterSlotsSlaveofCmd : public Cmd {
 
 class PkClusterAddTableCmd : public Cmd {
  public:
-  PkClusterAddTableCmd(fstring name, int arity, uint16_t flag)
-      : Cmd(name, arity, flag), slot_num_(0) {}
+  using Cmd::Cmd;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new PkClusterAddTableCmd(*this); }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
  private:
-  uint64_t  slot_num_;
+  uint64_t slot_num_ = 0;
   void DoInitial() override;
   Status AddTableSanityCheck();
   void Clear() override {
@@ -146,8 +139,7 @@ class PkClusterAddTableCmd : public Cmd {
 
 class PkClusterDelTableCmd : public PkClusterDelSlotsCmd {
  public:
-  PkClusterDelTableCmd(fstring name, int arity, uint16_t flag)
-      : PkClusterDelSlotsCmd(name, arity, flag) {}
+  using PkClusterDelSlotsCmd::PkClusterDelSlotsCmd;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
   Cmd* Clone() override { return new PkClusterDelTableCmd(*this); }

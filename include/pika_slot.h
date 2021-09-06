@@ -10,8 +10,7 @@
 
 class SlotsInfoCmd : public Cmd {
  public:
-  SlotsInfoCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -22,8 +21,7 @@ class SlotsInfoCmd : public Cmd {
 
 class SlotsHashKeyCmd : public Cmd {
  public:
-  SlotsHashKeyCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -34,8 +32,7 @@ class SlotsHashKeyCmd : public Cmd {
 
 class SlotsMgrtSlotAsyncCmd : public Cmd {
  public:
-  SlotsMgrtSlotAsyncCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -86,8 +83,7 @@ class SlotsScanCmd : public Cmd {
 
 class SlotsDelCmd : public Cmd {
  public:
-  SlotsDelCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -102,8 +98,7 @@ class SlotsDelCmd : public Cmd {
 
 class SlotsMgrtExecWrapperCmd : public Cmd {
  public:
-  SlotsMgrtExecWrapperCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -118,8 +113,7 @@ class SlotsMgrtExecWrapperCmd : public Cmd {
 
 class SlotsMgrtAsyncStatusCmd : public Cmd {
  public:
-  SlotsMgrtAsyncStatusCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -130,8 +124,7 @@ class SlotsMgrtAsyncStatusCmd : public Cmd {
 
 class SlotsMgrtAsyncCancelCmd : public Cmd {
  public:
-  SlotsMgrtAsyncCancelCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -142,8 +135,7 @@ class SlotsMgrtAsyncCancelCmd : public Cmd {
 
 class SlotsMgrtSlotCmd : public Cmd {
  public:
-  SlotsMgrtSlotCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -154,8 +146,7 @@ class SlotsMgrtSlotCmd : public Cmd {
 
 class SlotsMgrtTagSlotCmd : public Cmd {
  public:
-  SlotsMgrtTagSlotCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -166,8 +157,7 @@ class SlotsMgrtTagSlotCmd : public Cmd {
 
 class SlotsMgrtOneCmd : public Cmd {
  public:
-  SlotsMgrtOneCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -178,8 +168,7 @@ class SlotsMgrtOneCmd : public Cmd {
 
 class SlotsMgrtTagOneCmd : public Cmd {
  public:
-  SlotsMgrtTagOneCmd(fstring name, int arity, uint16_t flag)
-    : Cmd(name, arity, flag) {}
+  using Cmd::Cmd;
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
