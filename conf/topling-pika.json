@@ -8,6 +8,10 @@
   "setenv": {
     "DictZipBlobStore_zipThreads_nouse": 8
   },
+  "permissions": {
+    "web_compact": true,
+    "//end": "end"
+  },
   "AnyPlugin": {
     "sys_info": "SysInfoShower",
     "pika_conf": "PikaConfShowPlugin",
