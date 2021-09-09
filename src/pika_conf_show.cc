@@ -8,6 +8,7 @@ using namespace ROCKSDB_NAMESPACE;
 
 class PikaConfShowPlugin : public AnyPlugin {
 public:
+  const char* Name() const override { return "PikaConfShowPlugin"; }
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     json js;
