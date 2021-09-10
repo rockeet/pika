@@ -14,11 +14,11 @@ class PikaCmdTableManager {
  public:
   PikaCmdTableManager();
   virtual ~PikaCmdTableManager();
-  std::shared_ptr<Cmd> GetCmd(const std::string& opt);
+  std::shared_ptr<Cmd> GetCmd(const fstring& opt);
   uint32_t DistributeKey(const std::string& key, uint32_t partition_num);
   const CmdTable* cmds() const { return cmds_; }
  private:
-  std::shared_ptr<Cmd> NewCommand(const std::string& opt);
+  std::shared_ptr<Cmd> NewCommand(const fstring& opt);
 
   void InsertCurrentThreadDistributionMap();
   bool CheckCurrentThreadDistributionMapExist(const pid_t& tid);

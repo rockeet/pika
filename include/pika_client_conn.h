@@ -75,7 +75,7 @@ class PikaClientConn: public pink::RedisConn {
   WriteCompleteCallback write_completed_cb_;
   bool is_pubsub_;
 
-  std::shared_ptr<Cmd> DoCmd(const PikaCmdArgsType& argv, const std::string& opt,
+  std::shared_ptr<Cmd> DoCmd(const PikaCmdArgsType& argv, const fstring opt,
       const std::shared_ptr<std::string>& resp_ptr);
 
   void ProcessSlowlog(const PikaCmdArgsType& argv, uint64_t start_us, uint64_t do_duration);

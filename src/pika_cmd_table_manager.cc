@@ -32,11 +32,11 @@ PikaCmdTableManager::~PikaCmdTableManager() {
   delete cmds_;
 }
 
-std::shared_ptr<Cmd> PikaCmdTableManager::GetCmd(const std::string& opt) {
+std::shared_ptr<Cmd> PikaCmdTableManager::GetCmd(const fstring& opt) {
   return NewCommand(opt);
 }
 
-std::shared_ptr<Cmd> PikaCmdTableManager::NewCommand(const std::string& opt) {
+std::shared_ptr<Cmd> PikaCmdTableManager::NewCommand(const fstring& opt) {
   Cmd* cmd = GetCmdFromTable(opt, *cmds_);
   if (cmd) {
     return std::shared_ptr<Cmd>(cmd->Clone());

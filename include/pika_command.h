@@ -217,7 +217,7 @@ const fstring kCmdNamePkClusterSlotsSlaveof = "pkclusterslotsslaveof";
 const fstring kCmdNamePkClusterAddTable = "pkclusteraddtable";
 const fstring kCmdNamePkClusterDelTable = "pkclusterdeltable";
 
-const std::string kClusterPrefix = "pkcluster";
+const fstring kClusterPrefix = "pkcluster";
 typedef pink::RedisCmdArgsType PikaCmdArgsType;
 static const int RAW_ARGS_LEN = 1024 * 1024; 
 
@@ -567,7 +567,7 @@ public:
 
 // Method for Cmd Table
 void InitCmdTable(CmdTable* cmd_table);
-Cmd* GetCmdFromTable(const std::string& opt, const CmdTable& cmd_table);
+Cmd* GetCmdFromTable(const fstring& opt, const CmdTable& cmd_table);
 void DestoryCmdTable(CmdTable* cmd_table);
 
 void RedisAppendContent(dstring& str, const rocksdb::Slice& value) {

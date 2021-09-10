@@ -232,7 +232,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
 }
 
-Cmd* GetCmdFromTable(const std::string& opt, const CmdTable& cmd_table) {
+Cmd* GetCmdFromTable(const fstring& opt, const CmdTable& cmd_table) {
   size_t idx = cmd_table.find_i(opt);
   if (cmd_table.end_i() != idx) {
     return cmd_table.val(idx);

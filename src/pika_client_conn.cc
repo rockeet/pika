@@ -39,7 +39,7 @@ PikaClientConn::~PikaClientConn() = default;
 
 std::shared_ptr<Cmd> PikaClientConn::DoCmd(
     const PikaCmdArgsType& argv,
-    const std::string& opt,
+    const fstring opt,
     const std::shared_ptr<std::string>& resp_ptr) {
   // Get command info
   std::shared_ptr<Cmd> c_ptr = g_pika_cmd_table_manager->GetCmd(opt);
