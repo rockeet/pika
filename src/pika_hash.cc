@@ -17,10 +17,7 @@ void HDelCmd::DoInitial() {
     return;
   }
   key_ = argv_[1];
-  PikaCmdArgsType::iterator iter = argv_.begin();
-  iter++; 
-  iter++;
-  fields_.assign(iter, argv_.end());
+  fields_.assign(argv_.begin() + 2, argv_.end());
   return;
 }
 
