@@ -564,7 +564,7 @@ std::string Cmd::ToBinlog(uint32_t exec_time,
                           uint64_t logic_id,
                           uint32_t filenum,
                           uint64_t offset) {
-  std::string content;
+  dstring content;
   content.reserve(RAW_ARGS_LEN);
   RedisAppendLen(content, argv_.size(), "*");
 

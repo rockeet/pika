@@ -9,10 +9,7 @@
 #include <string>
 #include <memory>
 
-#include "slash/include/slash_status.h"
 #include "slash/include/env.h"
-#include "slash/include/slash_slice.h"
-
 #include "include/pika_binlog.h"
 
 using slash::Status;

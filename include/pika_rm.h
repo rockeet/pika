@@ -12,8 +12,6 @@
 #include <queue>
 #include <vector>
 
-#include "slash/include/slash_status.h"
-
 #include "include/pika_binlog_reader.h"
 #include "include/pika_repl_client.h"
 #include "include/pika_repl_server.h"

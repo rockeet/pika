@@ -59,7 +59,8 @@ class PikaConf : public slash::BaseConf {
   std::string userpass()                            { RWLock l(&rwlock_, false); return userpass_; }
   const std::string suser_blacklist()               { RWLock l(&rwlock_, false); return slash::StringConcat(user_blacklist_, COMMA); }
   const std::vector<std::string>& vuser_blacklist() { RWLock l(&rwlock_, false); return user_blacklist_;}
-  bool classic_mode()                               { return classic_mode_;}
+//bool classic_mode()                               { return classic_mode_;}
+  bool classic_mode()                               { return true; }
   int databases()                                   { return databases_;}
   int default_slot_num()                            { RWLock l(&rwlock_, false); return default_slot_num_;}
   const std::vector<TableStruct>& table_structs()   { RWLock l(&rwlock_, false); return table_structs_; }
@@ -90,7 +91,8 @@ class PikaConf : public slash::BaseConf {
   std::string network_interface()                   { RWLock l(&rwlock_, false); return network_interface_; }
   int sync_window_size()                            { return sync_window_size_; }
   int max_conn_rbuf_size()                          { return max_conn_rbuf_size_; }
-  int consensus_level()                             { return consensus_level_; }
+//int consensus_level()                             { return consensus_level_; }
+  int consensus_level()                             { return 0; }
   int replication_num()                             { return replication_num_; }
 
   // Immutable config items, we don't use lock.

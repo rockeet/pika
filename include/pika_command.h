@@ -258,10 +258,10 @@ enum CmdFlags {
 };
 
 
-void inline RedisAppendContent(std::string& str, const rocksdb::Slice& value);
-void inline RedisAppendLen(std::string& str, int64_t ori, const rocksdb::Slice &prefix);
+void inline RedisAppendContent(dstring& str, const rocksdb::Slice& value);
+void inline RedisAppendLen(dstring& str, int64_t ori, const rocksdb::Slice &prefix);
 
-const std::string kNewLine = "\r\n";
+const char kNewLine[] = "\r\n";
 
 class CmdRes {
 public:
@@ -303,11 +303,11 @@ public:
     message_.clear();
     ret_ = kNone;
   }
-  const std::string& raw_message() const {
+  const dstring& raw_message() const {
     return message_;
   }
-  std::string message() const {
-    std::string result;
+  dstring message() const {
+    dstring result;
     switch (ret_) {
     case kNone:
       return message_;
@@ -387,10 +387,10 @@ public:
   void AppendInteger(int64_t ori) {
     RedisAppendLen(message_, ori, ":");
   }
-  void AppendContent(const std::string& value) {
+  void AppendContent(const rocksdb::Slice& value) {
     RedisAppendContent(message_, value);
   }
-  void AppendString(const std::string& value) {
+  void AppendString(const rocksdb::Slice& value) {
     AppendStringLen(value.size());
     AppendContent(value);
   }
@@ -409,8 +409,8 @@ public:
       AppendContent(value);
     }
   }
-  void AppendStringRaw(const std::string& value) {
-    message_.append(value);
+  void AppendStringRaw(const Slice& value) {
+    message_.append(value.data(), value.size());
   }
   void SetRes(CmdRet _ret) {
     ret_ = _ret;
@@ -435,7 +435,7 @@ public:
   }
 
 private:
-  std::string message_;
+  dstring message_;
   CmdRet ret_;
 };
 
@@ -570,12 +570,12 @@ void InitCmdTable(CmdTable* cmd_table);
 Cmd* GetCmdFromTable(const std::string& opt, const CmdTable& cmd_table);
 void DestoryCmdTable(CmdTable* cmd_table);
 
-void RedisAppendContent(std::string& str, const rocksdb::Slice& value) {
+void RedisAppendContent(dstring& str, const rocksdb::Slice& value) {
   str.append(value.data(), value.size());
   str.append("\r\n", 2);
 }
 
-void RedisAppendLen(std::string& str, int64_t ori, const rocksdb::Slice& prefix) {
+void RedisAppendLen(dstring& str, int64_t ori, const rocksdb::Slice& prefix) {
   char buf[32];
   slash::ll2string(buf, 32, static_cast<long long>(ori));
   str.append(prefix.data(), prefix.size());

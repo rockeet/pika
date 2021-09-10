@@ -23,6 +23,8 @@ export LD_LIBRARY_PATH=/node-shared/lib:${LD_LIBRARY_PATH}
 env PATH=/node-shared/vcpkg/installed/x64-linux/tools/protobuf:$PATH \
     CXXFLAGS="-DJSON_USE_GOLD_HASH_MAP=1 \
               -DROCKSDB_PLATFORM_POSIX=1 \
+              -DFOLLY_NO_CONFIG=1 \
+              -I${PWD}/third/folly \
               -I/node-shared/vcpkg/installed/x64-linux/include \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/rockside/src \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/topling-core/boost-include \

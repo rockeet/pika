@@ -10,7 +10,6 @@
 
 #include "slash/include/env.h"
 #include "slash/include/slash_mutex.h"
-#include "slash/include/slash_status.h"
 
 #include "include/pika_define.h"
 

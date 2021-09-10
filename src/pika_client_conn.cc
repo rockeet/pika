@@ -91,6 +91,7 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
     }
   }
 
+/* // for topling, skip these useless check
   if (g_pika_conf->consensus_level() != 0 && c_ptr->is_write()) {
     c_ptr->SetStage(Cmd::kBinlogStage);
   }
@@ -104,6 +105,7 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
     c_ptr->res().SetRes(CmdRes::kErrOther, "Table not found");
     return c_ptr;
   }
+*/
 
   // TODO: Consider special commands, like flushall, flushdb?
   if (c_ptr->is_write()) {
@@ -120,9 +122,11 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
       c_ptr->res().SetRes(CmdRes::kErrOther, "Server in read-only");
       return c_ptr;
     }
+    /* // for topling, skip these useless check
     if (!g_pika_server->ConsensusCheck(current_table_, cur_key.front())) {
       c_ptr->res().SetRes(CmdRes::kErrOther, "Consensus level not match");
     }
+    */
   }
 
   // Process Command
@@ -131,10 +135,11 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
   if (g_pika_conf->slowlog_slower_than() >= 0) {
     ProcessSlowlog(argv, start_us, c_ptr->GetDoDuration());
   }
+/* // for topling, skip these useless check
   if (g_pika_conf->consensus_level() != 0 && c_ptr->is_write()) {
     c_ptr->SetStage(Cmd::kExecuteStage);
   }
-
+*/
   return c_ptr;
 }
 

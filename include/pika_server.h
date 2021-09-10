@@ -10,7 +10,6 @@
 #include <memory>
 
 #include "slash/include/slash_mutex.h"
-#include "slash/include/slash_status.h"
 #include "slash/include/slash_string.h"
 #include "pink/include/bg_thread.h"
 #include "pink/include/thread_pool.h"

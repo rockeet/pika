@@ -12,7 +12,6 @@
 #include "pink/include/pink_conn.h"
 #include "pink/include/client_thread.h"
 #include "pink/include/thread_pool.h"
-#include "slash/include/slash_status.h"
 
 #include "include/pika_define.h"
 #include "include/pika_partition.h"

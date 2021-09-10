@@ -50,7 +50,7 @@ public:
       }
     }
 
-    js["classic_mode"] = g_pika_conf->classic_mode();
+//  js["classic_mode"] = g_pika_conf->classic_mode();
     js["databases"] = g_pika_conf->databases();
     js["default_slot_num"] = g_pika_conf->default_slot_num();
 
@@ -95,12 +95,12 @@ public:
     js["network_interface"] = g_pika_conf->network_interface();
     js["sync_window_size"] = g_pika_conf->sync_window_size();
     js["max_conn_rbuf_size"] = g_pika_conf->max_conn_rbuf_size();
-    js["consensus_level"] = g_pika_conf->consensus_level();
-    js["replication_num"] = g_pika_conf->replication_num();
+  //js["consensus_level"] = g_pika_conf->consensus_level();
+  //js["replication_num"] = g_pika_conf->replication_num();
 
     js["daemonize"] = g_pika_conf->daemonize();
     js["pidfile"] = g_pika_conf->pidfile();
-    js["binlog_file_size"] = g_pika_conf->binlog_file_size();
+  //js["binlog_file_size"] = g_pika_conf->binlog_file_size();
 
     // PikaMeta *
     // It's private and there are no method to get the pointer,
