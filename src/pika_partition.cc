@@ -11,7 +11,7 @@
 #include "include/pika_server.h"
 #include "include/pika_rm.h"
 
-#include "slash/include/mutex_impl.h"
+#include "third/blackwidow/src/mutex_impl.h"
 
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
@@ -79,7 +79,7 @@ Partition::Partition(const std::string& table_name,
   db_ = std::shared_ptr<blackwidow::BlackWidow>(new blackwidow::BlackWidow());
   rocksdb::Status s = db_->Open(g_pika_server->bw_options(), db_path_);
 
-  lock_mgr_ = new slash::lock::LockMgr(1000, 0, std::make_shared<slash::lock::MutexFactoryImpl>());
+  lock_mgr_ = new blackwidow::LockMgr(1000, 0, std::make_shared<blackwidow::MutexFactoryImpl>());
 
   opened_ = s.ok() ? true : false;
   assert(db_);
@@ -162,7 +162,7 @@ void Partition::DbRWUnLock() {
   pthread_rwlock_unlock(&db_rwlock_);
 }
 
-slash::lock::LockMgr* Partition::LockMgr() {
+blackwidow::LockMgr* Partition::LockMgr() {
   return lock_mgr_;
 }
 

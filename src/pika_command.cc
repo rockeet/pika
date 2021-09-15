@@ -20,6 +20,8 @@
 #include "include/pika_server.h"
 #include "include/pika_rm.h"
 #include "include/pika_cmd_table_manager.h"
+#include "third/blackwidow/src/scope_record_lock.h"
+#include <terark/util/autofree.hpp>
 #include <terark/util/function.hpp>
 
 extern PikaServer* g_pika_server;
@@ -393,15 +395,21 @@ void Cmd::ProcessCommand(const std::shared_ptr<Partition>& partition,
 
 void Cmd::InternalProcessCommand(const std::shared_ptr<Partition>& partition,
     const std::shared_ptr<SyncMasterPartition>& sync_partition, const HintKeys& hint_keys) {
-  slash::lock::MultiRecordLock record_lock(partition->LockMgr());
+  std::vector<std::string> cur_keys;
+  const std::vector<std::string>* p_keys = nullptr;
   if (is_write()) {
     if (!hint_keys.empty() && is_multi_partition() &&
      !g_pika_conf->classic_mode() && g_pika_conf->consensus_level() == 0) {
-      record_lock.Lock(hint_keys.keys);
+      p_keys = &hint_keys.keys;
     } else {
-      record_lock.Lock(current_key());
+      cur_keys = current_key();
+      p_keys = &cur_keys;
     }
   }
+  size_t num = p_keys ? p_keys->size() : 0;
+  terark::AutoFree<rocksdb::Slice> keys_ref(num);
+  for (size_t i = 0; i < num; ++i) keys_ref.p[i] = (*p_keys)[i];
+  blackwidow::MultiScopeRecordLock lock(partition->LockMgr(), keys_ref.p, num);
 
   uint64_t start_us = 0;
   if (g_pika_conf->slowlog_slower_than() >= 0) {
@@ -412,15 +420,6 @@ void Cmd::InternalProcessCommand(const std::shared_ptr<Partition>& partition,
     do_duration_  += slash::NowMicros() - start_us;
   }
   DoBinlog(sync_partition);
-
-  if (is_write()) {
-    if (!hint_keys.empty() && is_multi_partition() &&
-     !g_pika_conf->classic_mode() && g_pika_conf->consensus_level() == 0) {
-      record_lock.Unlock(hint_keys.keys);
-    } else {
-      record_lock.Unlock(current_key());
-    }
-  }
 }
 
 void Cmd::DoCommand(const std::shared_ptr<Partition>& partition, const HintKeys& hint_keys) {
