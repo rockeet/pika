@@ -23,6 +23,7 @@
 #include "third/blackwidow/src/scope_record_lock.h"
 #include <terark/util/autofree.hpp>
 #include <terark/util/function.hpp>
+#include <terark/util/profiling.hpp>
 
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
@@ -411,13 +412,13 @@ void Cmd::InternalProcessCommand(const std::shared_ptr<Partition>& partition,
   for (size_t i = 0; i < num; ++i) keys_ref.p[i] = (*p_keys)[i];
   blackwidow::MultiScopeRecordLock lock(partition->LockMgr(), keys_ref.p, num);
 
-  uint64_t start_us = 0;
   if (g_pika_conf->slowlog_slower_than() >= 0) {
-    start_us = slash::NowMicros();
+    auto start_tp = terark::qtime::now();
+    DoCommand(partition, hint_keys);
+    do_duration_ += start_tp.us(terark::qtime::now());
   }
-  DoCommand(partition, hint_keys);
-  if (g_pika_conf->slowlog_slower_than() >= 0) {
-    do_duration_  += slash::NowMicros() - start_us;
+  else {
+    DoCommand(partition, hint_keys);
   }
   DoBinlog(sync_partition);
 }
