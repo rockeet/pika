@@ -175,11 +175,11 @@ int PikaConf::Load()
 
   std::string swe;
   GetConfStr("slowlog-write-errorlog", &swe);
-  slowlog_write_errorlog_.store(swe == "yes" ? true : false);
+  slowlog_write_errorlog_ = swe == "yes";
 
   int tmp_slowlog_log_slower_than;
   GetConfInt("slowlog-log-slower-than", &tmp_slowlog_log_slower_than);
-  slowlog_log_slower_than_.store(tmp_slowlog_log_slower_than);
+  slowlog_log_slower_than_ = tmp_slowlog_log_slower_than;
 
   GetConfInt("slowlog-max-len", &slowlog_max_len_);
   if (slowlog_max_len_ == 0) {
@@ -498,11 +498,11 @@ int PikaConf::Load()
   int tmp_sync_window_size = kBinlogReadWinDefaultSize;
   GetConfInt("sync-window-size", &tmp_sync_window_size);
   if (tmp_sync_window_size <= 0) {
-    sync_window_size_.store(kBinlogReadWinDefaultSize);
+    sync_window_size_ = kBinlogReadWinDefaultSize;
   } else if (tmp_sync_window_size > kBinlogReadWinMaxSize) {
-    sync_window_size_.store(kBinlogReadWinMaxSize);
+    sync_window_size_ = kBinlogReadWinMaxSize;
   } else {
-    sync_window_size_.store(tmp_sync_window_size);
+    sync_window_size_ = tmp_sync_window_size;
   }
 
   // max conn rbuf size
@@ -510,9 +510,9 @@ int PikaConf::Load()
   GetConfInt("max-conn-rbuf-size", &tmp_max_conn_rbuf_size);
   if (tmp_max_conn_rbuf_size == PIKA_MAX_CONN_RBUF_LB
       || tmp_max_conn_rbuf_size == PIKA_MAX_CONN_RBUF_HB) {
-    max_conn_rbuf_size_.store(tmp_max_conn_rbuf_size);
+    max_conn_rbuf_size_ = tmp_max_conn_rbuf_size;
   } else {
-    max_conn_rbuf_size_.store(PIKA_MAX_CONN_RBUF);
+    max_conn_rbuf_size_ = PIKA_MAX_CONN_RBUF;
   }
 
   return ret;
@@ -540,8 +540,8 @@ int PikaConf::ConfigRewrite() {
   SetConfInt("expire-logs-days", expire_logs_days_);
   SetConfInt("expire-logs-nums", expire_logs_nums_);
   SetConfInt("root-connection-num", root_connection_num_);
-  SetConfStr("slowlog-write-errorlog", slowlog_write_errorlog_.load() ? "yes" : "no");
-  SetConfInt("slowlog-log-slower-than", slowlog_log_slower_than_.load());
+  SetConfStr("slowlog-write-errorlog", slowlog_write_errorlog_ ? "yes" : "no");
+  SetConfInt("slowlog-log-slower-than", slowlog_log_slower_than_);
   SetConfInt("slowlog-max-len", slowlog_max_len_);
   SetConfStr("write-binlog", write_binlog_ ? "yes" : "no");
   SetConfInt("max-cache-statistic-keys", max_cache_statistic_keys_);

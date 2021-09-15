@@ -9,7 +9,6 @@
 #include <map>
 #include <set>
 #include <unordered_set>
-#include <atomic>
 
 #include "slash/include/base_conf.h"
 #include "slash/include/slash_mutex.h"
@@ -30,7 +29,7 @@ class PikaConf : public slash::BaseConf {
   ~PikaConf();
 
   // Getter
-  const std::string& sideplugin_conf()                    { return sideplugin_conf_; }
+  const std::string& sideplugin_conf()              { return sideplugin_conf_; }
   int port()                                        { return port_; }
   std::string slaveof()                             { RWLock l(&rwlock_, false); return slaveof_;}
   int slave_priority()                              { return slave_priority_; }
@@ -44,17 +43,17 @@ class PikaConf : public slash::BaseConf {
   int db_sync_speed()                               { return db_sync_speed_; }
   std::string compact_cron()                        { RWLock l(&rwlock_, false); return compact_cron_; }
   std::string compact_interval()                    { RWLock l(&rwlock_, false); return compact_interval_; }
-  int64_t write_buffer_size()                       { RWLock l(&rwlock_, false); return write_buffer_size_; }
-  int64_t arena_block_size()                        { RWLock l(&rwlock_, false); return arena_block_size_; }
-  int64_t max_write_buffer_size()                   { RWLock l(&rwlock_, false); return max_write_buffer_size_; }
-  int max_write_buffer_number()                     { RWLock l(&rwlock_, false); return max_write_buffer_num_; }
-  int64_t max_client_response_size()                { RWLock L(&rwlock_, false); return max_client_response_size_;}
-  int timeout()                                     { RWLock l(&rwlock_, false); return timeout_; }
+  int64_t write_buffer_size()                       { return write_buffer_size_; }
+  int64_t arena_block_size()                        { return arena_block_size_; }
+  int64_t max_write_buffer_size()                   { return max_write_buffer_size_; }
+  int max_write_buffer_number()                     { return max_write_buffer_num_; }
+  int64_t max_client_response_size()                { return max_client_response_size_;}
+  int timeout()                                     { return timeout_; }
   std::string server_id()                           { RWLock l(&rwlock_, false); return server_id_; }
   std::string requirepass()                         { RWLock l(&rwlock_, false); return requirepass_; }
   std::string masterauth()                          { RWLock l(&rwlock_, false); return masterauth_; }
   std::string bgsave_path()                         { RWLock l(&rwlock_, false); return bgsave_path_; }
-  int expire_dump_days()                            { RWLock l(&rwlock_, false); return expire_dump_days_; }
+  int expire_dump_days()                            { return expire_dump_days_; }
   std::string bgsave_prefix()                       { RWLock l(&rwlock_, false); return bgsave_prefix_; }
   std::string userpass()                            { RWLock l(&rwlock_, false); return userpass_; }
   const std::string suser_blacklist()               { RWLock l(&rwlock_, false); return slash::StringConcat(user_blacklist_, COMMA); }
@@ -62,7 +61,7 @@ class PikaConf : public slash::BaseConf {
 //bool classic_mode()                               { return classic_mode_;}
   bool classic_mode()                               { return true; }
   int databases()                                   { return databases_;}
-  int default_slot_num()                            { RWLock l(&rwlock_, false); return default_slot_num_;}
+  int default_slot_num()                            { return default_slot_num_;}
   const std::vector<TableStruct>& table_structs()   { RWLock l(&rwlock_, false); return table_structs_; }
   std::string default_table()                       { RWLock l(&rwlock_, false); return default_table_;}
   std::string compression()                         { RWLock l(&rwlock_, false); return compression_; }
@@ -79,16 +78,16 @@ class PikaConf : public slash::BaseConf {
   bool cache_index_and_filter_blocks()              { RWLock l(&rwlock_, false); return cache_index_and_filter_blocks_; }
   bool optimize_filters_for_hits()                  { RWLock l(&rwlock_, false); return optimize_filters_for_hits_; }
   bool level_compaction_dynamic_level_bytes()       { RWLock l(&rwlock_, false); return level_compaction_dynamic_level_bytes_; }
-  int expire_logs_nums()                            { RWLock l(&rwlock_, false); return expire_logs_nums_; }
-  int expire_logs_days()                            { RWLock l(&rwlock_, false); return expire_logs_days_; }
-  std::string conf_path()                           { RWLock l(&rwlock_, false); return conf_path_; }
-  bool slave_read_only()                            { RWLock l(&rwlock_, false); return slave_read_only_; }
-  int maxclients()                                  { RWLock l(&rwlock_, false); return maxclients_; }
-  int root_connection_num()                         { RWLock l(&rwlock_, false); return root_connection_num_; }
-  bool slowlog_write_errorlog()                     { return slowlog_write_errorlog_.load();}
-  int slowlog_slower_than()                         { return slowlog_log_slower_than_.load(); }
-  int slowlog_max_len()                             { RWLock L(&rwlock_, false); return slowlog_max_len_; }
-  std::string network_interface()                   { RWLock l(&rwlock_, false); return network_interface_; }
+  int expire_logs_nums()                            { return expire_logs_nums_; }
+  int expire_logs_days()                            { return expire_logs_days_; }
+  std::string conf_path()                           { return conf_path_; }
+  bool slave_read_only()                            { return slave_read_only_; }
+  int maxclients()                                  { return maxclients_; }
+  int root_connection_num()                         { return root_connection_num_; }
+  bool slowlog_write_errorlog()                     { return slowlog_write_errorlog_; }
+  int slowlog_slower_than()                         { return slowlog_log_slower_than_; }
+  int slowlog_max_len()                             { return slowlog_max_len_; }
+  std::string network_interface()                   { return network_interface_; }
   int sync_window_size()                            { return sync_window_size_; }
   int max_conn_rbuf_size()                          { return max_conn_rbuf_size_; }
 //int consensus_level()                             { return consensus_level_; }
@@ -99,7 +98,7 @@ class PikaConf : public slash::BaseConf {
   bool daemonize()                                  { return daemonize_; }
   std::string pidfile()                             { return pidfile_; }
   int binlog_file_size()                            { return binlog_file_size_; }
-  PikaMeta * local_meta()                           { return local_meta_; }
+  PikaMeta* local_meta()                            { return local_meta_; }
 
   // Setter
   void SetJsonFile(const std::string& fname) {
@@ -216,12 +215,12 @@ class PikaConf : public slash::BaseConf {
   void SetSlowlogWriteErrorlog(const bool value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("slowlog-write-errorlog", value == true ? "yes" : "no");
-    slowlog_write_errorlog_.store(value);
+    slowlog_write_errorlog_ = value;
   }
   void SetSlowlogSlowerThan(const int value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("slowlog-log-slower-than", std::to_string(value));
-    slowlog_log_slower_than_.store(value);
+    slowlog_log_slower_than_ = value;
   }
   void SetSlowlogMaxLen(const int value) {
     RWLock l(&rwlock_, true);
@@ -243,35 +242,35 @@ class PikaConf : public slash::BaseConf {
     TryPushDiffCommands("compact-interval", value);
     compact_interval_ = value;
   }
-  void SetSyncWindowSize(const int &value) {
+  void SetSyncWindowSize(int value) {
     TryPushDiffCommands("sync-window-size", std::to_string(value));
-    sync_window_size_.store(value);
+    sync_window_size_ = value;
   }
-  void SetMaxConnRbufSize(const int& value) {
+  void SetMaxConnRbufSize(int value) {
     TryPushDiffCommands("max-conn-rbuf-size", std::to_string(value));
-    max_conn_rbuf_size_.store(value);
+    max_conn_rbuf_size_ = value;
   }
-  void SetMaxCacheFiles(const int& value) {
+  void SetMaxCacheFiles(int value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("max-cache-files", std::to_string(value));
     max_cache_files_ = value;
   }
-  void SetMaxBackgroudCompactions(const int& value) {
+  void SetMaxBackgroudCompactions(int value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("max-background-compactions", std::to_string(value));
     max_background_compactions_ = value;
   }
-  void SetWriteBufferSize(const int& value) {
+  void SetWriteBufferSize(int value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("write-buffer-size", std::to_string(value));
     write_buffer_size_ = value;
   }
-  void SetMaxWriteBufferNumber(const int& value) {
+  void SetMaxWriteBufferNumber(int value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("max-write-buffer-number", std::to_string(value));
     max_write_buffer_num_ = value;
   }
-  void SetArenaBlockSize(const int& value) {
+  void SetArenaBlockSize(int value) {
     RWLock l(&rwlock_, true);
     TryPushDiffCommands("arena-block-size", std::to_string(value));
     arena_block_size_ = value;
@@ -334,8 +333,8 @@ class PikaConf : public slash::BaseConf {
   std::string compression_;
   int maxclients_;
   int root_connection_num_;
-  std::atomic<bool> slowlog_write_errorlog_;
-  std::atomic<int> slowlog_log_slower_than_;
+  bool slowlog_write_errorlog_;
+  int slowlog_log_slower_than_;
   int slowlog_max_len_;
   int expire_logs_days_;
   int expire_logs_nums_;
@@ -353,8 +352,8 @@ class PikaConf : public slash::BaseConf {
   bool cache_index_and_filter_blocks_;
   bool optimize_filters_for_hits_;
   bool level_compaction_dynamic_level_bytes_;
-  std::atomic<int> sync_window_size_;
-  std::atomic<int> max_conn_rbuf_size_;
+  int sync_window_size_;
+  int max_conn_rbuf_size_;
   int consensus_level_;
   int replication_num_;
 
