@@ -27,6 +27,7 @@ include_directories(../rocksdb/include)
 include_directories(../rocksdb/sideplugin/rockside/src)
 include_directories(../rocksdb/sideplugin/topling-core/src)
 include_directories(../rocksdb/sideplugin/topling-core/boost-include)
+include_directories(../rocksdb/sideplugin/topling-core/3rdparty/zstd)
 include_directories(../rocksdb/sideplugin/topling-rocks/src)
 include_directories(/hddpool/pxe/node-shared/vcpkg/installed/x64-linux/include)
 

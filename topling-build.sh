@@ -28,6 +28,7 @@ env PATH=/node-shared/vcpkg/installed/x64-linux/tools/protobuf:$PATH \
               -I/node-shared/vcpkg/installed/x64-linux/include \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/rockside/src \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/topling-core/boost-include \
+              -I/node-shared/leipeng/osc/rocksdb/sideplugin/topling-core/3rdparty/zstd \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/topling-rocks/src \
               -I/node-shared/leipeng/osc/topling-core/src" \
     LDFLAGS="-L/node-shared/lib -lterark-core-${COMPILER}-${LIB_SUFFIX}" \
