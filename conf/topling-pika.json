@@ -6,7 +6,14 @@
     "listening_ports": "2011"
   },
   "setenv": {
-    "DictZipBlobStore_zipThreads_nouse": 8
+    "DictZipBlobStore_zipThreads": 8,
+    "StrSimpleEnvNameNotOverwrite": "string value"
+    "IntSimpleEnvNameNotOverwrite": 16384,
+    "OverwriteThisEnv": {
+        "//comment": "overwrite is default to false",
+        "overwrite": true,
+        "value": "force overwrite this env by overwrite true"
+    },
   },
   "permissions": {
     "web_compact": true,
