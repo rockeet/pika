@@ -13,7 +13,7 @@
         "//comment": "overwrite is default to false",
         "overwrite": true,
         "value": "force overwrite this env by overwrite true"
-    },
+    }
   },
   "permissions": {
     "web_compact": true,
