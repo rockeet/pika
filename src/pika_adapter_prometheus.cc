@@ -27,23 +27,16 @@ public:
   const char* Name() const override { return "CmdDataStatisticsPrometheusPlugin"; }
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
-    return g_db_read_write_histogram->get_metric();
+    bool web = JsonSmartBool(dump_options, "web", false);
+    if (web) {
+      return g_db_read_write_histogram->get_html();
+    } else {
+      return g_db_read_write_histogram->get_metric();
+    }
   }
 };
 
 ROCKSDB_REG_DEFAULT_CONS(CmdDataStatisticsPrometheusPlugin, AnyPlugin);
 ROCKSDB_REG_AnyPluginManip("CmdDataStatisticsPrometheusPlugin");
-
-class CmdDataStatisticsWebPlugin : public AnyPlugin {
-public:
-  const char* Name() const override { return "CmdDataStatisticsWebPlugin"; }
-  void Update(const json&, const SidePluginRepo&) {}
-  std::string ToString(const json& dump_options, const SidePluginRepo&) const {
-    return g_db_read_write_histogram->get_html();
-  }
-};
-
-ROCKSDB_REG_DEFAULT_CONS(CmdDataStatisticsWebPlugin, AnyPlugin);
-ROCKSDB_REG_AnyPluginManip("CmdDataStatisticsWebPlugin");
 
 } // namespace topling

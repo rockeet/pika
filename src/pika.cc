@@ -31,7 +31,7 @@ PikaProxy* g_pika_proxy;
 
 PikaCmdTableManager* g_pika_cmd_table_manager;
 
-cmd_run_histogram::PikaCmdRunHistogram* g_pika_run_cmd_histogram = new cmd_run_histogram::PikaCmdRunHistogram();
+auto g_pika_run_cmd_histogram = new cmd_run_histogram::PikaCmdRunHistogram();
 db_rw_histogram::DbReadWriteHistogram* g_db_read_write_histogram = nullptr;
 
 static void version() {
