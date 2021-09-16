@@ -153,7 +153,9 @@ class SelectCmd : public Cmd {
 
 class FlushallCmd : public Cmd {
  public:
-  using Cmd::Cmd;
+  FlushallCmd(fstring name, int arity, uint16_t flag) : Cmd(name, arity, flag) {
+    special_cmd_ = SpecialCmd::kFlushAll;
+  }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -171,7 +173,9 @@ class FlushallCmd : public Cmd {
 
 class FlushdbCmd : public Cmd {
  public:
-  using Cmd::Cmd;
+  FlushdbCmd(fstring name, int arity, uint16_t flag) : Cmd(name, arity, flag) {
+    special_cmd_ = SpecialCmd::kFlushDB;
+  }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -218,7 +222,9 @@ class InfoCmd : public Cmd {
     kInfoDebug
   };
 
-  using Cmd::Cmd;
+  InfoCmd(fstring name, int arity, uint16_t flag) : Cmd(name, arity, flag) {
+    special_cmd_ = SpecialCmd::kInfo;
+  }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -275,7 +281,9 @@ class ShutdownCmd : public Cmd {
 
 class ConfigCmd : public Cmd {
  public:
-  using Cmd::Cmd;
+  ConfigCmd(fstring name, int arity, uint16_t flag) : Cmd(name, arity, flag) {
+    special_cmd_ = SpecialCmd::kConfig;
+  }
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}

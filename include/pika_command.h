@@ -530,7 +530,10 @@ class Cmd: public std::enable_shared_from_this<Cmd> {
   void LogCommand() const;
 
   char name_[31]; uint8_t name_len_;
-  //char padding_;
+  enum class SpecialCmd : unsigned char {
+    kGeneral, kFlushDB, kFlushAll, kInfo, kConfig,
+  };
+  SpecialCmd special_cmd_;
   CmdStage stage_;
   int16_t arity_;
   uint16_t flag_;

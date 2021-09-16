@@ -254,6 +254,7 @@ void DestoryCmdTable(CmdTable* cmd_table) {
 Cmd::Cmd(fstring name, int arity, uint16_t flag)
     : stage_(kNone), arity_(arity), flag_(flag), do_duration_(0)
 {
+  special_cmd_ = SpecialCmd::kGeneral;
   TERARK_VERIFY_LT(name.size(), sizeof(name_));
   memcpy(name_, name.p, name.n);
   name_len_ = uint8_t(name.n);
@@ -276,19 +277,24 @@ std::vector<std::string> Cmd::current_key() const {
 }
 
 void Cmd::Execute() {
-  if (name_ == kCmdNameFlushdb) {
-    ProcessFlushDBCmd();
-  } else if (name_ == kCmdNameFlushall) {
-    ProcessFlushAllCmd();
-  } else if (name_ == kCmdNameInfo || name_ == kCmdNameConfig) {
+  switch (special_cmd_) {
+  case SpecialCmd::kGeneral:
+    if (is_single_partition() ||
+        (g_pika_conf->classic_mode() && g_pika_conf->consensus_level() == 0)) {
+      ProcessSinglePartitionCmd();
+    } else if (is_multi_partition()) {
+      ProcessMultiPartitionCmd();
+    } else {
+      ProcessDoNotSpecifyPartitionCmd();
+    }
+    break;
+  case SpecialCmd::kFlushDB:  ProcessFlushDBCmd();  break;
+  case SpecialCmd::kFlushAll: ProcessFlushAllCmd(); break;
+  case SpecialCmd::kInfo:
+  case SpecialCmd::kConfig:
     ProcessDoNotSpecifyPartitionCmd();
-  } else if (is_single_partition() ||
-      (g_pika_conf->classic_mode() && g_pika_conf->consensus_level() == 0)) {
-    ProcessSinglePartitionCmd();
-  } else if (is_multi_partition()) {
-    ProcessMultiPartitionCmd();
-  } else {
-    ProcessDoNotSpecifyPartitionCmd();
+    break;
+  default: TERARK_DIE("bad special_cmd_ = %d", int(special_cmd_));
   }
 }
 
@@ -383,14 +389,13 @@ void Cmd::ProcessSinglePartitionCmd() {
 void Cmd::ProcessCommand(const std::shared_ptr<Partition>& partition,
     const std::shared_ptr<SyncMasterPartition>& sync_partition,
     const HintKeys& hint_keys) {
-  if (stage_ == kNone) {
+  switch (stage_) {
+  default: TERARK_DIE("bad stage_ = %d", stage_);
+  case kNone:
     InternalProcessCommand(partition, sync_partition, hint_keys);
-  } else {
-    if (stage_ == kBinlogStage) {
-      DoBinlog(sync_partition);
-    } else if (stage_ == kExecuteStage) {
-      DoCommand(partition, hint_keys);
-    }
+    break;
+  case kBinlogStage:  DoBinlog(sync_partition)       ; break;
+  case kExecuteStage: DoCommand(partition, hint_keys); break;
   }
 }
 
