@@ -17,7 +17,8 @@
 #include "include/pika_version.h"
 #include "include/pika_cmd_table_manager.h"
 #include "include/build_version.h"
-#include "pink/include/pika_cmd_histogram_manager.h"
+#include "pink/include/pika_run_cmd_histogram.h"
+#include "db_read_write_histogram.h"
 
 #ifdef TCMALLOC_EXTENSION
 #include <gperftools/malloc_extension.h>
@@ -30,7 +31,8 @@ PikaProxy* g_pika_proxy;
 
 PikaCmdTableManager* g_pika_cmd_table_manager;
 
-PikaCmdHistogramManager* g_pika_cmd_histogram_manager = new PikaCmdHistogramManager();
+cmd_run_histogram::PikaCmdRunHistogram* g_pika_run_cmd_histogram = new cmd_run_histogram::PikaCmdRunHistogram();
+db_rw_histogram::DbReadWriteHistogram* g_db_read_write_histogram = nullptr;
 
 static void version() {
     char version[32];
@@ -194,6 +196,9 @@ int main(int argc, char *argv[]) {
   if (g_pika_conf->daemonize()) {
     close_std();
   }
+
+  std::string db_histogram_path = g_pika_conf->db_path() + "db_histogram.data";
+  g_db_read_write_histogram = new db_rw_histogram::DbReadWriteHistogram(db_histogram_path);
 
   g_pika_proxy->Start();
   g_pika_rm->Start();
