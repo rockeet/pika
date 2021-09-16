@@ -29,7 +29,6 @@
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
-extern PikaCmdHistogramManager* g_pika_cmd_histogram_manager;
 extern cmd_run_histogram::PikaCmdRunHistogram* g_pika_run_cmd_histogram;
 
 void InitCmdTable(CmdTable* cmd_table) {
