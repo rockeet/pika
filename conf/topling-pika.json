@@ -7,7 +7,7 @@
   },
   "setenv": {
     "DictZipBlobStore_zipThreads": 8,
-    "StrSimpleEnvNameNotOverwrite": "string value"
+    "StrSimpleEnvNameNotOverwrite": "StringValue",
     "IntSimpleEnvNameNotOverwrite": 16384,
     "OverwriteThisEnv": {
         "//comment": "overwrite is default to false",
