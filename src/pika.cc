@@ -17,6 +17,8 @@
 #include "include/pika_version.h"
 #include "include/pika_cmd_table_manager.h"
 #include "include/build_version.h"
+#include "pink/include/pika_cmd_time_histogram.h"
+#include "pika_data_length_histogram.h"
 
 #ifdef TCMALLOC_EXTENSION
 #include <gperftools/malloc_extension.h>
@@ -28,6 +30,9 @@ PikaReplicaManager* g_pika_rm;
 PikaProxy* g_pika_proxy;
 
 PikaCmdTableManager* g_pika_cmd_table_manager;
+
+auto g_pika_cmd_run_time_histogram = new time_histogram::PikaCmdRunTimeHistogram();
+length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram = nullptr;
 
 static void version() {
     char version[32];
@@ -191,6 +196,9 @@ int main(int argc, char *argv[]) {
   if (g_pika_conf->daemonize()) {
     close_std();
   }
+
+  std::string data_length_histogram_path = g_pika_conf->db_path() + "length_histogram.data";
+  g_pika_cmd_data_length_histogram = new length_histogram::CmdDataLengthHistogram(data_length_histogram_path);
 
   g_pika_proxy->Start();
   g_pika_rm->Start();

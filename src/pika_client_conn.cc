@@ -16,11 +16,14 @@
 #include "include/pika_admin.h"
 #include "include/pika_rm.h"
 #include "include/pika_proxy.h"
+#include "pink/include/pika_cmd_time_histogram.h"
+#include "terark/util/profiling.hpp"
 
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
+extern time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
 extern PikaProxy* g_pika_proxy;
 
 PikaClientConn::PikaClientConn(int fd, const std::string& ip_port,
@@ -184,11 +187,13 @@ void PikaClientConn::ProcessMonitor(const PikaCmdArgsType& argv) {
   g_pika_server->AddMonitorMessage(monitor_message);
 }
 
+static terark::profiling pf;
 void PikaClientConn::ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>& argvs, bool async, std::string* response) {
   if (async) {
     BgTaskArg* arg = new BgTaskArg();
     arg->redis_cmds = std::move(argvs);
     arg->conn_ptr = std::dynamic_pointer_cast<PikaClientConn>(shared_from_this());
+    metric_info.parse_end_time = pf.now();
     g_pika_server->ScheduleClientPool(&DoBackgroundTask, arg);
     return;
   }
@@ -198,6 +203,7 @@ void PikaClientConn::ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>&
 void PikaClientConn::DoBackgroundTask(void* arg) {
   BgTaskArg* bg_arg = reinterpret_cast<BgTaskArg*>(arg);
   std::shared_ptr<PikaClientConn> conn_ptr = bg_arg->conn_ptr;
+  conn_ptr->metric_info.schdule_end_time = pf.now();
   if (bg_arg->redis_cmds.size() == 0) {
     delete bg_arg;
     conn_ptr->NotifyEpoll(false);
@@ -270,7 +276,10 @@ void PikaClientConn::BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>
   resp_num.store(argvs.size());
   for (size_t i = 0; i < argvs.size(); ++i) {
     resp_array.push_back(std::make_shared<std::string>());
+    auto start = pf.now();
     ExecRedisCmd(argvs[i], resp_array.back());
+    auto end = pf.now();
+    metric_info.cmd_process_times.emplace_back(time_histogram::CmdProcessTime(argvs[i][0], start, end));
   }
   TryWriteResp();
 }
