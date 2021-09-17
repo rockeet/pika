@@ -1,9 +1,7 @@
 #include "topling/side_plugin_factory.h"
-#include "include/pika_conf.h"
 #include "pink/include/pika_cmd_time_histogram.h"
 #include "pika_data_length_histogram.h"
 
-extern PikaConf* g_pika_conf;
 extern time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
 extern length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram;
 
