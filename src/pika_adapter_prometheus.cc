@@ -4,8 +4,8 @@
 #include "pika_data_length_histogram.h"
 
 extern PikaConf* g_pika_conf;
-extern cmd_run_time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
-extern data_length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram;
+extern time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
+extern length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram;
 
 namespace topling {
 using namespace ROCKSDB_NAMESPACE;
@@ -15,7 +15,7 @@ public:
   const char* Name() const override { return "CmdRunTimeHistogramPlugin"; }
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
-    return g_pika_cmd_run_time_histogram->get_metric();
+    return g_pika_cmd_run_time_histogram->GetTimeMetric();
   }
 };
 
@@ -29,9 +29,9 @@ public:
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     bool metric = JsonSmartBool(dump_options, "metric", true);
     if (metric) {
-      return g_pika_cmd_data_length_histogram->get_metric();
+      return g_pika_cmd_data_length_histogram->GetLengthMetric();
     } else {
-      return g_pika_cmd_data_length_histogram->get_html();
+      return g_pika_cmd_data_length_histogram->GetLengthHtml();
     }
   }
 };

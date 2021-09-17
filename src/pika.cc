@@ -31,8 +31,8 @@ PikaProxy* g_pika_proxy;
 
 PikaCmdTableManager* g_pika_cmd_table_manager;
 
-auto g_pika_cmd_run_time_histogram = new cmd_run_time_histogram::PikaCmdRunTimeHistogram();
-data_length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram = nullptr;
+auto g_pika_cmd_run_time_histogram = new time_histogram::PikaCmdRunTimeHistogram();
+length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram = nullptr;
 
 static void version() {
     char version[32];
@@ -197,8 +197,8 @@ int main(int argc, char *argv[]) {
     close_std();
   }
 
-  std::string data_length_histogram_path = g_pika_conf->db_path() + "data_length_histogram.data";
-  g_pika_cmd_data_length_histogram = new data_length_histogram::CmdDataLengthHistogram(data_length_histogram_path);
+  std::string data_length_histogram_path = g_pika_conf->db_path() + "length_histogram.data";
+  g_pika_cmd_data_length_histogram = new length_histogram::CmdDataLengthHistogram(data_length_histogram_path);
 
   g_pika_proxy->Start();
   g_pika_rm->Start();

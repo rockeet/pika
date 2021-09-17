@@ -29,7 +29,7 @@
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
-extern cmd_run_time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
+extern time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
 
 void InitCmdTable(CmdTable* cmd_table) {
   auto add = [cmd_table](Cmd* cmd) {
@@ -237,7 +237,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
 
   for (auto const iter:*cmd_table) {
-    g_pika_cmd_run_time_histogram->Add_Histogram(iter.first.c_str());
+    g_pika_cmd_run_time_histogram->AddHistogram(iter.first.c_str());
   }
 }
 
