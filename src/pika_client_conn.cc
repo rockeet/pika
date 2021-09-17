@@ -203,6 +203,7 @@ void PikaClientConn::ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>&
 void PikaClientConn::DoBackgroundTask(void* arg) {
   BgTaskArg* bg_arg = reinterpret_cast<BgTaskArg*>(arg);
   std::shared_ptr<PikaClientConn> conn_ptr = bg_arg->conn_ptr;
+  conn_ptr->metric_info.schdule_end_time = pf.now();
   if (bg_arg->redis_cmds.size() == 0) {
     delete bg_arg;
     conn_ptr->NotifyEpoll(false);
