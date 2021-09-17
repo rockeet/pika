@@ -24,12 +24,12 @@
 #include <terark/util/autofree.hpp>
 #include <terark/util/function.hpp>
 #include <terark/util/profiling.hpp>
-#include "pink/include/pika_run_cmd_histogram.h"
+#include "pink/include/pika_cmd_time_histogram.h"
 
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
-extern cmd_run_histogram::PikaCmdRunHistogram* g_pika_run_cmd_histogram;
+extern cmd_run_time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
 
 void InitCmdTable(CmdTable* cmd_table) {
   auto add = [cmd_table](Cmd* cmd) {
@@ -237,7 +237,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
 
   for (auto const iter:*cmd_table) {
-    g_pika_run_cmd_histogram->Add_Histogram(iter.first.c_str());
+    g_pika_cmd_run_time_histogram->Add_Histogram(iter.first.c_str());
   }
 }
 

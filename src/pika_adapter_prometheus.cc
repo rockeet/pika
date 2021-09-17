@@ -1,42 +1,42 @@
 #include "topling/side_plugin_factory.h"
 #include "include/pika_conf.h"
-#include "pink/include/pika_run_cmd_histogram.h"
-#include "db_read_write_histogram.h"
+#include "pink/include/pika_cmd_time_histogram.h"
+#include "pika_data_length_histogram.h"
 
 extern PikaConf* g_pika_conf;
-extern cmd_run_histogram::PikaCmdRunHistogram* g_pika_run_cmd_histogram;
-extern db_rw_histogram::DbReadWriteHistogram* g_db_read_write_histogram;
+extern cmd_run_time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
+extern data_length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram;
 
 namespace topling {
 using namespace ROCKSDB_NAMESPACE;
 
-class CmdRunHistogramPlugin : public AnyPlugin {
+class CmdRunTimeHistogramPlugin : public AnyPlugin {
 public:
-  const char* Name() const override { return "CmdRunHistogramPlugin"; }
+  const char* Name() const override { return "CmdRunTimeHistogramPlugin"; }
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
-    return g_pika_run_cmd_histogram->get_metric();
+    return g_pika_cmd_run_time_histogram->get_metric();
   }
 };
 
-ROCKSDB_REG_DEFAULT_CONS(CmdRunHistogramPlugin, AnyPlugin);
-ROCKSDB_REG_AnyPluginManip("CmdRunHistogramPlugin");
+ROCKSDB_REG_DEFAULT_CONS(CmdRunTimeHistogramPlugin, AnyPlugin);
+ROCKSDB_REG_AnyPluginManip("CmdRunTimeHistogramPlugin");
 
-class CmdDataStatisticsPrometheusPlugin : public AnyPlugin {
+class CmdDataLengthHistogramPlugin : public AnyPlugin {
 public:
-  const char* Name() const override { return "CmdDataStatisticsPrometheusPlugin"; }
+  const char* Name() const override { return "CmdDataLengthHistogramPlugin"; }
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
-    bool web = JsonSmartBool(dump_options, "web", false);
-    if (web) {
-      return g_db_read_write_histogram->get_html();
+    bool metric = JsonSmartBool(dump_options, "metric", true);
+    if (metric) {
+      return g_pika_cmd_data_length_histogram->get_metric();
     } else {
-      return g_db_read_write_histogram->get_metric();
+      return g_pika_cmd_data_length_histogram->get_html();
     }
   }
 };
 
-ROCKSDB_REG_DEFAULT_CONS(CmdDataStatisticsPrometheusPlugin, AnyPlugin);
-ROCKSDB_REG_AnyPluginManip("CmdDataStatisticsPrometheusPlugin");
+ROCKSDB_REG_DEFAULT_CONS(CmdDataLengthHistogramPlugin, AnyPlugin);
+ROCKSDB_REG_AnyPluginManip("CmdDataLengthHistogramPlugin");
 
 } // namespace topling

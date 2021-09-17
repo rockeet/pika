@@ -16,14 +16,14 @@
 #include "include/pika_admin.h"
 #include "include/pika_rm.h"
 #include "include/pika_proxy.h"
-#include "pink/include/pika_run_cmd_histogram.h"
+#include "pink/include/pika_cmd_time_histogram.h"
 #include "terark/util/profiling.hpp"
 
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
-extern cmd_run_histogram::PikaCmdRunHistogram* g_pika_run_cmd_histogram;
+extern cmd_run_time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
 extern PikaProxy* g_pika_proxy;
 
 PikaClientConn::PikaClientConn(int fd, const std::string& ip_port,
@@ -278,7 +278,7 @@ void PikaClientConn::BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>
     auto start = pf.now();
     ExecRedisCmd(argvs[i], resp_array.back());
     auto end = pf.now();
-    metric_info.cmd_process_times.emplace_back(cmd_run_histogram::cmd_process_time(argvs[i][0], start, end));
+    metric_info.cmd_process_times.emplace_back(cmd_run_time_histogram::cmd_process_time(argvs[i][0], start, end));
   }
   TryWriteResp();
 }
