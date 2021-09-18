@@ -31,8 +31,8 @@ PikaProxy* g_pika_proxy;
 
 PikaCmdTableManager* g_pika_cmd_table_manager;
 
-auto g_pika_cmd_run_time_histogram = new time_histogram::PikaCmdRunTimeHistogram();
-length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram = nullptr;
+extern time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
+extern length_histogram::CmdDataLengthHistogram* g_pika_cmd_data_length_histogram;
 
 static void version() {
     char version[32];
@@ -58,7 +58,7 @@ static void PikaConfInit(const std::string& path) {
 
 static void PikaGlogInit() {
   if (!slash::FileExists(g_pika_conf->log_path())) {
-    slash::CreatePath(g_pika_conf->log_path()); 
+    slash::CreatePath(g_pika_conf->log_path());
   }
 
   if (!g_pika_conf->daemonize()) {
@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
   g_pika_proxy->Start();
   g_pika_rm->Start();
   g_pika_server->Start();
-  
+
   if (g_pika_conf->daemonize()) {
     unlink(g_pika_conf->pidfile().c_str());
   }
@@ -220,6 +220,6 @@ int main(int argc, char *argv[]) {
   delete g_pika_cmd_table_manager;
   ::google::ShutdownGoogleLogging();
   delete g_pika_conf;
-  
+
   return 0;
 }
