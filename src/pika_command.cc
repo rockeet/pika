@@ -26,10 +26,24 @@
 #include <terark/util/profiling.hpp>
 #include "pink/include/pika_cmd_time_histogram.h"
 
+using time_histogram::PikaCmdRunTimeHistogram;
+
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
-extern time_histogram::PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
+extern PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
+
+static size_t CmdTable_get_idx(fstring name) {
+  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
+  size_t idx = cmdtab->find_i(name);
+  return idx;
+}
+
+static terark::fstring CmdTable_get_name(size_t idx) {
+  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
+  TERARK_VERIFY_LT(idx, cmdtab->end_i());
+  return cmdtab->key(idx);
+}
 
 void InitCmdTable(CmdTable* cmd_table) {
   auto add = [cmd_table](Cmd* cmd) {
@@ -64,6 +78,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new PKPatternMatchDelCmd(kCmdNamePKPatternMatchDel, 3, kCmdFlagsWrite | kCmdFlagsAdmin));
   add(new DummyCmd(kCmdDummy, 0, kCmdFlagsWrite | kCmdFlagsSinglePartition));
 
+#if 0
   // Slots related
   add(new SlotsInfoCmd(kCmdNameSlotsInfo, -1, kCmdFlagsRead | kCmdFlagsAdmin));
   add(new SlotsHashKeyCmd(kCmdNameSlotsHashKey, -2, kCmdFlagsRead | kCmdFlagsAdmin));
@@ -88,6 +103,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new PkClusterDelTableCmd(kCmdNamePkClusterDelTable, 3, kCmdFlagsRead | kCmdFlagsAdmin));
 #ifdef TCMALLOC_EXTENSION
   add(new TcmallocCmd(kCmdNameTcmalloc, -2, kCmdFlagsRead | kCmdFlagsAdmin));
+#endif
 #endif
 
   //Kv
@@ -235,9 +251,15 @@ void InitCmdTable(CmdTable* cmd_table) {
 
   // total_key_size() with align = 1960, fit to 2032 = 8*(255-1), ok to use uint8_t for LinkTp
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
+}
 
-  for (auto const iter:*cmd_table) {
-    g_pika_cmd_run_time_histogram->AddHistogram(iter.first.c_str());
+void Init_g_pika_cmd_run_time_histogram() {
+  g_pika_cmd_run_time_histogram->m_get_idx  = &CmdTable_get_idx;
+  g_pika_cmd_run_time_histogram->m_get_name = &CmdTable_get_name;
+  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
+  TERARK_VERIFY_EQ(cmdtab->end_i(), PikaCmdRunTimeHistogram::HistogramNum);
+  for (size_t i = 0, n = cmdtab->end_i(); i < n; ++i) {
+    g_pika_cmd_run_time_histogram->AddHistogram(cmdtab->key(i));
   }
 }
 

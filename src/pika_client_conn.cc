@@ -18,6 +18,7 @@
 #include "include/pika_proxy.h"
 #include "pink/include/pika_cmd_time_histogram.h"
 #include "terark/util/profiling.hpp"
+#include "terark/util/function.hpp"
 
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
@@ -188,16 +189,17 @@ void PikaClientConn::ProcessMonitor(const PikaCmdArgsType& argv) {
 }
 
 static terark::profiling pf;
-void PikaClientConn::ProcessRedisCmds(const std::vector<pink::RedisCmdArgsType>& argvs, bool async, std::string* response) {
+void PikaClientConn::ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argvs, bool async, std::string* response) {
   if (async) {
     BgTaskArg* arg = new BgTaskArg();
     arg->redis_cmds = std::move(argvs);
     arg->conn_ptr = std::dynamic_pointer_cast<PikaClientConn>(shared_from_this());
     metric_info.parse_end_time = pf.now();
     g_pika_server->ScheduleClientPool(&DoBackgroundTask, arg);
-    return;
   }
-  BatchExecRedisCmd(argvs);
+  else {
+    BatchExecRedisCmd(std::move(argvs));
+  }
 }
 
 void PikaClientConn::DoBackgroundTask(void* arg) {
@@ -228,7 +230,7 @@ void PikaClientConn::DoBackgroundTask(void* arg) {
   if (!all_local) {
     g_pika_proxy->ScheduleForwardToBackend(conn_ptr, bg_arg->redis_cmds, dst);
   } else {
-    conn_ptr->BatchExecRedisCmd(bg_arg->redis_cmds);
+    conn_ptr->BatchExecRedisCmd(std::move(bg_arg->redis_cmds));
   }
   delete bg_arg;
 }
@@ -272,14 +274,25 @@ void PikaClientConn::DoExecTask(void* arg) {
   conn_ptr->TryWriteResp();
 }
 
-void PikaClientConn::BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>& argvs) {
+void PikaClientConn::BatchExecRedisCmd(std::vector<pink::RedisCmdArgsType>&& argvs) {
   resp_num.store(argvs.size());
+  metric_info.cmd_process_times.reserve(argvs.size());
+  auto cmdtab = g_pika_cmd_table_manager->cmds();
   for (size_t i = 0; i < argvs.size(); ++i) {
     resp_array.push_back(std::make_shared<std::string>());
-    auto start = pf.now();
+    uint64_t start = pf.now();
     ExecRedisCmd(argvs[i], resp_array.back());
-    auto end = pf.now();
-    metric_info.cmd_process_times.emplace_back(time_histogram::CmdProcessTime(argvs[i][0], start, end));
+    uint64_t end = pf.now();
+    fstring cmdname = argvs[i][0];
+    //size_t cmd_idx = g_pika_cmd_run_time_histogram->m_get_idx(argvs[i][0]);
+    size_t cmd_idx = cmdtab->find_i(cmdname);
+    //TERARK_VERIFY_LT(cmd_idx, cmdtab->end_i());
+    if (cmd_idx < cmdtab->end_i()) {
+      metric_info.cmd_process_times.push_back({cmd_idx, start, end});
+    }
+    else {
+      fprintf(stderr, "command '%s' is not supported\n", cmdname.c_str());
+    }
   }
   TryWriteResp();
 }
@@ -302,6 +315,10 @@ void PikaClientConn::TryWriteResp() {
 
 void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared_ptr<std::string>& resp_ptr) {
   // get opt
+#if 1
+  const std::string& opt = argv[0];
+  TERARK_VERIFY_S_NE(opt, kClusterPrefix);
+#else
   std::string opt = argv[0];
   slash::StringToLower(opt);
   if (opt == kClusterPrefix) {
@@ -310,7 +327,7 @@ void PikaClientConn::ExecRedisCmd(const PikaCmdArgsType& argv, const std::shared
       slash::StringToLower(opt);
     }
   }
-
+#endif
   std::shared_ptr<Cmd> cmd_ptr = DoCmd(argv, opt, resp_ptr);
   // level == 0 or (cmd error) or (is_read)
   if (g_pika_conf->consensus_level() == 0 || !cmd_ptr->res().ok() || !cmd_ptr->is_write()) {
