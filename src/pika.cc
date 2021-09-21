@@ -189,9 +189,6 @@ int main(int argc, char *argv[]) {
 
   LOG(INFO) << "Server at: " << path;
   g_pika_cmd_table_manager = new PikaCmdTableManager();
-  extern void Init_g_pika_cmd_run_time_histogram();
-  Init_g_pika_cmd_run_time_histogram(); // dep on g_pika_cmd_table_manager
-
   g_pika_server = new PikaServer();
   g_pika_rm = new PikaReplicaManager();
   g_pika_proxy = new PikaProxy();

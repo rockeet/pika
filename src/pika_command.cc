@@ -33,11 +33,13 @@ extern PikaReplicaManager* g_pika_rm;
 extern PikaCmdTableManager* g_pika_cmd_table_manager;
 extern PikaCmdRunTimeHistogram* g_pika_cmd_run_time_histogram;
 
+#if 0
 static size_t CmdTable_get_idx(fstring name) {
   const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
   size_t idx = cmdtab->find_i(name);
   return idx;
 }
+#endif
 
 static terark::fstring CmdTable_get_name(size_t idx) {
   const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
@@ -251,16 +253,10 @@ void InitCmdTable(CmdTable* cmd_table) {
 
   // total_key_size() with align = 1960, fit to 2032 = 8*(255-1), ok to use uint8_t for LinkTp
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
-}
 
-void Init_g_pika_cmd_run_time_histogram() {
-  g_pika_cmd_run_time_histogram->m_get_idx  = &CmdTable_get_idx;
+//g_pika_cmd_run_time_histogram->m_get_idx  = &CmdTable_get_idx;
   g_pika_cmd_run_time_histogram->m_get_name = &CmdTable_get_name;
-  const CmdTable* cmdtab = g_pika_cmd_table_manager->cmds();
-  TERARK_VERIFY_EQ(cmdtab->end_i(), PikaCmdRunTimeHistogram::HistogramNum);
-  for (size_t i = 0, n = cmdtab->end_i(); i < n; ++i) {
-    g_pika_cmd_run_time_histogram->AddHistogram(cmdtab->key(i));
-  }
+  TERARK_VERIFY_EQ(cmd_table->end_i(), PikaCmdRunTimeHistogram::HistogramNum);
 }
 
 Cmd* GetCmdFromTable(const fstring& opt, const CmdTable& cmd_table) {
