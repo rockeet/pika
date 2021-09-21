@@ -53,6 +53,7 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
         "unknown or unsupported command \"" + opt + "\"");
     return tmp_ptr;
   }
+  argv.cmd_idx = c_ptr->cmd_idx();
   c_ptr->SetConn(std::dynamic_pointer_cast<PikaClientConn>(shared_from_this()));
   c_ptr->SetResp(resp_ptr);
 
@@ -198,7 +199,7 @@ void PikaClientConn::ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argv
     g_pika_server->ScheduleClientPool(&DoBackgroundTask, arg);
   }
   else {
-    BatchExecRedisCmd(std::move(argvs));
+    BatchExecRedisCmd(argvs);
   }
 }
 
@@ -230,7 +231,7 @@ void PikaClientConn::DoBackgroundTask(void* arg) {
   if (!all_local) {
     g_pika_proxy->ScheduleForwardToBackend(conn_ptr, bg_arg->redis_cmds, dst);
   } else {
-    conn_ptr->BatchExecRedisCmd(std::move(bg_arg->redis_cmds));
+    conn_ptr->BatchExecRedisCmd(bg_arg->redis_cmds);
   }
   delete bg_arg;
 }
@@ -274,7 +275,7 @@ void PikaClientConn::DoExecTask(void* arg) {
   conn_ptr->TryWriteResp();
 }
 
-void PikaClientConn::BatchExecRedisCmd(std::vector<pink::RedisCmdArgsType>&& argvs) {
+void PikaClientConn::BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>& argvs) {
   resp_num.store(argvs.size());
   metric_info.cmd_process_times.reserve(argvs.size());
   auto cmdtab = g_pika_cmd_table_manager->cmds();
@@ -285,7 +286,8 @@ void PikaClientConn::BatchExecRedisCmd(std::vector<pink::RedisCmdArgsType>&& arg
     uint64_t end = pf.now();
     fstring cmdname = argvs[i][0];
     //size_t cmd_idx = g_pika_cmd_run_time_histogram->m_get_idx(argvs[i][0]);
-    size_t cmd_idx = cmdtab->find_i(cmdname);
+    //size_t cmd_idx = cmdtab->find_i(cmdname);
+    size_t cmd_idx = argvs[i].cmd_idx;
     //TERARK_VERIFY_LT(cmd_idx, cmdtab->end_i());
     if (cmd_idx < cmdtab->end_i()) {
       metric_info.cmd_process_times.push_back({cmd_idx, start, end});

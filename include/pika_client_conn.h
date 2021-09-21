@@ -47,7 +47,7 @@ class PikaClientConn: public pink::RedisConn {
 
   void ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argvs, bool async, std::string* response) override;
 
-  void BatchExecRedisCmd(std::vector<pink::RedisCmdArgsType>&& argvs);
+  void BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>& argvs);
   int DealMessage(const pink::RedisCmdArgsType& argv, std::string* response) override {
     return 0;
   }
