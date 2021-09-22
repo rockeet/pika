@@ -197,7 +197,11 @@ int main(int argc, char *argv[]) {
     close_std();
   }
 
-  std::string data_length_histogram_path = g_pika_conf->db_path() + "length_histogram.data";
+  TERARK_VERIFY(!g_pika_conf->log_path().empty());
+  std::string data_length_histogram_path = g_pika_conf->log_path();
+  if (data_length_histogram_path.back() != '/')
+    data_length_histogram_path.push_back('/');
+  data_length_histogram_path += "length_histogram.data";
   g_pika_cmd_data_length_histogram = new length_histogram::CmdDataLengthHistogram(data_length_histogram_path);
 
   g_pika_proxy->Start();
