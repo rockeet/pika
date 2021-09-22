@@ -79,6 +79,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new PaddingCmd(kCmdNamePadding, 2, kCmdFlagsWrite | kCmdFlagsAdmin));
   add(new PKPatternMatchDelCmd(kCmdNamePKPatternMatchDel, 3, kCmdFlagsWrite | kCmdFlagsAdmin));
   add(new DummyCmd(kCmdDummy, 0, kCmdFlagsWrite | kCmdFlagsSinglePartition));
+  add(new CommandCmd(kCmdNameCommand, 0, kCmdFlagsRead | kCmdFlagsAdmin));
 
 #if 0
   // Slots related
