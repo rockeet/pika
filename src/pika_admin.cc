@@ -2398,7 +2398,6 @@ static CommandResponseInfo const command_response_info[] = {
 void CommandCmd::DoInitial() {
   res_.AppendArrayLen(sizeof(command_response_info)/sizeof(command_response_info[0]));
   for (const auto& cmdinfo : command_response_info) {
-    std::string item;
     res_.AppendArrayLen(6);
     res_.AppendString(cmdinfo.cmd);
     res_.AppendInteger(cmdinfo.arity);
