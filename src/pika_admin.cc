@@ -2249,3 +2249,173 @@ void DummyCmd::DoInitial() {
 
 void DummyCmd::Do(const std::shared_ptr<Partition>& partition) {
 }
+
+struct CommandResponseInfo {
+  std::string cmd;
+  long long arity;
+  std::vector<std::string> flags;
+  long long first;
+  long long last;
+  long long step;
+};
+
+static CommandResponseInfo const command_response_info[] = {
+  {"append",3,{"write","denyoom"},1,1,1},
+  {"auth",2,{"noscript","loading","stale","fast"},0,0,0},
+  {"bgsave",-1,{"admin","noscript"},0,0,0},
+  {"bitcount",-2,{"readonly"},1,1,1},
+  {"bitop",-4,{"write","denyoom"},2,-1,1},
+  {"lset",4,{"write","denyoom"},1,1,1},
+  {"bitpos",-3,{"readonly"},1,1,1},
+  {"client",-2,{"admin","noscript"},0,0,0},
+  {"config",-2,{"admin","noscript","loading","stale"},0,0,0},
+  {"dbsize",1,{"readonly","fast"},0,0,0},
+  {"decr",2,{"write","denyoom","fast"},1,1,1},
+  {"decrby",3,{"write","denyoom","fast"},1,1,1},
+  {"del",-2,{"write"},1,-1,1},
+  {"echo",2,{"fast"},0,0,0},
+  {"exists",-2,{"readonly","fast"},1,-1,1},
+  {"expire",3,{"write","fast"},1,1,1},
+  {"expireat",3,{"write","fast"},1,1,1},
+  {"flushall",-1,{"write"},0,0,0},
+  {"flushdb",-1,{"write"},0,0,0},
+  {"geoadd",-5,{"write","denyoom"},1,1,1},
+  {"geodist",-4,{"readonly"},1,1,1},
+  {"geohash",-2,{"readonly"},1,1,1},
+  {"geopos",-2,{"readonly"},1,1,1},
+  {"georadius",-6,{"write","movablekeys"},1,1,1},
+  {"georadiusbymember",-5,{"write","movablekeys"},1,1,1},
+  {"get",2,{"readonly","fast"},1,1,1},
+  {"getbit",3,{"readonly","fast"},1,1,1},
+  {"getrange",4,{"readonly"},1,1,1},
+  {"getset",3,{"write","denyoom"},1,1,1},
+  {"hdel",-3,{"write","fast"},1,1,1},
+  {"hexists",3,{"readonly","fast"},1,1,1},
+  {"hget",3,{"readonly","fast"},1,1,1},
+  {"hgetall",2,{"readonly","random"},1,1,1},
+  {"hincrby",4,{"write","denyoom","fast"},1,1,1},
+  {"hincrbyfloat",4,{"write","denyoom","fast"},1,1,1},
+  {"hkeys",2,{"readonly","sort_for_script"},1,1,1},
+  {"hlen",2,{"readonly","fast"},1,1,1},
+  {"hmget",-3,{"readonly","fast"},1,1,1},
+  {"hmset",-4,{"write","denyoom","fast"},1,1,1},
+  {"hscan",-3,{"readonly","random"},1,1,1},
+  {"hset",-4,{"write","denyoom","fast"},1,1,1},
+  {"hsetnx",4,{"write","denyoom","fast"},1,1,1},
+  {"hstrlen",3,{"readonly","fast"},1,1,1},
+  {"hvals",2,{"readonly","sort_for_script"},1,1,1},
+  {"incr",2,{"write","denyoom","fast"},1,1,1},
+  {"incrby",3,{"write","denyoom","fast"},1,1,1},
+  {"incrbyfloat",3,{"write","denyoom","fast"},1,1,1},
+  {"info",-1,{"random","loading","stale"},0,0,0},
+  {"keys",2,{"readonly","sort_for_script"},0,0,0},
+  {"lindex",3,{"readonly"},1,1,1},
+  {"linsert",5,{"write","denyoom"},1,1,1},
+  {"llen",2,{"readonly","fast"},1,1,1},
+  {"lpop",2,{"write","fast"},1,1,1},
+  {"lpush",-3,{"write","denyoom","fast"},1,1,1},
+  {"lpushx",-3,{"write","denyoom","fast"},1,1,1},
+  {"lrange",4,{"readonly"},1,1,1},
+  {"lrem",4,{"write"},1,1,1},
+  {"ltrim",4,{"write"},1,1,1},
+  {"mget",-2,{"readonly","fast"},1,-1,1},
+  {"monitor",1,{"admin","noscript"},0,0,0},
+  {"mset",-3,{"write","denyoom"},1,-1,2},
+  {"msetnx",-3,{"write","denyoom"},1,-1,2},
+  {"persist",2,{"write","fast"},1,1,1},
+  {"pexpire",3,{"write","fast"},1,1,1},
+  {"pexpireat",3,{"write","fast"},1,1,1},
+  {"pfadd",-2,{"write","denyoom","fast"},1,1,1},
+  {"pfcount",-2,{"readonly"},1,-1,1},
+  {"pfmerge",-2,{"write","denyoom"},1,-1,1},
+  {"ping",-1,{"stale","fast"},0,0,0},
+  {"psetex",4,{"write","denyoom"},1,1,1},
+  {"psubscribe",-2,{"pubsub","noscript","loading","stale"},0,0,0},
+  {"pttl",2,{"readonly","random","fast"},1,1,1},
+  {"publish",3,{"pubsub","loading","stale","fast"},0,0,0},
+  {"pubsub",-2,{"pubsub","random","loading","stale"},0,0,0},
+  {"punsubscribe",-1,{"pubsub","noscript","loading","stale"},0,0,0},
+  {"rpop",2,{"write","fast"},1,1,1},
+  {"rpoplpush",3,{"write","denyoom"},1,2,1},
+  {"rpush",-3,{"write","denyoom","fast"},1,1,1},
+  {"rpushx",-3,{"write","denyoom","fast"},1,1,1},
+  {"sadd",-3,{"write","denyoom","fast"},1,1,1},
+  {"scan",-2,{"readonly","random"},0,0,0},
+  {"scard",2,{"readonly","fast"},1,1,1},
+  {"sdiff",-2,{"readonly","sort_for_script"},1,-1,1},
+  {"sdiffstore",-3,{"write","denyoom"},1,-1,1},
+  {"select",2,{"loading","fast"},0,0,0},
+  {"set",-3,{"write","denyoom"},1,1,1},
+  {"setbit",4,{"write","denyoom"},1,1,1},
+  {"setex",4,{"write","denyoom"},1,1,1},
+  {"setnx",3,{"write","denyoom","fast"},1,1,1},
+  {"setrange",4,{"write","denyoom"},1,1,1},
+  {"shutdown",-1,{"admin","noscript","loading","stale"},0,0,0},
+  {"sinter",-2,{"readonly","sort_for_script"},1,-1,1},
+  {"sinterstore",-3,{"write","denyoom"},1,-1,1},
+  {"sismember",3,{"readonly","fast"},1,1,1},
+  {"slaveof",3,{"admin","noscript","stale"},0,0,0},
+  {"slowlog",-2,{"admin","random"},0,0,0},
+  {"smembers",2,{"readonly","sort_for_script"},1,1,1},
+  {"smove",4,{"write","fast"},1,2,1},
+  {"spop",-2,{"write","random","fast"},1,1,1},
+  {"srandmember",-2,{"readonly","random"},1,1,1},
+  {"srem",-3,{"write","fast"},1,1,1},
+  {"sscan",-3,{"readonly","random"},1,1,1},
+  {"strlen",2,{"readonly","fast"},1,1,1},
+  {"subscribe",-2,{"pubsub","noscript","loading","stale"},0,0,0},
+  {"sunion",-2,{"readonly","sort_for_script"},1,-1,1},
+  {"sunionstore",-3,{"write","denyoom"},1,-1,1},
+  {"time",1,{"random","fast"},0,0,0},
+  {"ttl",2,{"readonly","random","fast"},1,1,1},
+  {"type",2,{"readonly","fast"},1,1,1},
+  {"unsubscribe",-1,{"pubsub","noscript","loading","stale"},0,0,0},
+  {"zadd",-4,{"write","denyoom","fast"},1,1,1},
+  {"zcard",2,{"readonly","fast"},1,1,1},
+  {"zcount",4,{"readonly","fast"},1,1,1},
+  {"zincrby",4,{"write","denyoom","fast"},1,1,1},
+  {"zinterstore",-4,{"write","denyoom","movablekeys"},0,0,0},
+  {"zlexcount",4,{"readonly","fast"},1,1,1},
+  {"zpopmax",-2,{"write","fast"},1,1,1},
+  {"zpopmin",-2,{"write","fast"},1,1,1},
+  {"zrange",-4,{"readonly"},1,1,1},
+  {"zrangebylex",-4,{"readonly"},1,1,1},
+  {"zrangebyscore",-4,{"readonly"},1,1,1},
+  {"zrank",3,{"readonly","fast"},1,1,1},
+  {"zrem",-3,{"write","fast"},1,1,1},
+  {"zremrangebylex",4,{"write"},1,1,1},
+  {"zremrangebyrank",4,{"write"},1,1,1},
+  {"zremrangebyscore",4,{"write"},1,1,1},
+  {"zrevrange",-4,{"readonly"},1,1,1},
+  {"zrevrangebylex",-4,{"readonly"},1,1,1},
+  {"zrevrangebyscore",-4,{"readonly"},1,1,1},
+  {"zrevrank",3,{"readonly","fast"},1,1,1},
+  {"zscan",-3,{"readonly","random"},1,1,1},
+  {"zscore",3,{"readonly","fast"},1,1,1},
+  {"zunionstore",-4,{"write","denyoom","movablekeys"},0,0,0},
+};
+
+void CommandCmd::DoInitial() {
+  res_.AppendArrayLen(sizeof(command_response_info)/sizeof(command_response_info[0]));
+  for (const auto& cmdinfo : command_response_info) {
+    std::string item;
+    res_.AppendArrayLen(6);
+    res_.AppendString(cmdinfo.cmd);
+    res_.AppendInteger(cmdinfo.arity);
+
+    res_.AppendArrayLen(cmdinfo.flags.size());
+    for (auto const &flag:cmdinfo.flags) {
+      res_.AppendString(flag);
+    }
+
+    res_.AppendInteger(cmdinfo.first);
+    res_.AppendInteger(cmdinfo.last);
+    res_.AppendInteger(cmdinfo.step);
+  }
+  return;
+}
+
+void CommandCmd::Do(const std::shared_ptr<Partition>& partition) {
+  //response set in CommandCmd::DoInitial
+  return;
+}

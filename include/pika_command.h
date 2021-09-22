@@ -217,6 +217,8 @@ const fstring kCmdNamePkClusterSlotsSlaveof = "pkclusterslotsslaveof";
 const fstring kCmdNamePkClusterAddTable = "pkclusteraddtable";
 const fstring kCmdNamePkClusterDelTable = "pkclusterdeltable";
 
+const fstring kCmdNameCommand = "command";
+
 const fstring kClusterPrefix = "pkcluster";
 typedef pink::RedisCmdArgsType PikaCmdArgsType;
 static const int RAW_ARGS_LEN = 1024 * 1024; 

@@ -454,4 +454,15 @@ class DummyCmd : public Cmd {
   void DoInitial() override;
 };
 
+class CommandCmd : public Cmd {
+ public:
+  using Cmd::Cmd;
+  void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
+  void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
+  void Merge() override {}
+  Cmd* Clone() override { return new CommandCmd(*this); }
+ private:
+  void DoInitial() override;
+};
+
 #endif  // PIKA_ADMIN_H_
