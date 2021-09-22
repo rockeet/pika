@@ -79,6 +79,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new PaddingCmd(kCmdNamePadding, 2, kCmdFlagsWrite | kCmdFlagsAdmin));
   add(new PKPatternMatchDelCmd(kCmdNamePKPatternMatchDel, 3, kCmdFlagsWrite | kCmdFlagsAdmin));
   add(new DummyCmd(kCmdDummy, 0, kCmdFlagsWrite | kCmdFlagsSinglePartition));
+  add(new CommandCmd(kCmdNameCommand, 0, kCmdFlagsRead | kCmdFlagsAdmin));
 
 #if 0
   // Slots related
@@ -251,7 +252,6 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new PUnSubscribeCmd(kCmdNamePUnSubscribe, -1, kCmdFlagsRead | kCmdFlagsPubSub));
   add(new PubSubCmd(kCmdNamePubSub, -2, kCmdFlagsRead | kCmdFlagsPubSub));
 
-  add(new CommandCmd(kCmdNameCommand, 0, kCmdFlagsRead));
 
   // total_key_size() with align = 1960, fit to 2032 = 8*(255-1), ok to use uint8_t for LinkTp
   fprintf(stderr, "%s: cmdtab->total_key_size() = %zd\n", __func__, cmd_table->total_key_size());
