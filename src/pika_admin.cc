@@ -17,6 +17,11 @@
 #include "include/pika_version.h"
 #include "include/build_version.h"
 
+#include <zstd/common/xxhash.h>
+#include <terark/gold_hash_map.hpp>
+#include <terark/hash_strmap.hpp>
+#include <terark/util/function.hpp>
+
 #ifdef TCMALLOC_EXTENSION
 #include <gperftools/malloc_extension.h>
 #endif
@@ -2250,171 +2255,203 @@ void DummyCmd::DoInitial() {
 void DummyCmd::Do(const std::shared_ptr<Partition>& partition) {
 }
 
-struct CommandResponseInfo {
-  std::string cmd;
-  long long arity;
-  std::vector<std::string> flags;
-  long long first;
-  long long last;
-  long long step;
-};
+using namespace terark;
+//using rocksdb::Slice;
 
-static CommandResponseInfo const command_response_info[] = {
-  {"append",3,{"write","denyoom"},1,1,1},
-  {"auth",2,{"noscript","loading","stale","fast"},0,0,0},
-  {"bgsave",-1,{"admin","noscript"},0,0,0},
-  {"bitcount",-2,{"readonly"},1,1,1},
-  {"bitop",-4,{"write","denyoom"},2,-1,1},
-  {"lset",4,{"write","denyoom"},1,1,1},
-  {"bitpos",-3,{"readonly"},1,1,1},
-  {"client",-2,{"admin","noscript"},0,0,0},
-  {"config",-2,{"admin","noscript","loading","stale"},0,0,0},
-  {"dbsize",1,{"readonly","fast"},0,0,0},
-  {"decr",2,{"write","denyoom","fast"},1,1,1},
-  {"decrby",3,{"write","denyoom","fast"},1,1,1},
-  {"del",-2,{"write"},1,-1,1},
-  {"echo",2,{"fast"},0,0,0},
-  {"exists",-2,{"readonly","fast"},1,-1,1},
-  {"expire",3,{"write","fast"},1,1,1},
-  {"expireat",3,{"write","fast"},1,1,1},
-  {"flushall",-1,{"write"},0,0,0},
-  {"flushdb",-1,{"write"},0,0,0},
-  {"geoadd",-5,{"write","denyoom"},1,1,1},
-  {"geodist",-4,{"readonly"},1,1,1},
-  {"geohash",-2,{"readonly"},1,1,1},
-  {"geopos",-2,{"readonly"},1,1,1},
-  {"georadius",-6,{"write","movablekeys"},1,1,1},
-  {"georadiusbymember",-5,{"write","movablekeys"},1,1,1},
-  {"get",2,{"readonly","fast"},1,1,1},
-  {"getbit",3,{"readonly","fast"},1,1,1},
-  {"getrange",4,{"readonly"},1,1,1},
-  {"getset",3,{"write","denyoom"},1,1,1},
-  {"hdel",-3,{"write","fast"},1,1,1},
-  {"hexists",3,{"readonly","fast"},1,1,1},
-  {"hget",3,{"readonly","fast"},1,1,1},
-  {"hgetall",2,{"readonly","random"},1,1,1},
-  {"hincrby",4,{"write","denyoom","fast"},1,1,1},
-  {"hincrbyfloat",4,{"write","denyoom","fast"},1,1,1},
-  {"hkeys",2,{"readonly","sort_for_script"},1,1,1},
-  {"hlen",2,{"readonly","fast"},1,1,1},
-  {"hmget",-3,{"readonly","fast"},1,1,1},
-  {"hmset",-4,{"write","denyoom","fast"},1,1,1},
-  {"hscan",-3,{"readonly","random"},1,1,1},
-  {"hset",-4,{"write","denyoom","fast"},1,1,1},
-  {"hsetnx",4,{"write","denyoom","fast"},1,1,1},
-  {"hstrlen",3,{"readonly","fast"},1,1,1},
-  {"hvals",2,{"readonly","sort_for_script"},1,1,1},
-  {"incr",2,{"write","denyoom","fast"},1,1,1},
-  {"incrby",3,{"write","denyoom","fast"},1,1,1},
-  {"incrbyfloat",3,{"write","denyoom","fast"},1,1,1},
-  {"info",-1,{"random","loading","stale"},0,0,0},
-  {"keys",2,{"readonly","sort_for_script"},0,0,0},
-  {"lindex",3,{"readonly"},1,1,1},
-  {"linsert",5,{"write","denyoom"},1,1,1},
-  {"llen",2,{"readonly","fast"},1,1,1},
-  {"lpop",2,{"write","fast"},1,1,1},
-  {"lpush",-3,{"write","denyoom","fast"},1,1,1},
-  {"lpushx",-3,{"write","denyoom","fast"},1,1,1},
-  {"lrange",4,{"readonly"},1,1,1},
-  {"lrem",4,{"write"},1,1,1},
-  {"ltrim",4,{"write"},1,1,1},
-  {"mget",-2,{"readonly","fast"},1,-1,1},
-  {"monitor",1,{"admin","noscript"},0,0,0},
-  {"mset",-3,{"write","denyoom"},1,-1,2},
-  {"msetnx",-3,{"write","denyoom"},1,-1,2},
-  {"persist",2,{"write","fast"},1,1,1},
-  {"pexpire",3,{"write","fast"},1,1,1},
-  {"pexpireat",3,{"write","fast"},1,1,1},
-  {"pfadd",-2,{"write","denyoom","fast"},1,1,1},
-  {"pfcount",-2,{"readonly"},1,-1,1},
-  {"pfmerge",-2,{"write","denyoom"},1,-1,1},
-  {"ping",-1,{"stale","fast"},0,0,0},
-  {"psetex",4,{"write","denyoom"},1,1,1},
-  {"psubscribe",-2,{"pubsub","noscript","loading","stale"},0,0,0},
-  {"pttl",2,{"readonly","random","fast"},1,1,1},
-  {"publish",3,{"pubsub","loading","stale","fast"},0,0,0},
-  {"pubsub",-2,{"pubsub","random","loading","stale"},0,0,0},
-  {"punsubscribe",-1,{"pubsub","noscript","loading","stale"},0,0,0},
-  {"rpop",2,{"write","fast"},1,1,1},
-  {"rpoplpush",3,{"write","denyoom"},1,2,1},
-  {"rpush",-3,{"write","denyoom","fast"},1,1,1},
-  {"rpushx",-3,{"write","denyoom","fast"},1,1,1},
-  {"sadd",-3,{"write","denyoom","fast"},1,1,1},
-  {"scan",-2,{"readonly","random"},0,0,0},
-  {"scard",2,{"readonly","fast"},1,1,1},
-  {"sdiff",-2,{"readonly","sort_for_script"},1,-1,1},
-  {"sdiffstore",-3,{"write","denyoom"},1,-1,1},
-  {"select",2,{"loading","fast"},0,0,0},
-  {"set",-3,{"write","denyoom"},1,1,1},
-  {"setbit",4,{"write","denyoom"},1,1,1},
-  {"setex",4,{"write","denyoom"},1,1,1},
-  {"setnx",3,{"write","denyoom","fast"},1,1,1},
-  {"setrange",4,{"write","denyoom"},1,1,1},
-  {"shutdown",-1,{"admin","noscript","loading","stale"},0,0,0},
-  {"sinter",-2,{"readonly","sort_for_script"},1,-1,1},
-  {"sinterstore",-3,{"write","denyoom"},1,-1,1},
-  {"sismember",3,{"readonly","fast"},1,1,1},
-  {"slaveof",3,{"admin","noscript","stale"},0,0,0},
-  {"slowlog",-2,{"admin","random"},0,0,0},
-  {"smembers",2,{"readonly","sort_for_script"},1,1,1},
-  {"smove",4,{"write","fast"},1,2,1},
-  {"spop",-2,{"write","random","fast"},1,1,1},
-  {"srandmember",-2,{"readonly","random"},1,1,1},
-  {"srem",-3,{"write","fast"},1,1,1},
-  {"sscan",-3,{"readonly","random"},1,1,1},
-  {"strlen",2,{"readonly","fast"},1,1,1},
-  {"subscribe",-2,{"pubsub","noscript","loading","stale"},0,0,0},
-  {"sunion",-2,{"readonly","sort_for_script"},1,-1,1},
-  {"sunionstore",-3,{"write","denyoom"},1,-1,1},
-  {"time",1,{"random","fast"},0,0,0},
-  {"ttl",2,{"readonly","random","fast"},1,1,1},
-  {"type",2,{"readonly","fast"},1,1,1},
-  {"unsubscribe",-1,{"pubsub","noscript","loading","stale"},0,0,0},
-  {"zadd",-4,{"write","denyoom","fast"},1,1,1},
-  {"zcard",2,{"readonly","fast"},1,1,1},
-  {"zcount",4,{"readonly","fast"},1,1,1},
-  {"zincrby",4,{"write","denyoom","fast"},1,1,1},
-  {"zinterstore",-4,{"write","denyoom","movablekeys"},0,0,0},
-  {"zlexcount",4,{"readonly","fast"},1,1,1},
-  {"zpopmax",-2,{"write","fast"},1,1,1},
-  {"zpopmin",-2,{"write","fast"},1,1,1},
-  {"zrange",-4,{"readonly"},1,1,1},
-  {"zrangebylex",-4,{"readonly"},1,1,1},
-  {"zrangebyscore",-4,{"readonly"},1,1,1},
-  {"zrank",3,{"readonly","fast"},1,1,1},
-  {"zrem",-3,{"write","fast"},1,1,1},
-  {"zremrangebylex",4,{"write"},1,1,1},
-  {"zremrangebyrank",4,{"write"},1,1,1},
-  {"zremrangebyscore",4,{"write"},1,1,1},
-  {"zrevrange",-4,{"readonly"},1,1,1},
-  {"zrevrangebylex",-4,{"readonly"},1,1,1},
-  {"zrevrangebyscore",-4,{"readonly"},1,1,1},
-  {"zrevrank",3,{"readonly","fast"},1,1,1},
-  {"zscan",-3,{"readonly","random"},1,1,1},
-  {"zscore",3,{"readonly","fast"},1,1,1},
-  {"zunionstore",-4,{"write","denyoom","movablekeys"},0,0,0},
-};
-
-void CommandCmd::DoInitial() {
-  res_.AppendArrayLen(sizeof(command_response_info)/sizeof(command_response_info[0]));
-  for (const auto& cmdinfo : command_response_info) {
-    res_.AppendArrayLen(6);
-    res_.AppendString(cmdinfo.cmd);
-    res_.AppendInteger(cmdinfo.arity);
-
-    res_.AppendArrayLen(cmdinfo.flags.size());
-    for (auto const &flag:cmdinfo.flags) {
-      res_.AppendString(flag);
-    }
-
-    res_.AppendInteger(cmdinfo.first);
-    res_.AppendInteger(cmdinfo.last);
-    res_.AppendInteger(cmdinfo.step);
+struct SliceHashEqual {
+  inline size_t hash(const rocksdb::Slice& x) const {
+    return (size_t)XXH64(x.data_, x.size_, 202109161242ULL);
   }
+  inline bool equal(const rocksdb::Slice& x, const rocksdb::Slice& y) const {
+    return x == y;
+  }
+};
+
+struct CommandResponseInfo {
+  long arity;
+  long first;
+  long last;
+  long step;
+  rocksdb::Slice cmd;
+  //std::initializer_list<rocksdb::Slice> flags;
+  std::vector<rocksdb::Slice> flags;
+  
+  struct GetKey {
+    const rocksdb::Slice& operator()(const CommandResponseInfo& x) const {
+      return x.cmd;
+    }
+  };
+};
+
+static gold_hash_tab<rocksdb::Slice, CommandResponseInfo, SliceHashEqual, CommandResponseInfo::GetKey> command_response_info = {
+  {3,1,1,1,"append",{"write","denyoom"}},
+  {2,0,0,0,"auth",{"noscript","loading","stale","fast"}},
+  {-1,0,0,0,"bgsave",{"admin","noscript"}},
+  {-2,1,1,1,"bitcount",{"readonly"}},
+  {-4,2,-1,1,"bitop",{"write","denyoom"}},
+  {4,1,1,1,"lset",{"write","denyoom"}},
+  {-3,1,1,1,"bitpos",{"readonly"}},
+  {-2,0,0,0,"client",{"admin","noscript"}},
+  {-2,0,0,0,"config",{"admin","noscript","loading","stale"}},
+  {1,0,0,0,"dbsize",{"readonly","fast"}},
+  {2,1,1,1,"decr",{"write","denyoom","fast"}},
+  {3,1,1,1,"decrby",{"write","denyoom","fast"}},
+  {-2,1,-1,1,"del",{"write"}},
+  {2,0,0,0,"echo",{"fast"}},
+  {-2,1,-1,1,"exists",{"readonly","fast"}},
+  {3,1,1,1,"expire",{"write","fast"}},
+  {3,1,1,1,"expireat",{"write","fast"}},
+  {-1,0,0,0,"flushall",{"write"}},
+  {-1,0,0,0,"flushdb",{"write"}},
+  {-5,1,1,1,"geoadd",{"write","denyoom"}},
+  {-4,1,1,1,"geodist",{"readonly"}},
+  {-2,1,1,1,"geohash",{"readonly"}},
+  {-2,1,1,1,"geopos",{"readonly"}},
+  {-6,1,1,1,"georadius",{"write","movablekeys"}},
+  {-5,1,1,1,"georadiusbymember",{"write","movablekeys"}},
+  {2,1,1,1,"get",{"readonly","fast"}},
+  {3,1,1,1,"getbit",{"readonly","fast"}},
+  {4,1,1,1,"getrange",{"readonly"}},
+  {3,1,1,1,"getset",{"write","denyoom"}},
+  {-3,1,1,1,"hdel",{"write","fast"}},
+  {3,1,1,1,"hexists",{"readonly","fast"}},
+  {3,1,1,1,"hget",{"readonly","fast"}},
+  {2,1,1,1,"hgetall",{"readonly","random"}},
+  {4,1,1,1,"hincrby",{"write","denyoom","fast"}},
+  {4,1,1,1,"hincrbyfloat",{"write","denyoom","fast"}},
+  {2,1,1,1,"hkeys",{"readonly","sort_for_script"}},
+  {2,1,1,1,"hlen",{"readonly","fast"}},
+  {-3,1,1,1,"hmget",{"readonly","fast"}},
+  {-4,1,1,1,"hmset",{"write","denyoom","fast"}},
+  {-3,1,1,1,"hscan",{"readonly","random"}},
+  {-4,1,1,1,"hset",{"write","denyoom","fast"}},
+  {4,1,1,1,"hsetnx",{"write","denyoom","fast"}},
+  {3,1,1,1,"hstrlen",{"readonly","fast"}},
+  {2,1,1,1,"hvals",{"readonly","sort_for_script"}},
+  {2,1,1,1,"incr",{"write","denyoom","fast"}},
+  {3,1,1,1,"incrby",{"write","denyoom","fast"}},
+  {3,1,1,1,"incrbyfloat",{"write","denyoom","fast"}},
+  {-1,0,0,0,"info",{"random","loading","stale"}},
+  {2,0,0,0,"keys",{"readonly","sort_for_script"}},
+  {3,1,1,1,"lindex",{"readonly"}},
+  {5,1,1,1,"linsert",{"write","denyoom"}},
+  {2,1,1,1,"llen",{"readonly","fast"}},
+  {2,1,1,1,"lpop",{"write","fast"}},
+  {-3,1,1,1,"lpush",{"write","denyoom","fast"}},
+  {-3,1,1,1,"lpushx",{"write","denyoom","fast"}},
+  {4,1,1,1,"lrange",{"readonly"}},
+  {4,1,1,1,"lrem",{"write"}},
+  {4,1,1,1,"ltrim",{"write"}},
+  {-2,1,-1,1,"mget",{"readonly","fast"}},
+  {1,0,0,0,"monitor",{"admin","noscript"}},
+  {-3,1,-1,2,"mset",{"write","denyoom"}},
+  {-3,1,-1,2,"msetnx",{"write","denyoom"}},
+  {2,1,1,1,"persist",{"write","fast"}},
+  {3,1,1,1,"pexpire",{"write","fast"}},
+  {3,1,1,1,"pexpireat",{"write","fast"}},
+  {-2,1,1,1,"pfadd",{"write","denyoom","fast"}},
+  {-2,1,-1,1,"pfcount",{"readonly"}},
+  {-2,1,-1,1,"pfmerge",{"write","denyoom"}},
+  {-1,0,0,0,"ping",{"stale","fast"}},
+  {4,1,1,1,"psetex",{"write","denyoom"}},
+  {-2,0,0,0,"psubscribe",{"pubsub","noscript","loading","stale"}},
+  {2,1,1,1,"pttl",{"readonly","random","fast"}},
+  {3,0,0,0,"publish",{"pubsub","loading","stale","fast"}},
+  {-2,0,0,0,"pubsub",{"pubsub","random","loading","stale"}},
+  {-1,0,0,0,"punsubscribe",{"pubsub","noscript","loading","stale"}},
+  {2,1,1,1,"rpop",{"write","fast"}},
+  {3,1,2,1,"rpoplpush",{"write","denyoom"}},
+  {-3,1,1,1,"rpush",{"write","denyoom","fast"}},
+  {-3,1,1,1,"rpushx",{"write","denyoom","fast"}},
+  {-3,1,1,1,"sadd",{"write","denyoom","fast"}},
+  {-2,0,0,0,"scan",{"readonly","random"}},
+  {2,1,1,1,"scard",{"readonly","fast"}},
+  {-2,1,-1,1,"sdiff",{"readonly","sort_for_script"}},
+  {-3,1,-1,1,"sdiffstore",{"write","denyoom"}},
+  {2,0,0,0,"select",{"loading","fast"}},
+  {-3,1,1,1,"set",{"write","denyoom"}},
+  {4,1,1,1,"setbit",{"write","denyoom"}},
+  {4,1,1,1,"setex",{"write","denyoom"}},
+  {3,1,1,1,"setnx",{"write","denyoom","fast"}},
+  {4,1,1,1,"setrange",{"write","denyoom"}},
+  {-1,0,0,0,"shutdown",{"admin","noscript","loading","stale"}},
+  {-2,1,-1,1,"sinter",{"readonly","sort_for_script"}},
+  {-3,1,-1,1,"sinterstore",{"write","denyoom"}},
+  {3,1,1,1,"sismember",{"readonly","fast"}},
+  {3,0,0,0,"slaveof",{"admin","noscript","stale"}},
+  {-2,0,0,0,"slowlog",{"admin","random"}},
+  {2,1,1,1,"smembers",{"readonly","sort_for_script"}},
+  {4,1,2,1,"smove",{"write","fast"}},
+  {-2,1,1,1,"spop",{"write","random","fast"}},
+  {-2,1,1,1,"srandmember",{"readonly","random"}},
+  {-3,1,1,1,"srem",{"write","fast"}},
+  {-3,1,1,1,"sscan",{"readonly","random"}},
+  {2,1,1,1,"strlen",{"readonly","fast"}},
+  {-2,0,0,0,"subscribe",{"pubsub","noscript","loading","stale"}},
+  {-2,1,-1,1,"sunion",{"readonly","sort_for_script"}},
+  {-3,1,-1,1,"sunionstore",{"write","denyoom"}},
+  {1,0,0,0,"time",{"random","fast"}},
+  {2,1,1,1,"ttl",{"readonly","random","fast"}},
+  {2,1,1,1,"type",{"readonly","fast"}},
+  {-1,0,0,0,"unsubscribe",{"pubsub","noscript","loading","stale"}},
+  {-4,1,1,1,"zadd",{"write","denyoom","fast"}},
+  {2,1,1,1,"zcard",{"readonly","fast"}},
+  {4,1,1,1,"zcount",{"readonly","fast"}},
+  {4,1,1,1,"zincrby",{"write","denyoom","fast"}},
+  {-4,0,0,0,"zinterstore",{"write","denyoom","movablekeys"}},
+  {4,1,1,1,"zlexcount",{"readonly","fast"}},
+  {-2,1,1,1,"zpopmax",{"write","fast"}},
+  {-2,1,1,1,"zpopmin",{"write","fast"}},
+  {-4,1,1,1,"zrange",{"readonly"}},
+  {-4,1,1,1,"zrangebylex",{"readonly"}},
+  {-4,1,1,1,"zrangebyscore",{"readonly"}},
+  {3,1,1,1,"zrank",{"readonly","fast"}},
+  {-3,1,1,1,"zrem",{"write","fast"}},
+  {4,1,1,1,"zremrangebylex",{"write"}},
+  {4,1,1,1,"zremrangebyrank",{"write"}},
+  {4,1,1,1,"zremrangebyscore",{"write"}},
+  {-4,1,1,1,"zrevrange",{"readonly"}},
+  {-4,1,1,1,"zrevrangebylex",{"readonly"}},
+  {-4,1,1,1,"zrevrangebyscore",{"readonly"}},
+  {3,1,1,1,"zrevrank",{"readonly","fast"}},
+  {-3,1,1,1,"zscan",{"readonly","random"}},
+  {3,1,1,1,"zscore",{"readonly","fast"}},
+  {-4,0,0,0,"zunionstore",{"write","denyoom","movablekeys"}},
+};
+
+void CommandCmd::DoInitial() { // ? 是进程只执行一次 还是每个命令执行一次
   return;
 }
 
 void CommandCmd::Do(const std::shared_ptr<Partition>& partition) {
-  //response set in CommandCmd::DoInitial
+  auto local_append = [this](CommandResponseInfo const &info){
+    this->res_.AppendArrayLen(6);
+    this->res_.AppendString(info.cmd);
+    this->res_.AppendInteger(info.arity);
+
+    this->res_.AppendArrayLen(info.flags.size());
+    for (auto const &flag:info.flags) {
+      this->res_.AppendString(flag);
+    }
+
+    this->res_.AppendInteger(info.first);
+    this->res_.AppendInteger(info.last);
+    this->res_.AppendInteger(info.step);
+  };
+
+  if (argv_.size() > 2) {
+    if (argv_[1] == "info") {
+      res_.AppendArrayLen(argv_.size()-2);
+     for (size_t i = 2; i < argv_.size(); i++) {
+       local_append(*command_response_info.find(argv_[i]));
+     }
+      return;
+    }
+  }
+
+  res_.AppendArrayLen(command_response_info.size());
+  for (const auto& cmdinfo : command_response_info) {
+    local_append(cmdinfo);
+  }
   return;
 }
