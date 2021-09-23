@@ -31,7 +31,7 @@ env PATH=/node-shared/vcpkg/installed/x64-linux/tools/protobuf:$PATH \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/topling-core/3rdparty/zstd \
               -I/node-shared/leipeng/osc/rocksdb/sideplugin/topling-rocks/src \
               -I/node-shared/leipeng/osc/topling-core/src" \
-    LDFLAGS="-L/node-shared/lib -lterark-core-${COMPILER}-${LIB_SUFFIX}" \
+    LDFLAGS="-L/node-shared/lib -lterark-core-${COMPILER}-${LIB_SUFFIX} -lterark-zbs-${COMPILER}-${LIB_SUFFIX}" \
     PROTO_BUF_LDFLAGS="-L/node-shared/lib -letcd-cpp-api" \
     ROCKSDB_PATH="/node-shared/leipeng/osc/rocksdb" \
     make DISABLE_UPDATE_SB=1 DISABLE_WARNING_AS_ERROR=1 $@
