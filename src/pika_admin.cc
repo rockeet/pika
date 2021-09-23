@@ -2419,7 +2419,7 @@ static gold_hash_tab<rocksdb::Slice, CommandResponseInfo, SliceHashEqual, Comman
   {-4,0,0,0,"zunionstore",{"write","denyoom","movablekeys"}},
 };
 
-void CommandCmd::DoInitial() { // ? 是进程只执行一次 还是每个命令执行一次
+void CommandCmd::DoInitial() {
   return;
 }
 
