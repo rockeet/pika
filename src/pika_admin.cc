@@ -2219,9 +2219,9 @@ void TcmallocCmd::Do(const std::shared_ptr<Partition>& partition) {
 
 void PKPatternMatchDelCmd::DoInitial() {
   if (!CheckArg(argv_.size())) {
-    res_.SetRes(CmdRes::kWrongNum, kCmdNamePKPatternMatchDel); 
+    res_.SetRes(CmdRes::kWrongNum, kCmdNamePKPatternMatchDel);
     return;
-  } 
+  }
   pattern_ = argv_[1];
   if (!strcasecmp(argv_[2].data(), "set")) {
     type_ = blackwidow::kSets;
@@ -2273,9 +2273,8 @@ struct CommandResponseInfo {
   long last;
   long step;
   rocksdb::Slice cmd;
-  //std::initializer_list<rocksdb::Slice> flags;
   std::vector<rocksdb::Slice> flags;
-  
+
   struct GetKey {
     const rocksdb::Slice& operator()(const CommandResponseInfo& x) const {
       return x.cmd;
@@ -2283,7 +2282,11 @@ struct CommandResponseInfo {
   };
 };
 
-static gold_hash_tab<rocksdb::Slice, CommandResponseInfo, SliceHashEqual, CommandResponseInfo::GetKey> command_response_info = {
+static
+gold_hash_tab<rocksdb::Slice, CommandResponseInfo,
+              SliceHashEqual, CommandResponseInfo::GetKey
+             >
+command_response_info = {
   {3,1,1,1,"append",{"write","denyoom"}},
   {2,0,0,0,"auth",{"noscript","loading","stale","fast"}},
   {-1,0,0,0,"bgsave",{"admin","noscript"}},
@@ -2442,9 +2445,9 @@ void CommandCmd::Do(const std::shared_ptr<Partition>& partition) {
   if (argv_.size() > 2) {
     if (argv_[1] == "info") {
       res_.AppendArrayLen(argv_.size()-2);
-     for (size_t i = 2; i < argv_.size(); i++) {
-       local_append(*command_response_info.find(argv_[i]));
-     }
+      for (size_t i = 2; i < argv_.size(); i++) {
+        local_append(*command_response_info.find(argv_[i]));
+      }
       return;
     }
   }
