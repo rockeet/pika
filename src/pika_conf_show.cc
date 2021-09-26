@@ -6,9 +6,9 @@ extern PikaConf* g_pika_conf;
 namespace topling {
 using namespace ROCKSDB_NAMESPACE;
 
-class PikaConfShowPlugin : public AnyPlugin {
+class TodisConfShowPlugin : public AnyPlugin {
 public:
-  const char* Name() const override { return "PikaConfShowPlugin"; }
+  const char* Name() const override { return "TodisConfShowPlugin"; }
   void Update(const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     json js;
@@ -111,8 +111,8 @@ public:
   }
 };
 
-ROCKSDB_REG_DEFAULT_CONS(PikaConfShowPlugin, AnyPlugin);
-ROCKSDB_REG_AnyPluginManip("PikaConfShowPlugin");
+ROCKSDB_REG_DEFAULT_CONS(TodisConfShowPlugin, AnyPlugin);
+ROCKSDB_REG_AnyPluginManip("TodisConfShowPlugin");
 
 
 } // namespace topling
