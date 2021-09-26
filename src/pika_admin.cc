@@ -765,10 +765,9 @@ void InfoCmd::InfoServer(std::string& info) {
   snprintf(version, sizeof(version), "%d.%d.%d", PIKA_MAJOR,
       PIKA_MINOR, PIKA_PATCH);
   tmp_stream << "# Server\r\n";
-  tmp_stream << "pika_version:" << version << "\r\n";
+  tmp_stream << "todis_version:" << version << "\r\n";
   tmp_stream << pika_build_git_sha << "\r\n";
-  tmp_stream << "pika_build_compile_date: " <<
-    pika_build_compile_date << "\r\n";
+  tmp_stream << "todis_build_compile_date: " << pika_build_compile_date << "\r\n";
   tmp_stream << "os:" << host_info.sysname << " " << host_info.release << " " << host_info.machine << "\r\n";
   tmp_stream << "arch_bits:" << (reinterpret_cast<char*>(&host_info.machine) + strlen(host_info.machine) - 2) << "\r\n";
   tmp_stream << "process_id:" << getpid() << "\r\n";
