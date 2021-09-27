@@ -17,7 +17,7 @@
 #include "include/pika_version.h"
 #include "include/build_version.h"
 
-#include <zstd/common/xxhash.h>
+#include "blackwidow/slice_hash.h"
 #include <terark/gold_hash_map.hpp>
 #include <terark/hash_strmap.hpp>
 #include <terark/util/function.hpp>
@@ -2256,15 +2256,6 @@ void DummyCmd::Do(const std::shared_ptr<Partition>& partition) {
 
 using namespace terark;
 //using rocksdb::Slice;
-
-struct SliceHashEqual {
-  inline size_t hash(const rocksdb::Slice& x) const {
-    return (size_t)XXH64(x.data_, x.size_, 202109161242ULL);
-  }
-  inline bool equal(const rocksdb::Slice& x, const rocksdb::Slice& y) const {
-    return x == y;
-  }
-};
 
 struct CommandResponseInfo {
   long arity;
