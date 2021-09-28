@@ -10,9 +10,9 @@
     "StrSimpleEnvNameNotOverwrite": "StringValue",
     "IntSimpleEnvNameNotOverwrite": 16384,
     "OverwriteThisEnv": {
-        "//comment": "overwrite is default to false",
-        "overwrite": true,
-        "value": "force overwrite this env by overwrite true"
+      "//comment": "overwrite is default to false",
+      "overwrite": true,
+      "value": "force overwrite this env by overwrite true"
     }
   },
   "permissions": {
@@ -21,7 +21,7 @@
   },
   "AnyPlugin": {
     "sys_info": "SysInfoShower",
-    "pika_conf": "PikaConfShowPlugin",
+    "todis_conf": "TodisConfShowPlugin",
     "build_version": "BuildVersionsShowPlugin",
     "meta_key_decoder":         "HtmlTextUserKeyCoder",
     "base_data_key_decoder":      "BaseDataKeyDecoder",
@@ -143,15 +143,15 @@
     }
   },
   "TableFactory": {
-    "terark_fast": {
-      "class": "TerarkFastTable",
+    "topling_fast": {
+      "class": "ToplingFastTable",
       "params": {
         "indexType": "MainPatricia",
         "keyPrefixLen": 0
       }
     },
-    "terark_zip": {
-      "class": "TerarkZipTable",
+    "topling_zip": {
+      "class": "ToplingZipTable",
       "params": {
         "localTempDir": "/tmp",
         "indexType": "Mixed_XL_256_32_FL",
@@ -179,28 +179,28 @@
     "dispatch_data_cf": {
       "class": "DispatcherTable",
       "params": {
-        "default": "terark_fast",
+        "default": "topling_fast",
         "readers": {
-          "TerarkFastTable": "terark_fast",
-          "TerarkZipTable": "terark_zip"
+          "ToplingFastTable": "topling_fast",
+          "ToplingZipTable": "topling_zip"
         },
         "level_writers": [
-          "terark_fast", "terark_fast", "terark_fast", "terark_fast",
-          "terark_zip", "terark_zip", "terark_zip", "terark_zip", "terark_zip"
+          "topling_fast", "topling_fast", "topling_fast", "topling_fast",
+          "topling_zip", "topling_zip", "topling_zip", "topling_zip", "topling_zip"
         ]
       }
     },
     "dispatch": {
       "class": "DispatcherTable",
       "params": {
-        "default": "terark_fast",
+        "default": "topling_fast",
         "readers": {
-          "TerarkFastTable": "terark_fast",
-          "TerarkZipTable": "terark_zip"
+          "ToplingFastTable": "topling_fast",
+          "ToplingZipTable": "topling_zip"
         },
         "level_writers": [
-          "terark_fast", "terark_fast",
-          "terark_zip", "terark_zip", "terark_zip", "terark_zip", "terark_zip"
+          "topling_fast", "topling_fast",
+          "topling_zip", "topling_zip", "topling_zip", "topling_zip", "topling_zip"
         ]
       }
     }
