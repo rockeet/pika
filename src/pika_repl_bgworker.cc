@@ -100,7 +100,7 @@ void PikaReplBgWorker::HandleBGWorkerWriteBinlog(void* arg) {
   }
 
   // table_name and partition_id in the vector are same in the bgworker,
-  // because DispatchBinlogRes() have been order them. 
+  // because DispatchBinlogRes() have been order them.
   worker->table_name_ = table_name;
   worker->partition_id_ = partition_id;
 
@@ -193,10 +193,9 @@ void PikaReplBgWorker::HandleBGWorkerWriteBinlog(void* arg) {
       return;
     }
     const char* redis_parser_start = binlog_res.binlog().data() + BINLOG_ENCODE_LEN;
-    int redis_parser_len = static_cast<int>(binlog_res.binlog().size()) - BINLOG_ENCODE_LEN;
-    int processed_len = 0;
+    size_t redis_parser_len = binlog_res.binlog().size() - BINLOG_ENCODE_LEN;
     pink::RedisParserStatus ret = worker->redis_parser_.ProcessInputBuffer(
-      redis_parser_start, redis_parser_len, &processed_len);
+      redis_parser_start, redis_parser_len);
     if (ret != pink::kRedisParserDone) {
       LOG(WARNING) << "Redis parser failed";
       slave_partition->SetReplState(ReplState::kTryConnect);

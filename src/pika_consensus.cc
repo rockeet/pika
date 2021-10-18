@@ -344,10 +344,9 @@ void ConsensusCoordinator::Init() {
 
     redis_parser.data = static_cast<void*>(&table_name_);
     const char* redis_parser_start = binlog.data() + BINLOG_ENCODE_LEN;
-    int redis_parser_len = static_cast<int>(binlog.size()) - BINLOG_ENCODE_LEN;
-    int processed_len = 0;
+    size_t redis_parser_len = binlog.size() - BINLOG_ENCODE_LEN;
     pink::RedisParserStatus ret = redis_parser.ProcessInputBuffer(
-        redis_parser_start, redis_parser_len, &processed_len);
+        redis_parser_start, redis_parser_len);
     if (ret != pink::kRedisParserDone) {
       LOG(FATAL) << PartitionInfo(table_name_, partition_id_).ToString() << "Redis parser parse failed";
       return;
