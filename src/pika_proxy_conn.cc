@@ -21,8 +21,7 @@ PikaProxyConn::PikaProxyConn(int fd, const std::string& ip_port,
 }
 
 
-int PikaProxyConn::DealMessage(
-    const pink::RedisCmdArgsType& argv, std::string* response) {
+int PikaProxyConn::DealMessage(const pink::RedisCmdArgsType& argv) {
   std::string res;
   for (auto& arg : argv) {
     res += arg;
@@ -41,7 +40,7 @@ ParallelConn::ParallelConn(const std::string& addr, ConnConfig& config,
 
 
 Status ParallelConn::Connect() {
-  int num  = parallelConn_.size() + tmpConns_.size(); 
+  int num  = parallelConn_.size() + tmpConns_.size();
   if (num > config_.parallel_) {
     return Status::OK();
   }
@@ -91,7 +90,7 @@ Status ParallelConn::PrepareConn() {
     } else {
       VerifyAuth(item);
       SelectConn(item);
-    } 
+    }
   }
   return Status::OK();
 }
@@ -111,11 +110,11 @@ Status ParallelConn::Start() {
 void ParallelConn::Close() {
   for (auto item : parallelConn_) {
     client_->Close(item.second);
-  } 
-  parallelConn_.clear(); 
+  }
+  parallelConn_.clear();
   for (auto item : tmpConns_) {
     client_->Close(item);
-  } 
+  }
   tmpConns_.clear();
 }
 

@@ -34,9 +34,7 @@ class PikaProxyConn: public pink::RedisConn {
   virtual ~PikaProxyConn() {}
 
  private:
-  int DealMessage(
-      const pink::RedisCmdArgsType& argv,
-      std::string* response) override;
+  int DealMessage(const pink::RedisCmdArgsType&) override;
   std::shared_ptr<ProxyCli> proxy_cli_;
   std::string auth_;
   bool isAuthed_;
@@ -75,7 +73,7 @@ ParallelConn(const std::string& addr, ConnConfig& config,
 
     //std::vector<std::shared_ptr<PikaClientConn>> parallelConn_;
     std::map<int, int> parallelConn_;
-    std::set<int> tmpConns_; 
+    std::set<int> tmpConns_;
     std::string addr_;
     ConnConfig config_;
     std::atomic<int> refCount_;
@@ -93,7 +91,7 @@ class ConnectionPool {
   private:
     // addr and ptr
   ConnConfig config_;
-  std::unordered_map<std::string, ParallelConn *> pool_; 
+  std::unordered_map<std::string, ParallelConn *> pool_;
   std::shared_ptr<pink::BackendThread> client_;
 };
 

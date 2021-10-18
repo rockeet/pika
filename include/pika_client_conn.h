@@ -45,10 +45,10 @@ class PikaClientConn: public pink::RedisConn {
                  int max_conn_rubf_size);
   ~PikaClientConn() override;
 
-  void ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argvs, bool async, std::string* response) override;
+  void ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argvs, bool async) override;
 
   void BatchExecRedisCmd(const std::vector<pink::RedisCmdArgsType>& argvs);
-  int DealMessage(const pink::RedisCmdArgsType& argv, std::string* response) override {
+  int DealMessage(const pink::RedisCmdArgsType& argv) override {
     return 0;
   }
   static void DoBackgroundTask(void* arg);

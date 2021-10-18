@@ -190,7 +190,7 @@ void PikaClientConn::ProcessMonitor(const PikaCmdArgsType& argv) {
 }
 
 static terark::profiling pf;
-void PikaClientConn::ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argvs, bool async, std::string* response) {
+void PikaClientConn::ProcessRedisCmds(std::vector<pink::RedisCmdArgsType>&& argvs, bool async) {
   if (async) {
     BgTaskArg* arg = new BgTaskArg();
     arg->redis_cmds = std::move(argvs);
