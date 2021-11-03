@@ -177,7 +177,7 @@ int PikaConf::Load()
   GetConfStr("slowlog-write-errorlog", &swe);
   slowlog_write_errorlog_ = swe == "yes";
 
-  int tmp_slowlog_log_slower_than;
+  int tmp_slowlog_log_slower_than = -1;
   GetConfInt("slowlog-log-slower-than", &tmp_slowlog_log_slower_than);
   slowlog_log_slower_than_ = tmp_slowlog_log_slower_than;
 
