@@ -102,15 +102,12 @@ class PikaConf : public slash::BaseConf {
 
   // Setter
   void SetJsonFile(const std::string& fname) {
-    RWLock l(&rwlock_, true);
     sideplugin_conf_ = fname;
   }
   void SetPort(const int value) {
-    RWLock l(&rwlock_, true);
     port_ = value;
   }
   void SetThreadNum(const int value) {
-    RWLock l(&rwlock_, true);
     thread_num_ = value;
   }
   void SetTimeout(const int value) {
@@ -119,7 +116,6 @@ class PikaConf : public slash::BaseConf {
     timeout_ = value;
   }
   void SetThreadPoolSize(const int value) {
-    RWLock l(&rwlock_, true);
     thread_pool_size_ = value;
   }
   void SetSlaveof(const std::string& value) {
