@@ -10,7 +10,7 @@ Todis are aimed on all such pain points, and accomplished these goals, users can
 
 ## 2. Features
 1. Computing and Storage are seperated for resilient scaling
-2. Scaling with clicking a button, no need for sharding/partitioning
+2. Auto scaling, no need for sharding/partitioning
 3. Plenty monitoring metrics
 4. Web view for DB internal stats
 
