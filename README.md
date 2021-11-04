@@ -27,15 +27,16 @@ Redis layer is forked from pika with many improvements:
 1. Strorage engine is replaced from RocksDB to ToplingDB
 2. Rewrite performance critical code of pika
 3. Add many monitoring metrics(server side latency histogram for all commands and data len histogram...)
-4. Adapt for ToplingDB SidePlugin, Web view for config and server stats
+4. Adapt for ToplingDB SidePlugin, and Web view for config and server stats
 5. Adapt for ToplingDB distributed compaction
 ### 4.2. Storage Engine layer (ToplingDB)
 ToplingDB is a storage engine developed by [Topling Inc.](https://topling.cn), which forked from [RocksDB](https://github.com/facebook/rocksdb) with many improvments:
-1. [SidePlugin](https://github.com/topling/rockside/wiki)
-2. [Distributed Compaction](https://github.com/topling/rockside/wiki/Distributed-Compaction) which offload compaction to a dedicated cluster, in [Managed Todis](https://topling.cn/products), this cluster is shared by all users and all Todis instances
-3. Topling SST and MemTab which based on [topling-zip](https://github.com/topling/topling-zip)(forked from [terark-zip](https://github.com/bytedance/)terark-zip)
-   * Terark-zip was a core lib of **Terark Inc.** which was [acquired by bytedance at 2019](https://www.baidu.com/s?wd=%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E6%94%B6%E8%B4%AD%E5%A5%87%E7%AE%80%E8%BD%AF%E4%BB%B6)
+1. [SidePlugin](https://github.com/topling/rockside/wiki), [Engine WebView](https://github.com/topling/rockside/wiki/WebView), Monitoring Metrics...
+2. [Distributed Compaction](https://github.com/topling/rockside/wiki/Distributed-Compaction) which offload compaction to a dedicated cluster
+   * In [Managed Todis](https://topling.cn/products), this cluster is shared by all users and all Todis instances
+3. Topling SST and MemTab which based on [topling-zip](https://github.com/topling/topling-zip)(forked from [terark-zip](https://github.com/bytedance/))
    * [Rockeet](https://github.com/rockeet) is the founder of **Terark Inc.** and the author of terark-zip
+   * **Terark Inc.** which was [acquired by bytedance at 2019](https://www.baidu.com/s?wd=%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E6%94%B6%E8%B4%AD%E5%A5%87%E7%AE%80%E8%BD%AF%E4%BB%B6)
    * Bytedance open sourced [terark-zip](https://github.com/bytedance/terark-zip) at the end of 2020
    * As the author of terark-zip, rockeet added many enhancements to [topling-zip](https://github.com/topling/topling-zip)(his fork of [terark-zip](https://github.com/bytedance/terark-zip)) since then
 
