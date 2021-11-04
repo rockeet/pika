@@ -1,3 +1,49 @@
+# Todis [ [中文](README_CN.md) ]
+## 1. Introduction
+Todis is a massive, persistent Redis server developed by [Topling Inc.](https://topling.cn)
+
+Currently(2021-10-11), there are many massive, persistent Redis server based on [RocksDB](https://github.com/facebook/rocksdb), and many big company developed their private or open sourced  alternatives(massive, persistent Redis).
+
+These alternative Redis servers are low performance and high cost, and lack of scalability, operationality, monitoring, ....
+
+Todis are aimed on all such pain points, and accomplished these goals, users can experiencing [Managed Todis](https://topling.cn/products) based on aliyun in 10 minutes.
+
+## 2. Features
+1. Computing and Storage are seperated for resilient scaling
+2. Scaling with clicking a button, no need for sharding/partitioning
+3. Plenty monitoring metrics
+4. Web view for DB internal stats
+
+## 3. Performance
+1. With resilent distributed compaction, kicked off write stalls, achieved sustained write speed over 100MB/s on a 2C16G cloud server
+2. With searchable in memory compression technology(terark-zip), achieved very high read performance(saturate network bandwitdh)
+3. With shared storage and engine level leader-follwer mechanics
+   * Sync latency is lower to milliseconds
+   * New follower(read only node) can be started and available in 10 seconds
+
+## 4. Architeture
+### 4.1. Redis layer of Todis
+Redis layer is forked from pika with many improvements:
+1. Strorage engine is replaced from RocksDB to ToplingDB
+2. Rewrite performance critical code of pika
+3. Add many monitoring metrics(server side latency histogram for all commands and data len histogram...)
+4. Adapt for ToplingDB SidePlugin, Web view for config and server stats
+5. Adapt for ToplingDB distributed compaction
+### 4.2. Storage Engine layer (ToplingDB)
+ToplingDB is a storage engine developed by [Topling Inc.](https://topling.cn), which forked from [RocksDB](https://github.com/facebook/rocksdb) with many improvments:
+1. [SidePlugin](https://github.com/topling/rockside/wiki)
+2. [Distributed Compaction](https://github.com/topling/rockside/wiki/Distributed-Compaction) which offload compaction to a dedicated cluster, in [Managed Todis](https://topling.cn/products), this cluster is shared by all users and all Todis instances
+3. Topling SST and MemTab which based on [topling-zip](https://github.com/topling/topling-zip) which forked from [terark-zip](https://github.com/bytedance/terark-zip)
+   * Terark-zip was a core lib of **Terark Inc.** which was [acquired by bytedance at 2019](https://www.baidu.com/s?wd=%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E6%94%B6%E8%B4%AD%E5%A5%87%E7%AE%80%E8%BD%AF%E4%BB%B6)
+   * [Rockeet](https://github.com/rockeet) is the founder of **Terark Inc.** and the author of terark-zip
+   * Bytedance open sourced [terark-zip](https://github.com/bytedance/terark-zip) at the end of 2020
+   * As the author of terark-zip, rockeet added many enhancements to [topling-zip](https://github.com/topling/topling-zip)(his fork of [terark-zip](https://github.com/bytedance/terark-zip)) since then
+
+<br/>
+<hr>
+<hr>
+<hr>
+
 <img src="https://s1.ax1x.com/2020/05/08/YnbjQf.png" alt="YnbjQf.png"  width="300" />
 
 [![Build Status](https://travis-ci.org/Qihoo360/pika.svg?branch=master)](https://travis-ci.org/Qihoo360/pika) ![Downloads](https://img.shields.io/github/downloads/Qihoo360/pika/total)

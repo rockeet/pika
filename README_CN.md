@@ -1,6 +1,6 @@
-# Todis
+# Todis [ [English](README.md) ]
 
-## 简介
+## 1. 简介
 Todis 是 [topling（拓扑岭）](https://topling.cn) 出品的大容量、持久化 Redis 服务。
 
 Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 ToplingDB。
@@ -9,28 +9,45 @@ ToplingDB 是 [topling（拓扑岭）](https://topling.cn) 出品的兼容 Rocks
 
 目前(2021-10-11)，市面上存在很多大容量、持久化的 Redis 实现（一般基于 RocksDB），几乎每个大厂都有自己的相应产品。但是这类产品都存在性能低下、成本高昂、难以扩展、运维不易、监控缺失等问题，依托 ToplingDB 开创性的独有技术，Todis 解决了所有这些问题，并且在持续地不断改进。
 
+只需要 10分钟，就可以在阿里云上体验 [托管的 Todis](https://topling.cn/products)。
 
-## 功能
+## 2. 功能
 1. 存储计算分离，计算和存储可单独弹性伸缩
 2. 一键扩容，无需分片
 3. 完备、丰富的监控指标
 4. 可视化 Web 数据观测
 
-## 性能
+## 3. 性能
 1. 利用弹性分布式 Compact，彻底消除写卡顿（Write Stall）
 2. 利用可检索内存压缩技术大幅提高读性能：CPU消耗降低，内存利用率、缓存命中率提高
 3. 利用共享存储实现毫秒级主从同步，可在 10 秒内拉起新结点
 
-## 架构
-1. 在协议、执行层面上（pika/pink/blackwidow）
-   * Todis 对 pika 进行了深度优化，重写了性能关键代码
-   * 增加了一系列监控指标（各命令的延时直方图、数据大小分布直方图）
-   * 适配 ToplingDB SidePlugin，Web 展示各种配置，数据概要
-   * 适配 ToplingDB 的分布式 Compact
-2. 在 ToplingDB 层面上
-   * 为 RocksDB 增加 SidePlugin 体系
-   * 使用可检索内存压缩替换 RocksDB 的 BlockBasedTable
-   * 多租户共享计算结点的弹性分布式 Compact
+## 4. 架构
+### 4.1 在协议、执行层面上（pika/pink/blackwidow）
+Redis 协议虽然非常简单，但是正确、完整地实现一遍，其实并不容易，在众多基于 RocksDB 的 Redis 实现中，我们经过仔细调研，反复尝试，最终选择了 pika。选定之后，对其进行了大规模的深度修改：
+
+1. 重写了性能关键代码
+2. 增加了一系列监控指标（各命令的延时直方图、数据大小分布直方图）
+3. 适配 ToplingDB [SidePlugin](https://github.com/topling/rockside/wiki)，Web 展示各种配置，数据概要，状态信息等
+4. 适配 ToplingDB 的分布式 Compact
+
+### 4.2. 在 ToplingDB 层面上
+ToplingDB fork 自 [RocksDB](https://github.com/facebook/rocksdb)，然后进行了很多深度的重新设计与优化：
+
+1. 为 RocksDB 增加 [SidePlugin](https://github.com/topling/rockside/wiki) 体系
+2. 使用**可检索内存压缩**替换 RocksDB 的 BlockBasedTable
+   * 可检索内存压缩算法来自 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip))
+   * terark-zip 曾经是 **Terark(奇简软件)** 的一套代码库
+   * [Terark(奇简软件) 2019 年被字节跳动收购](https://www.baidu.com/s?wd=%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E6%94%B6%E8%B4%AD%E5%A5%87%E7%AE%80%E8%BD%AF%E4%BB%B6)
+   * [Rockeet](https://github.com/rockeet) 是 Terark(奇简软件) 的创始人和 **terark-zip** 的作者
+   * 字节跳动在 2020 年底开源了 [terark-zip](https://github.com/bytedance/terark-zip)
+   * 作为 **terark-zip** 的作者，rockeet 为他的 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip)) 增加了很多改进
+3. 多租户、多实例共享计算结点的弹性分布式 Compact
+
+<br/>
+<hr>
+<hr>
+<hr>
 
 # Pika
 
