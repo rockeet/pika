@@ -33,7 +33,7 @@ public:
     js["max_client_response_size"] = g_pika_conf->max_client_response_size();
     js["timeout"] = g_pika_conf->timeout();
     js["server_id"] = g_pika_conf->server_id();
-    js["requirepass"] = g_pika_conf->requirepass();
+    js["requirepass"] = "********"; // g_pika_conf->requirepass();
     js["masterauth"] = g_pika_conf->masterauth();
     js["bgsave_path"] = g_pika_conf->bgsave_path();
     js["expire_dump_days"] = g_pika_conf->expire_dump_days();
