@@ -1,5 +1,9 @@
 # Todis [ [English](README.md) ]
 
+## 0. 开源社区版
+现在（2011-11-14）用户可以自己编译社区版 Todis，社区版 Todis 拥有完整的功能，但是缺少性能套件（Topling SST, MemTab, 分布式 Compact），即便如此，Todis 的性能仍然比市场上现有的竞品更加优越。
+
+**开源社区版不允许字节跳动（bytedance）使用，参见 [LICENCE](LICENCE)**。
 ## 1. 简介
 Todis 是 [topling（拓扑岭）](https://topling.cn) 出品的大容量、持久化 Redis 服务。
 
@@ -39,7 +43,7 @@ ToplingDB fork 自 [RocksDB](https://github.com/facebook/rocksdb)，然后进行
    * 可检索内存压缩算法来自 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip))
    * terark-zip 曾经是 **Terark(奇简软件)** 的一套代码库
    * [Terark(奇简软件) 2019 年被字节跳动收购](https://www.baidu.com/s?wd=%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E6%94%B6%E8%B4%AD%E5%A5%87%E7%AE%80%E8%BD%AF%E4%BB%B6)
-   * [Rockeet](https://github.com/rockeet) 是 Terark(奇简软件) 的创始人和 **terark-zip** 的作者
+   * [Rockeet(leipeng)](https://github.com/rockeet) 是 Terark(奇简软件) 的创始人和 **terark-zip** 的作者
    * 字节跳动在 2020 年底开源了 [terark-zip](https://github.com/bytedance/terark-zip)
    * 作为 **terark-zip** 的作者，rockeet 为他的 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip)) 增加了很多改进
 3. 多租户、多实例共享计算结点的弹性分布式 Compact

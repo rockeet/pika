@@ -1,4 +1,10 @@
 # Todis [ [中文](README_CN.md) ]
+
+## 0. Open Source Community Version
+Now(2021-11-14) users can build todis by himself, such build is community version which is full fledged but lacks performance sideplugins(topling SST & MemTab & Distributed Compaction), even lacks such components, todis works well and performance outperforms competitors.
+
+**Open Source Community Version** is disallowed to be used by bytedance, see [LICENSE](LICENSE).
+
 ## 1. Introduction
 Todis is a massive, persistent Redis server developed by [Topling Inc.](https://topling.cn)
 
@@ -16,7 +22,7 @@ Todis are aimed on all such pain points, and accomplished these goals, users can
 
 ## 3. Performance
 1. With resilent distributed compaction, kicked off write stalls, achieved sustained write speed over 100MB/s on a 2C16G cloud server
-2. With searchable in memory compression technology(terark-zip), achieved very high read performance(saturate network bandwitdh)
+2. With searchable in memory compression technology(topling-zip), achieved very high read performance(saturate network bandwitdh)
 3. With shared storage and engine level leader-follwer mechanics
    * Sync latency is lower to milliseconds
    * New follower(read only node) can be started and available in 10 seconds
