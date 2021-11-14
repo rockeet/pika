@@ -42,7 +42,7 @@ DEBUG_SUFFIX = "_debug"
 endif
 
 # Link tcmalloc if exist
-dummy := $(shell ("$(CURDIR)/detect_environment" "$(CURDIR)/make_config.mk"))
+dummy := $(shell bash $(CURDIR)/detect_environment $(CURDIR)/make_config.mk)
 include make_config.mk
 CLEAN_FILES += $(CURDIR)/make_config.mk
 PLATFORM_LDFLAGS += $(TCMALLOC_LDFLAGS)
@@ -67,9 +67,72 @@ endif
 PINK = $(PINK_PATH)/pink/lib/libpink$(DEBUG_SUFFIX).a
 
 ifndef ROCKSDB_PATH
-ROCKSDB_PATH = $(THIRD_PATH)/rocksdb
+ROCKSDB_PATH = $(THIRD_PATH)/toplingdb
 endif
 ROCKSDB = $(ROCKSDB_PATH)/librocksdb$(DEBUG_SUFFIX).so
+ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
+  ifeq (,$(wildcard ${ROCKSDB_PATH}/sideplugin/topling-core))
+	ifeq (,$(wildcard ${ROCKSDB_PATH}/include/rocksdb/db.h))
+      $(warning ${ROCKSDB_PATH} is not present, clone it from github...)
+      IsCloneOK := $(shell \
+         set -x -e; \
+         cd $(CURDIR)/third; \
+         git clone http://github.com/topling/toplingdb.git >&2; \
+         cd toplingdb; \
+         git submodule update --init --recursive >&2; \
+         echo $$?\
+      )
+      ifneq ("${IsCloneOK}","0")
+        $(error "IsCloneOK=${IsCloneOK} Error cloning toplingdb, stop!")
+      endif
+	endif
+    TOPLING_CORE_DIR := ${ROCKSDB_PATH}/sideplugin/topling-zip
+  else
+    TOPLING_CORE_DIR := ${ROCKSDB_PATH}/sideplugin/topling-core
+  endif
+endif
+
+COMPILER := $(shell set -e; tmpfile=`mktemp -u compiler-XXXXXX`; \
+                    ${CXX} ${TOPLING_CORE_DIR}/tools/configure/compiler.cpp -o $${tmpfile}.exe; \
+                    ./$${tmpfile}.exe && rm -f $${tmpfile}*)
+UNAME_MachineSystem := $(shell uname -m -s | sed 's:[ /]:-:g')
+WITH_BMI2 := $(shell bash ${TOPLING_CORE_DIR}/cpu_has_bmi2.sh)
+BUILD_NAME := ${UNAME_MachineSystem}-${COMPILER}-bmi2-${WITH_BMI2}
+BUILD_ROOT := build/${BUILD_NAME}
+ifeq (${DEBUG_LEVEL}, 0)
+  BUILD_TYPE_SIG := r
+  OBJ_DIR := ${BUILD_ROOT}/rls
+endif
+ifeq (${DEBUG_LEVEL}, 1)
+  BUILD_TYPE_SIG := a
+  OBJ_DIR := ${BUILD_ROOT}/afr
+endif
+ifeq (${DEBUG_LEVEL}, 2)
+  BUILD_TYPE_SIG := d
+  OBJ_DIR := ${BUILD_ROOT}/dbg
+endif
+ifneq ($(filter check check_0 watch-log gen_parallel_tests %_test %_test2, $(MAKECMDGOALS)),)
+  CXXFLAGS += -DROCKSDB_UNIT_TEST
+  OBJ_DIR := $(subst build/,build-ut/,${OBJ_DIR})
+endif
+ifndef BUILD_TYPE_SIG
+  $(error Bad DEBUG_LEVEL=${DEBUG_LEVEL})
+endif
+TOPLING_ZBS_LIB := ${TOPLING_CORE_DIR}/${BUILD_ROOT}/lib_shared/libterark-zbs-${COMPILER}-${BUILD_TYPE_SIG}.so
+CXXFLAGS += \
+  -DFOLLY_NO_CONFIG=1 \
+  -DROCKSDB_PLATFORM_POSIX=1 \
+  -DJSON_USE_GOLD_HASH_MAP=1 \
+  -I${ROCKSDB_PATH}/sideplugin/rockside/src \
+  -I${TOPLING_CORE_DIR}/src \
+  -I${TOPLING_CORE_DIR}/boost-include \
+  -I${TOPLING_CORE_DIR}/3rdparty/zstd
+LDFLAGS := -L${TOPLING_CORE_DIR}/${BUILD_ROOT}/lib_shared -lterark-{zbs,core}-${COMPILER}-${BUILD_TYPE_SIG}
+
+export CXXFLAGS
+export LDFLAGS
+
+# ----------------------------------------------
 
 PROTO_BUF_LDFLAGS ?= -lprotobuf
 
@@ -193,7 +256,7 @@ all: $(BINARY)
 dbg: $(BINARY)
 
 $(BINARY): LDFLAGS := $(LIB_PATH) -l{pink,blackwidow,slash,rocksdb}$(DEBUG_SUFFIX) -lglog ${LDFLAGS}
-$(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS)
+$(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS) ${ROCKSDB} ${TOPLING_ZBS_LIB}
 	$(AM_V_at)rm -f $@
 	$(AM_V_at)$(AM_LINK)
 	$(AM_V_at)rm -rf $(OUTPUT)
@@ -208,10 +271,19 @@ $(SLASH): $(shell find $(SLASH_PATH)/slash -name '*.cc' -o -name '*.h')
 $(PINK): $(shell find $(PINK_PATH)/pink -name '*.cc' -o -name '*.h')
 	$(AM_V_at)+make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
-ifeq (${ROCKSDB_PATH},third/rocksdb)
+ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
 $(ROCKSDB):
-	$(AM_V_at)env LDFLAGS="" make -j $(PROCESSOR_NUMS) -C $(ROCKSDB_PATH)/ shared_lib DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 DISABLE_WARNING_AS_ERROR=1
-	#cd $(ROCKSDB_PATH) && BUILD_TYPE=rls bash build-rocks.sh shared_lib -j70
+	$(AM_V_at)env CXXFLAGS="" LDFLAGS="" make -j $(PROCESSOR_NUMS) \
+		DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 \
+		DISABLE_WARNING_AS_ERROR=1 \
+		-C $(ROCKSDB_PATH)/ shared_lib
+endif
+
+ifeq (${TOPLING_CORE_DIR},$(ROCKSDB_PATH)/sideplugin/topling-zip)
+${TOPLING_ZBS_LIB}:
+	$(AM_V_at)env CXXFLAGS="" LDFLAGS="" make -j $(PROCESSOR_NUMS) \
+		PKG_WITH_DBG=1 \
+		-C ${TOPLING_CORE_DIR} pkg
 endif
 
 $(BLACKWIDOW): $(SLASH) $(shell find $(BLACKWIDOW_PATH) -name '*.cc' -o -name '*.h')
@@ -235,5 +307,5 @@ distclean: clean
 	make -C $(PINK_PATH)/pink/ SLASH_PATH=$(SLASH_PATH) clean
 	make -C $(SLASH_PATH)/slash/ clean
 	make -C $(BLACKWIDOW_PATH)/ clean
-	make -C $(ROCKSDB_PATH)/ clean
+#	make -C $(ROCKSDB_PATH)/ clean
 #	make -C $(GLOG_PATH)/ clean
