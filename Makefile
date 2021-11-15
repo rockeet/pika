@@ -87,9 +87,10 @@ ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
       endif
 	endif
     TOPLING_CORE_DIR := ${ROCKSDB_PATH}/sideplugin/topling-zip
-  else
-    TOPLING_CORE_DIR := ${ROCKSDB_PATH}/sideplugin/topling-core
   endif
+endif
+ifndef TOPLING_CORE_DIR
+    TOPLING_CORE_DIR := ${ROCKSDB_PATH}/sideplugin/topling-core
 endif
 
 COMPILER := $(shell set -e; tmpfile=`mktemp -u compiler-XXXXXX`; \
