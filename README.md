@@ -15,14 +15,14 @@ These alternative Redis servers are low performance and high cost, and lack of s
 Todis are aimed on all such pain points, and accomplished these goals, users can experiencing [Managed Todis](https://topling.cn/products) based on aliyun in 10 minutes.
 
 ## 2. Features
-1. Computing and Storage are seperated for resilient scaling
+1. Computing and Storage are seperated for elastic scaling
 2. Auto scaling, no need for sharding/partitioning
 3. Plenty monitoring metrics
 4. Web view for DB internal stats
 
 ## 3. Performance
-1. With resilent distributed compaction, kicked off write stalls, achieved sustained write speed over 100MB/s on a 2C16G cloud server
-2. With searchable in memory compression technology(topling-zip), achieved very high read performance(saturate network bandwitdh)
+1. With elastic distributed compaction, kicked off write stalls, achieved sustained write speed over 100MB/s on a 2C16G cloud server
+2. With searchable in memory compression technology([topling-zip](https://github.com/topling/topling-zip)), achieved very high read performance(saturate network bandwitdh)
 3. With shared storage and engine level leader-follwer mechanics
    * Sync latency is lower to milliseconds
    * New follower(read only node) can be started and available in 10 seconds
@@ -30,13 +30,13 @@ Todis are aimed on all such pain points, and accomplished these goals, users can
 ## 4. Architeture
 ### 4.1. Redis layer of Todis
 Redis layer is forked from pika with many improvements:
-1. Strorage engine is replaced from RocksDB to ToplingDB
+1. Strorage engine is replaced from [RocksDB](https://github.com/facebook/rocksdb) to [ToplingDB](https://github.com/topling/toplingdb)
 2. Rewrite performance critical code of pika
 3. Add many monitoring metrics(server side latency histogram for all commands and data len histogram...)
-4. Adapt for ToplingDB SidePlugin, and Web view for config and server stats
-5. Adapt for ToplingDB distributed compaction
-### 4.2. Storage Engine layer (ToplingDB)
-ToplingDB is a storage engine developed by [Topling Inc.](https://topling.cn), which forked from [RocksDB](https://github.com/facebook/rocksdb) with many improvments:
+4. Adapt for [ToplingDB](https://github.com/topling/toplingdb) [SidePlugin](https://github.com/topling/rockside/wiki), and [Web view](https://github.com/topling/rockside/wiki/WebView) for config and server stats
+5. Adapt for [ToplingDB](https://github.com/topling/toplingdb) distributed compaction
+### 4.2. Storage Engine layer ([ToplingDB](https://github.com/topling/toplingdb))
+[ToplingDB](https://github.com/topling/toplingdb) is a storage engine developed by [Topling Inc.](https://topling.cn), which forked from [RocksDB](https://github.com/facebook/rocksdb) with many improvments:
 1. [SidePlugin](https://github.com/topling/rockside/wiki), [Engine WebView](https://github.com/topling/rockside/wiki/WebView), Monitoring Metrics...
 2. [Distributed Compaction](https://github.com/topling/rockside/wiki/Distributed-Compaction) which offload compaction to a dedicated cluster
    * In [Managed Todis](https://topling.cn/products), this cluster is shared by all users and all Todis instances

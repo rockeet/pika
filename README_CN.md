@@ -3,13 +3,13 @@
 ## 0. 开源社区版
 现在（2021-11-14）用户可以自己编译社区版 Todis，社区版 Todis 拥有完整的功能，但是缺少性能套件（Topling SST, MemTab, 分布式 Compact），即便如此，Todis 的性能仍然比市场上现有的竞品更加优越。
 
-**开源社区版不允许字节跳动（bytedance）使用，参见 [LICENCE](LICENCE)**。
+**开源社区版不允许字节跳动（bytedance）使用，参见 [LICENSE](LICENSE)**。
 ## 1. 简介
-Todis 是 [topling（拓扑岭）](https://topling.cn) 出品的大容量、持久化 Redis 服务。
+Todis 是 [Topling（拓扑岭）](https://topling.cn) 出品的大容量、持久化 Redis 服务。
 
-Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 ToplingDB。
+Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 [ToplingDB](https://github.com/topling/toplingdb)。
 
-ToplingDB 是 [topling（拓扑岭）](https://topling.cn) 出品的兼容 RocksDB API 的分布式存储引擎。
+[ToplingDB](https://github.com/topling/toplingdb) 是 [Topling（拓扑岭）](https://topling.cn) 出品的兼容 RocksDB API 的分布式存储引擎。
 
 目前(2021-10-11)，市面上存在很多大容量、持久化的 Redis 实现（一般基于 RocksDB），几乎每个大厂都有自己的相应产品。但是这类产品都存在性能低下、成本高昂、难以扩展、运维不易、监控缺失等问题，依托 ToplingDB 开创性的独有技术，Todis 解决了所有这些问题，并且在持续地不断改进。
 
@@ -32,13 +32,13 @@ Redis 协议虽然非常简单，但是正确、完整地实现一遍，其实�
 
 1. 重写了性能关键代码
 2. 增加了一系列监控指标（各命令的延时直方图、数据大小分布直方图）
-3. 适配 ToplingDB [SidePlugin](https://github.com/topling/rockside/wiki)，Web 展示各种配置，数据概要，状态信息等
-4. 适配 ToplingDB 的分布式 Compact
+3. 适配 [ToplingDB](https://github.com/topling/toplingdb) 的 [SidePlugin](https://github.com/topling/rockside/wiki)，Web 展示各种配置，数据概要，状态信息等
+4. 适配 [ToplingDB](https://github.com/topling/toplingdb) 的 [分布式 Compact](https://github.com/topling/rockside/wiki/Distributed-Compaction)，为此重新设计了 Key 编码格式，去掉了自定义 Comparator，等等
 
 ### 4.2. 在 ToplingDB 层面上
-ToplingDB fork 自 [RocksDB](https://github.com/facebook/rocksdb)，然后进行了很多深度的重新设计与优化：
+[ToplingDB](https://github.com/topling/toplingdb) fork 自 [RocksDB](https://github.com/facebook/rocksdb)，然后进行了很多深度的重新设计与优化：
 
-1. 为 RocksDB 增加 [SidePlugin](https://github.com/topling/rockside/wiki) 体系
+1. 增加 [SidePlugin](https://github.com/topling/rockside/wiki) 体系
 2. 使用**可检索内存压缩**替换 RocksDB 的 BlockBasedTable
    * 可检索内存压缩算法来自 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip))
    * terark-zip 曾经是 **Terark(奇简软件)** 的一套代码库
@@ -46,9 +46,8 @@ ToplingDB fork 自 [RocksDB](https://github.com/facebook/rocksdb)，然后进行
    * [Rockeet(leipeng)](https://github.com/rockeet) 是 Terark(奇简软件) 的创始人和 **terark-zip** 的作者
    * 字节跳动在 2020 年底开源了 [terark-zip](https://github.com/bytedance/terark-zip)
    * 作为 **terark-zip** 的作者，rockeet 为他的 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip)) 增加了很多改进
-3. 多租户、多实例共享计算结点的弹性分布式 Compact
+3. 多租户、多实例共享计算结点的[弹性分布式 Compact](https://github.com/topling/rockside/wiki/Distributed-Compaction)
 
-<br/>
 <hr>
 <hr>
 <hr>
