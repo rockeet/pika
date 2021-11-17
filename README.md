@@ -46,7 +46,6 @@ Redis layer is forked from pika with many improvements:
    * Bytedance open sourced [terark-zip](https://github.com/bytedance/terark-zip) at the end of 2020
    * As the author of terark-zip, rockeet added many enhancements to [topling-zip](https://github.com/topling/topling-zip)(his fork of [terark-zip](https://github.com/bytedance/terark-zip)) since then
 
-<br/>
 <hr>
 <hr>
 <hr>
