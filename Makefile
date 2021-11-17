@@ -274,21 +274,23 @@ $(PINK): $(shell find $(PINK_PATH)/pink -name '*.cc' -o -name '*.h')
 	$(AM_V_at)+make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
 ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
+$(ROCKSDB): CXXFLAGS=
+$(ROCKSDB): LDFLAGS=
 $(ROCKSDB): ${TOPLING_ZBS_LIB}
-	$(AM_V_at)env CXXFLAGS="" LDFLAGS="" make -j $(PROCESSOR_NUMS) \
+	$(AM_V_at)+make \
 		DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 \
 		DISABLE_WARNING_AS_ERROR=1 \
 		-C $(ROCKSDB_PATH)/ shared_lib
 endif
 
 ifeq (${TOPLING_CORE_DIR},$(ROCKSDB_PATH)/sideplugin/topling-zip)
+${TOPLING_ZBS_LIB}: CXXFLAGS=
+${TOPLING_ZBS_LIB}: LDFLAGS=
 ${TOPLING_ZBS_LIB}:
-	$(AM_V_at)env CXXFLAGS="" LDFLAGS="" make -j $(PROCESSOR_NUMS) \
-		PKG_WITH_DBG=1 \
-		-C ${TOPLING_CORE_DIR} pkg
+	$(AM_V_at)+make PKG_WITH_DBG=1 -C ${TOPLING_CORE_DIR}/ pkg
 endif
 
-$(BLACKWIDOW): $(SLASH) $(shell find $(BLACKWIDOW_PATH) -name '*.cc' -o -name '*.h')
+$(BLACKWIDOW): $(SLASH) $(shell find $(BLACKWIDOW_PATH) -name '*.cc' -o -name '*.h') $(ROCKSDB)
 	$(AM_V_at)+make -C $(BLACKWIDOW_PATH) ROCKSDB_PATH=$(ROCKSDB_PATH) SLASH_PATH=$(SLASH_PATH) DEBUG_LEVEL=$(DEBUG_LEVEL)
 
 $(GLOG):
