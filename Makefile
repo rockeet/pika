@@ -67,25 +67,26 @@ endif
 PINK = $(PINK_PATH)/pink/lib/libpink$(DEBUG_SUFFIX).a
 
 ifndef ROCKSDB_PATH
-ROCKSDB_PATH = $(THIRD_PATH)/toplingdb
+  ROCKSDB_PATH = $(THIRD_PATH)/toplingdb
 endif
 ROCKSDB = $(ROCKSDB_PATH)/librocksdb$(DEBUG_SUFFIX).so
 ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
   ifeq (,$(wildcard ${ROCKSDB_PATH}/sideplugin/topling-core))
-	ifeq (,$(wildcard ${ROCKSDB_PATH}/include/rocksdb/db.h))
+    ifeq (,$(wildcard ${ROCKSDB_PATH}/include/rocksdb/db.h))
       $(warning ${ROCKSDB_PATH} is not present, clone it from github...)
       IsCloneOK := $(shell \
-         set -x -e; \
-         cd $(CURDIR)/third; \
-         git clone http://github.com/topling/toplingdb.git >&2; \
-         cd toplingdb; \
-         git submodule update --init --recursive >&2; \
-         echo $$?\
+        set -x -e; \
+        cd $(CURDIR)/third; \
+        git clone http://github.com/topling/toplingdb.git >&2; \
+        cd toplingdb; \
+        git submodule update --init --recursive >&2; \
+        make clean >&2; \
+        echo $$?\
       )
       ifneq ("${IsCloneOK}","0")
         $(error "IsCloneOK=${IsCloneOK} Error cloning toplingdb, stop!")
       endif
-	endif
+    endif
     TOPLING_CORE_DIR := ${ROCKSDB_PATH}/sideplugin/topling-zip
   endif
 endif
@@ -273,7 +274,7 @@ $(PINK): $(shell find $(PINK_PATH)/pink -name '*.cc' -o -name '*.h')
 	$(AM_V_at)+make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
 ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
-$(ROCKSDB):
+$(ROCKSDB): ${TOPLING_ZBS_LIB}
 	$(AM_V_at)env CXXFLAGS="" LDFLAGS="" make -j $(PROCESSOR_NUMS) \
 		DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 \
 		DISABLE_WARNING_AS_ERROR=1 \
