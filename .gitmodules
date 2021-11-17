@@ -1,12 +1,12 @@
 [submodule "third/glog"]
 	path = third/glog
-	url = git@github.com:rockeet/glog.git
+	url = https://github.com/rockeet/glog.git
 [submodule "third/slash"]
 	path = third/slash
-	url = git@github.com:rockeet/slash.git
+	url = https://github.com/rockeet/slash.git
 [submodule "third/blackwidow"]
 	path = third/blackwidow
-	url = git@github.com:rockeet/blackwidow.git
+	url = https://github.com/rockeet/blackwidow.git
 [submodule "third/pink"]
 	path = third/pink
-	url = git@github.com:rockeet/pink.git
+	url = https://github.com/rockeet/pink.git
