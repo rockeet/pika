@@ -262,9 +262,12 @@ $(BINARY): $(SLASH) $(PINK) $(BLACKWIDOW) $(GLOG) $(PROTOOBJECTS) $(LIBOBJECTS) 
 	$(AM_V_at)$(AM_LINK)
 	$(AM_V_at)rm -rf $(OUTPUT)
 	$(AM_V_at)mkdir -p $(OUTPUT)/bin
+	$(AM_V_at)mkdir -p $(OUTPUT)/lib
 	$(AM_V_at)mv $@ $(OUTPUT)/bin
 	$(AM_V_at)cp -r $(CURDIR)/conf $(OUTPUT)
-
+	$(AM_V_at)cp -a $(BLACKWIDOW) $(OUTPUT)/lib
+	$(AM_V_at)cp -a ${ROCKSDB}*  $(OUTPUT)/lib
+	$(AM_V_at)cp -a ${TOPLING_CORE_DIR}/${BUILD_ROOT}/lib_shared/* $(OUTPUT)/lib
 
 $(SLASH): $(shell find $(SLASH_PATH)/slash -name '*.cc' -o -name '*.h')
 	+make -C $(SLASH_PATH)/slash/ DEBUG_LEVEL=$(DEBUG_LEVEL)
