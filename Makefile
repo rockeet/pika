@@ -128,7 +128,7 @@ CXXFLAGS += \
   -I${TOPLING_CORE_DIR}/src \
   -I${TOPLING_CORE_DIR}/boost-include \
   -I${TOPLING_CORE_DIR}/3rdparty/zstd
-LDFLAGS := -L${TOPLING_CORE_DIR}/${BUILD_ROOT}/lib_shared -lterark-{zbs,core}-${COMPILER}-${BUILD_TYPE_SIG}
+LDFLAGS := -L${TOPLING_CORE_DIR}/${BUILD_ROOT}/lib_shared -lterark-{zbs,fsa,core}-${COMPILER}-${BUILD_TYPE_SIG}
 
 export CXXFLAGS
 export LDFLAGS
