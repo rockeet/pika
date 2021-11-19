@@ -48,7 +48,7 @@ Redis 协议虽然非常简单，但是正确、完整地实现一遍，其实�
    * 作为 **terark-zip** 的作者，rockeet 为他的 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip)) 增加了很多改进
 3. 多租户、多实例共享计算结点的[弹性分布式 Compact](https://github.com/topling/rockside/wiki/Distributed-Compaction)
 ## 5. Compile
-### 5.1 CentOS
+### 5.1. CentOS
 ```bash
 sudo yum install epel-release -y
 sudo yum config-manager --set-enabled powertools
@@ -58,6 +58,11 @@ cd todis
 git submodule update --init --recursive
 make -j`nproc`
 ```
+## 6. 部署 & 运行
+编译输出目录 output 包含了所有运行时的需要，用户需要修改配置文件（特别是配置文件中数据的存储目录），配置文件有两个：
+`todis-community.conf` 和 `todis-community.json`，前者是 pika 的配置文件，后者是 todis 的 ToplingDB SidePlugin 配置文件，`todis-community.conf` 中 `sideplugin-conf` 用来指定 `todis-community.json` 的路径。
+
+最无脑的方案是：修改这两个配置文件中所有以 `/path/to/` 开头的项。
 
 <hr>
 <hr>

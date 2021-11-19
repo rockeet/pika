@@ -57,6 +57,12 @@ cd todis
 git submodule update --init --recursive
 make -j`nproc`
 ```
+## 6. Deploy
+Compiling generated dir `output` which included all files required at runtime, users need change config files(especially `path` items), there are two config files:
+`todis-community.conf` and `todis-community.json`, the former is compatible for pika, the later is ToplingDB's SidePlugin conf for todis, `sideplugin-conf` of `todis-community.conf` is the path of `todis-community.json`.
+
+The most simple way is to change all conf items prefixed with `/path/to/`.
+
 <hr>
 <hr>
 <hr>
