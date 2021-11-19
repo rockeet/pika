@@ -46,6 +46,17 @@ Redis layer is forked from pika with many improvements:
    * Bytedance open sourced [terark-zip](https://github.com/bytedance/terark-zip) at the end of 2020
    * As the author of terark-zip, rockeet added many enhancements to [topling-zip](https://github.com/topling/topling-zip)(his fork of [terark-zip](https://github.com/bytedance/terark-zip)) since then
 
+## 5. Compile
+### 5.1 CentOS
+```bash
+sudo yum install epel-release -y
+sudo yum config-manager --set-enabled powertools
+sudo yum install git gcc-c++ glog-devel protobuf-devel libaio-devel -y
+git clone https://github.com/topling/todis
+cd todis
+git submodule update --init --recursive
+make -j`nproc`
+```
 <hr>
 <hr>
 <hr>

@@ -47,6 +47,17 @@ Redis 协议虽然非常简单，但是正确、完整地实现一遍，其实�
    * 字节跳动在 2020 年底开源了 [terark-zip](https://github.com/bytedance/terark-zip)
    * 作为 **terark-zip** 的作者，rockeet 为他的 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip)) 增加了很多改进
 3. 多租户、多实例共享计算结点的[弹性分布式 Compact](https://github.com/topling/rockside/wiki/Distributed-Compaction)
+## 5. Compile
+### 5.1 CentOS
+```bash
+sudo yum install epel-release -y
+sudo yum config-manager --set-enabled powertools
+sudo yum install git gcc-c++ glog-devel protobuf-devel libaio-devel -y
+git clone https://github.com/topling/todis
+cd todis
+git submodule update --init --recursive
+make -j`nproc`
+```
 
 <hr>
 <hr>
