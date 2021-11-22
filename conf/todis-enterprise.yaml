@@ -1,4 +1,3 @@
----
 http:
   document_root: "/nvme-shared/data/db/db0"
   hide_files_patterns: "*.sst|*.dbtmp"
