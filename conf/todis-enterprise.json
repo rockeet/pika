@@ -410,15 +410,6 @@
     "dcompact": {
       "class": "DcompactEtcd",
       "params": {
-        "//2/etcd": {
-          "url": "etcd.topling.cn:2379",
-          "ca": "/node-shared/certs/ca.pem",
-          "cert": "/node-shared/certs/topling-client-chain.pem",
-          "key": "/node-shared/certs/topling-client-key.pem",
-          "//username": "leipeng",
-          "//password": "topling@123",
-          "load_balancer": "round_robin"
-        },
         "//etcd": {
           "url": "https://dell2.topling.cn:2379",
           "ca": "/node-shared/certs/ca.pem",
@@ -438,12 +429,6 @@
         "http_max_retry": 99,
         "http_timeout": 3,
         "http_workers": [
-          "//http://192.168.31.10:8080",
-          "//http://192.168.31.10:8081",
-          "//http://192.168.31.2:8080",
-          "//http://192.168.31.2:8081",
-          "//http://192.168.100.101:8080",
-          "//http://192.168.100.101:8081",
           { "url": "http://192.168.100.101:8080", "web_url": "http://dell3.topling.in:2011" },
           { "url": "http://192.168.100.101:8081", "web_url": "http://dell3.topling.in:2011" },
           { "url": "http://192.168.100.103:8080", "web_url": "http://dell3.topling.in:2011" },
@@ -466,23 +451,6 @@
           { "url": "http://192.168.100.111:8081", "web_url": "http://dell3.topling.in:2011" },
           { "url": "http://192.168.100.112:8080", "web_url": "http://dell3.topling.in:2011" },
           { "url": "http://192.168.100.112:8081", "web_url": "http://dell3.topling.in:2011" },
-          "//http://192.168.100.102:8080",
-          "//http://192.168.100.102:8081",
-          "//http://192.168.100.103:8080",
-          "//http://192.168.100.103:8081",
-          "//http://192.168.100.104:8080",
-          "//http://192.168.100.104:8081",
-          "//http://192.168.100.105:8080",
-          "//http://192.168.100.105:8081",
-          "//http://192.168.100.106:8080",
-          "//http://192.168.100.106:8081",
-          "//http://192.168.100.107:8080",
-          "//http://192.168.100.107:8081",
-          "//http://192.168.100.108:8080",
-          "//http://192.168.100.108:8081",
-          "//http://active-host:8080",
-          "//http://commented-host:8080",
-          "//end_http_workers"
         ],
         "dbcf_min_level": {
           ":data_cf": 4
