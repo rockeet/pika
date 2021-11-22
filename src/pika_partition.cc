@@ -470,6 +470,7 @@ bool Partition::FlushDB() {
   }
 
   LOG(INFO) << partition_name_ << " Delete old db...";
+  auto dirvec = db_->GetAllDirs();
   db_.reset();
 
   std::string dbpath = db_path_;
@@ -478,6 +479,13 @@ bool Partition::FlushDB() {
   }
   dbpath.append("_deleting/");
   slash::RenameFile(db_path_, dbpath.c_str());
+
+  // delete non dbname dir directly
+  for (auto& dir : dirvec) {
+    if (!Slice(dir).starts_with(dbpath)) {
+      g_pika_server->PurgeDir(dir);
+    }
+  }
 
   db_ = std::shared_ptr<blackwidow::BlackWidow>(new blackwidow::BlackWidow());
   rocksdb::Status s = db_->Open(g_pika_server->bw_options(), db_path_);
