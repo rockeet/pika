@@ -13,6 +13,8 @@
 
 #include "third/blackwidow/src/mutex_impl.h"
 
+#include <filesystem>
+
 extern PikaConf* g_pika_conf;
 extern PikaServer* g_pika_server;
 extern PikaReplicaManager* g_pika_rm;
@@ -477,13 +479,22 @@ bool Partition::FlushDB() {
   if (dbpath[dbpath.length() - 1] == '/') {
     dbpath.erase(dbpath.length() - 1);
   }
+  std::string old_dbpath = dbpath;
   dbpath.append("_deleting/");
   slash::RenameFile(db_path_, dbpath.c_str());
 
   // delete non dbname dir directly
   for (auto& dir : dirvec) {
-    if (!Slice(dir).starts_with(dbpath)) {
-      g_pika_server->PurgeDir(dir);
+    if (!Slice(dir).starts_with(old_dbpath)) {
+      //g_pika_server->PurgeDir(dir);
+      try {
+        LOG(INFO) << "FlushDB: remove_all " << dir;
+        std::filesystem::remove_all(dir);
+        std::filesystem::create_directories(dir);
+      }
+      catch (const std::exception& ex) {
+        LOG(INFO) << "FlushDB: remove_all" << dir << " failed: " << ex.what();
+      }
     }
   }
 
