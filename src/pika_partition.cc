@@ -475,13 +475,11 @@ bool Partition::FlushDB() {
   auto dirvec = db_->GetAllDirs();
   db_.reset();
 
-  std::string dbpath = db_path_;
-  if (dbpath[dbpath.length() - 1] == '/') {
-    dbpath.erase(dbpath.length() - 1);
+  std::string old_dbpath = db_path_;
+  while (!old_dbpath.empty() && '/' == old_dbpath.back()) {
+    old_dbpath.pop_back();
   }
-  std::string old_dbpath = dbpath;
-  dbpath.append("_deleting/");
-  slash::RenameFile(db_path_, dbpath.c_str());
+  ROCKSDB_VERIFY(!old_dbpath.empty());
 
   // delete non dbname dir directly
   for (auto& dir : dirvec) {
@@ -497,6 +495,9 @@ bool Partition::FlushDB() {
       }
     }
   }
+  // delayed delete large dir dbpath
+  std::string dbpath = old_dbpath + "_deleting/";
+  slash::RenameFile(db_path_, dbpath.c_str());
 
   db_ = std::shared_ptr<blackwidow::BlackWidow>(new blackwidow::BlackWidow());
   rocksdb::Status s = db_->Open(g_pika_server->bw_options(), db_path_);
