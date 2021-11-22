@@ -496,8 +496,14 @@ bool Partition::FlushDB() {
     }
   }
   // delayed delete large dir dbpath
-  std::string dbpath = old_dbpath + "_deleting/";
-  slash::RenameFile(db_path_, dbpath.c_str());
+  char tmpbuf[L_tmpnam] = "/tmp/XXXXXXXX";
+  tmpnam(tmpbuf);
+  std::string dbpath = old_dbpath + "_deleting-" + (tmpbuf + 5);
+  LOG(INFO) << "FlushDB: rename " << db_path_ << " " << dbpath;
+  if (rename(db_path_.c_str(), dbpath.c_str()) < 0) {
+    std::string errmsg = strerror(errno);
+    LOG(INFO) << "FlushDB: rename " << db_path_ << " " << dbpath << " failed: " << errmsg;
+  }
 
   db_ = std::shared_ptr<blackwidow::BlackWidow>(new blackwidow::BlackWidow());
   rocksdb::Status s = db_->Open(g_pika_server->bw_options(), db_path_);
