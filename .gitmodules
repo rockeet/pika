@@ -1,6 +1,3 @@
-[submodule "third/glog"]
-	path = third/glog
-	url = https://github.com/rockeet/glog.git
 [submodule "third/slash"]
 	path = third/slash
 	url = https://github.com/rockeet/slash.git
