@@ -1,0 +1,434 @@
+http:
+  document_root: "/path/to/todis-community/db/db0"
+  hide_files_patterns: "*.sst|*.dbtmp"
+  num_threads: '50'
+  listening_ports: '2011'
+permissions:
+  web_compact: true # default is false
+AnyPlugin:
+  sys_info: SysInfoShower
+  todis_conf: TodisConfShowPlugin
+  build_version: BuildVersionsShowPlugin
+  time_metric: CmdRunTimeHistogramPlugin
+  length_metric: CmdDataLengthHistogramPlugin
+  meta_key_decoder: HtmlTextUserKeyCoder
+  base_data_key_decoder: BaseDataKeyDecoder
+  zsets_score_key_decoder: ZSetsScoreKeyDecoder
+  lists_data_key_decoder: ListsDataKeyDecoder
+Cache:
+  lru-cache:
+    class: LRUCache
+    params:
+      capacity: 4G
+      num_shard_bits: -1
+      strict_capacity_limit: false
+      high_pri_pool_ratio: 0.5
+      use_adaptive_mutex: false
+      metadata_charge_policy: kFullChargeCacheMetadata
+Statistics:
+  stat-hashes:
+    class: default
+    params:
+      discard_tickers:
+      # 可以仅指定前缀，必须是以 . 为边界的前缀，例如下面两个必须分别指定
+      - rocksdb.block.cache
+      - rocksdb.block.cachecompressed
+      # 上面两个也可以用下面这一个概括
+      - rocksdb.block
+      # 精确指定
+      - rocksdb.memtable.payload.bytes.at.flush
+      - rocksdb.memtable.garbage.bytes.at.flush
+      # todis 未使用 txn"
+      - rocksdb.txn
+      - rocksdb.blobdb
+      - rocksdb.row.cache
+      - rocksdb.number.block
+      - rocksdb.bloom.filter
+      - rocksdb.persistent
+      - rocksdb.sim.block.cache
+      discard_histograms:
+      # comment: ....
+      - rocksdb.blobdb
+      - rocksdb.bytes.compressed
+      - rocksdb.bytes.decompressed
+      - rocksdb.num.index.and.filter.blocks.read.per.level
+      - rocksdb.num.data.blocks.read.per.level
+      - rocksdb.compression.times.nanos
+      - rocksdb.decompression.times.nanos
+      - rocksdb.read.block.get.micros
+      - rocksdb.write.raw.block.micros
+      stats_level: kExceptDetailedTimers
+  stat-lists:
+    class: default
+    params:
+      discard_tikers: "${stat-hashes}"
+      discard_histograms: "${stat-hashes}"
+  stat-strings:
+    class: default
+    params:
+      discard_tikers: "${stat-hashes}"
+      discard_histograms: "${stat-hashes}"
+  stat-sets:
+    class: default
+    params:
+      discard_tikers: "${stat-hashes}"
+      discard_histograms: "${stat-hashes}"
+  stat-zsets:
+    class: default
+    params:
+      discard_tikers: "${stat-hashes}"
+      discard_histograms: "${stat-hashes}"
+WriteBufferManager:
+  wbm:
+    class: WriteBufferManager
+    params:
+      buffer_size: 4G
+CompactionFilterFactory:
+  strings: StringsFilterFactory
+  base-meta: BaseMetaFilterFactory
+  list-meta: ListsMetaFilterFactory
+  list-data:
+    class: ListsDataFilterFactory
+    params:
+      type: lists
+  hash-meta: BaseMetaFilterFactory
+  hash-data:
+    class: BaseDataFilterFactory
+    params:
+      type: hashes
+  set-meta: BaseMetaFilterFactory
+  set-member:
+    class: BaseDataFilterFactory
+    params:
+      type: sets
+  zset-meta: BaseMetaFilterFactory
+  zset-data:
+    class: BaseDataFilterFactory
+    params:
+      type: zsets
+  zset-score:
+    class: ZSetsScoreFilterFactory
+    params:
+      type: zsets
+TableFactory:
+  block_based:
+    class: BlockBasedTable
+    params:
+      block_size: 8K
+      block_cache: "${lru-cache}"
+  dispatch:
+    comment: used for per-level stat show in webview
+    class: DispatcherTable
+    params:
+      default: block_based
+      readers:
+        BlockBasedTable: block_based
+      level_writers:
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+      - block_based
+MemTableRepFactory:
+  skiplist:
+    class: SkipList
+    params:
+      lookahead: 0
+CFOptions:
+  hash-data:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 256M
+    max_bytes_for_level_base: 256M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 32M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$base_data_key_decoder"
+    compaction_filter_factory: "${hash-data}"
+  set-member:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 256M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 16M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$base_data_key_decoder"
+    compaction_filter_factory: "${set-member}"
+  zset-data:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 256M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 16M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$base_data_key_decoder"
+    compaction_filter_factory: "${zset-data}"
+  base-meta:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 128M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 8M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$meta_key_decoder"
+    compaction_filter_factory: "${base-meta}"
+  strings:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    compaction_options_level:
+      L1_score_boost: 5
+    max_write_buffer_number: 4
+    write_buffer_size: 1G
+    target_file_size_base: 64M
+    target_file_size_multiplier: 2
+    soft_pending_compaction_bytes_limit: 1T
+    hard_pending_compaction_bytes_limit: 2T
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$meta_key_decoder"
+    compaction_filter_factory: "${strings}"
+  list-data:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 256M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 16M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$lists_data_key_decoder"
+    compaction_filter_factory: "${list-data}"
+  list-meta:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 16M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 8M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$meta_key_decoder"
+    compaction_filter_factory: "${list-meta}"
+  zset-score:
+    num_levels: 10
+    max_bytes_for_level_multiplier: 4
+    max_write_buffer_number: 4
+    write_buffer_size: 64M
+    compaction_options_level:
+      L1_score_boost: 5
+    target_file_size_base: 8M
+    target_file_size_multiplier: 2
+    table_factory: "${dispatch}"
+    compression_per_level:
+    - kNoCompression
+    - kNoCompression
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    - kZSTD
+    html_user_key_coder: "$zsets_score_key_decoder"
+    compaction_filter_factory: "${zset-score}"
+databases:
+  strings:
+    method: DB::Open
+    params:
+      db_options:
+        advise_random_on_open: true
+        create_if_missing: true
+        create_missing_column_families: true
+        max_background_flushes: 2
+        max_background_compactions: 64
+        max_subcompactions: 1
+        max_level1_subcompactions: 10
+        write_buffer_manager: "${wbm}"
+        inplace_update_support: false
+        WAL_size_limit_MB: 0
+        #wal_dir: "/path/to/todis-community-wal/strings"
+        statistics: "${stat-strings}"
+        allow_mmap_reads: true
+      column_families:
+        default: "${strings}"
+      path: "/path/to/todis-community/db/db0/strings"
+  hashes:
+    method: DB::Open
+    params:
+      db_options:
+        advise_random_on_open: true
+        create_if_missing: true
+        create_missing_column_families: true
+        max_background_flushes: 2
+        max_background_compactions: 32
+        max_subcompactions: 1
+        max_level1_subcompactions: 3
+        write_buffer_manager: "${wbm}"
+        inplace_update_support: false
+        WAL_size_limit_MB: 0
+        #wal_dir: "/path/to/todis-community-wal/hashes"
+        statistics: "${stat-hashes}"
+        allow_mmap_reads: true
+      column_families:
+        default: "${base-meta}"
+        data_cf: "${hash-data}"
+      path: "/path/to/todis-community/db/db0/hashes"
+  sets:
+    method: DB::Open
+    params:
+      db_options:
+        advise_random_on_open: true
+        create_if_missing: true
+        create_missing_column_families: true
+        max_background_flushes: 1
+        max_background_compactions: 20
+        max_subcompactions: 1
+        max_level1_subcompactions: 3
+        write_buffer_manager: "${wbm}"
+        inplace_update_support: false
+        WAL_size_limit_MB: 0
+        #wal_dir: "/path/to/todis-community-wal/sets"
+        statistics: "${stat-sets}"
+        allow_mmap_reads: true
+      column_families:
+        default: "${base-meta}"
+        member_cf: "${set-member}"
+      path: "/path/to/todis-community/db/db0/sets"
+  zsets:
+    method: DB::Open
+    params:
+      db_options:
+        advise_random_on_open: true
+        create_if_missing: true
+        create_missing_column_families: true
+        max_background_flushes: 1
+        max_background_compactions: 20
+        max_subcompactions: 1
+        max_level1_subcompactions: 3
+        write_buffer_manager: "${wbm}"
+        inplace_update_support: false
+        WAL_size_limit_MB: 0
+        #wal_dir: "/path/to/todis-community-wal/zsets"
+        statistics: "${stat-zsets}"
+        allow_mmap_reads: true
+      column_families:
+        default: "${base-meta}"
+        data_cf: "${zset-data}"
+        score_cf: "${zset-score}"
+      path: "/path/to/todis-community/db/db0/zsets"
+  lists:
+    method: DB::Open
+    params:
+      db_options:
+        create_if_missing: true
+        create_missing_column_families: true
+        max_background_flushes: 1
+        max_background_compactions: 20
+        max_subcompactions: 1
+        max_level1_subcompactions: 3
+        write_buffer_manager: "${wbm}"
+        inplace_update_support: false
+        WAL_size_limit_MB: 0
+        #wal_dir: "/path/to/todis-community-wal/lists"
+        statistics: "${stat-lists}"
+        allow_mmap_reads: true
+      column_families:
+        default: "${list-meta}"
+        data_cf: "${list-data}"
+      path: "/path/to/todis-community/db/db0/lists"
