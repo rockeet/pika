@@ -151,6 +151,7 @@ int PikaConf::Load()
 
   GetConfStr("sideplugin-conf", &sideplugin_conf_);
 
+  timeout_ = -1;
   GetConfInt("timeout", &timeout_);
   if (timeout_ < 0) {
       timeout_ = 60; // 60s
