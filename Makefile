@@ -4,6 +4,7 @@ PLATFORM_CXXFLAGS= -std=gnu++17 -fno-builtin-memcmp -msse -msse4.2
 PROFILING_FLAGS=-pg
 OPT=
 #LDFLAGS += -Wl,-rpath=$(RPATH)
+export SHELL := $(shell which bash)
 
 # DEBUG_LEVEL can have two values:
 # * DEBUG_LEVEL=2; this is the ultimate debug mode. It will compile pika
