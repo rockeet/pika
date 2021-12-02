@@ -10,7 +10,6 @@
       "//end": "end"
     },
     "AnyPlugin": {
-      "sys_info": "SysInfoShower",
       "todis_conf": "TodisConfShowPlugin",
       "build_version": "BuildVersionsShowPlugin",
       "time_metric": "CmdRunTimeHistogramPlugin",
