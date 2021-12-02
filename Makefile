@@ -130,7 +130,7 @@ CXXFLAGS += \
   -I${TOPLING_CORE_DIR}/boost-include \
   -I${TOPLING_CORE_DIR}/3rdparty/zstd
 LDFLAGS := -L${TOPLING_CORE_DIR}/${BUILD_ROOT}/lib_shared -lterark-{zbs,fsa,core}-${COMPILER}-${BUILD_TYPE_SIG}
-LDFLAGS := -lstdc++fs
+LDFLAGS += -lstdc++fs
 
 export CXXFLAGS
 export LDFLAGS
@@ -278,8 +278,8 @@ $(PINK): $(shell find $(PINK_PATH)/pink -name '*.cc' -o -name '*.h')
 	+make -C $(PINK_PATH)/pink/ DEBUG_LEVEL=$(DEBUG_LEVEL) NO_PB=0 SLASH_PATH=$(SLASH_PATH)
 
 ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
-$(ROCKSDB): CXXFLAGS=
-$(ROCKSDB): LDFLAGS=
+$(ROCKSDB): CXXFLAGS :=
+$(ROCKSDB): LDFLAGS :=
 $(ROCKSDB):
 	+make DISABLE_JEMALLOC=1 DEBUG_LEVEL=$(DEBUG_LEVEL) USE_RTTI=1 \
 	      DISABLE_WARNING_AS_ERROR=1 \
