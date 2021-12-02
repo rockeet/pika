@@ -78,7 +78,7 @@ ifeq (${ROCKSDB_PATH},$(THIRD_PATH)/toplingdb)
       IsCloneOK := $(shell \
         set -x -e; \
         cd $(CURDIR)/third; \
-        git clone http://github.com/topling/toplingdb.git >&2; \
+        git clone https://github.com/topling/toplingdb.git >&2; \
         cd toplingdb; \
         git submodule update --init --recursive >&2; \
         make clean >&2; \
