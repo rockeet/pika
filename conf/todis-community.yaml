@@ -113,14 +113,21 @@ CompactionFilterFactory:
     class: ZSetsScoreFilterFactory
     params:
       type: zsets
+FilterPolicy:
+  bloom_filter:
+    class: BloomFilter
+    params:
+      bits_per_key: 10
+      use_block_based_builder: false
 TableFactory:
   block_based:
     class: BlockBasedTable
     params:
       block_size: 8K
       block_cache: "${lru-cache}"
+      filter_policy: "${bloom_filter}"
   dispatch:
-    comment: used for per-level stat show in webview
+    # used for per-level stat show in webview
     class: DispatcherTable
     params:
       default: block_based
