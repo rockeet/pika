@@ -311,7 +311,7 @@
             "WAL_size_limit_MB": 0,
             "//wal_dir": "/path/to/todis-community-wal/strings",
             "statistics": "${stat-strings}",
-            "allow_mmap_reads": true
+            "allow_mmap_reads": false
           },
           "column_families": {
             "default": "${strings}"
@@ -335,7 +335,7 @@
             "WAL_size_limit_MB": 0,
             "//wal_dir": "/path/to/todis-community-wal/hashes",
             "statistics": "${stat-hashes}",
-            "allow_mmap_reads": true
+            "allow_mmap_reads": false
           },
           "column_families": {
             "default": "${base-meta}",
@@ -360,7 +360,7 @@
             "WAL_size_limit_MB": 0,
             "//wal_dir": "/path/to/todis-community-wal/sets",
             "statistics": "${stat-sets}",
-            "allow_mmap_reads": true
+            "allow_mmap_reads": false
           },
           "column_families": {
             "default": "${base-meta}",
@@ -385,7 +385,7 @@
             "WAL_size_limit_MB": 0,
             "//wal_dir": "/path/to/todis-community-wal/zsets",
             "statistics": "${stat-zsets}",
-            "allow_mmap_reads": true
+            "allow_mmap_reads": false
           },
           "column_families": {
             "default": "${base-meta}",
@@ -410,7 +410,7 @@
             "WAL_size_limit_MB": 0,
             "//wal_dir": "/path/to/todis-community-wal/lists",
             "statistics": "${stat-lists}",
-            "allow_mmap_reads": true
+            "allow_mmap_reads": false
           },
           "column_families": {
             "default": "${list-meta}",
