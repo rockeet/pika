@@ -39,10 +39,10 @@
           "discard_tickers": [
             "# comment",
             "// comment: 可以仅指定前缀，必须是以 . 为边界的前缀，例如下面两个必须分别指定",
-            "rocksdb.block.cache",
+            "#rocksdb.block.cache",
             "rocksdb.block.cachecompressed",
             "# comment: 上面两个也可以用下面这一个概括",
-            "rocksdb.block",
+            "#rocksdb.block",
             "# 精确指定",
             "rocksdb.memtable.payload.bytes.at.flush",
             "rocksdb.memtable.garbage.bytes.at.flush",
@@ -50,30 +50,29 @@
             "rocksdb.txn",
             "rocksdb.blobdb",
             "rocksdb.row.cache",
-            "rocksdb.number.block",
-            "rocksdb.bloom.filter",
             "rocksdb.persistent",
             "rocksdb.sim.block.cache"
           ],
           "discard_histograms": [
             "# comment: ....",
             "rocksdb.blobdb",
-            "rocksdb.bytes.compressed",
-            "rocksdb.bytes.decompressed",
-            "rocksdb.num.index.and.filter.blocks.read.per.level",
-            "rocksdb.num.data.blocks.read.per.level",
-            "rocksdb.compression.times.nanos",
-            "rocksdb.decompression.times.nanos",
-            "rocksdb.read.block.get.micros",
-            "rocksdb.write.raw.block.micros",
+            "#rocksdb.bytes.compressed",
+            "#rocksdb.bytes.decompressed",
+            "#rocksdb.num.index.and.filter.blocks.read.per.level",
+            "#rocksdb.num.data.blocks.read.per.level",
+            "#rocksdb.compression.times.nanos",
+            "#rocksdb.decompression.times.nanos",
+            "#rocksdb.read.block.get.micros",
+            "#rocksdb.write.raw.block.micros",
             "# comment end of array"
           ],
-          "stats_level": "kExceptDetailedTimers"
+          "stats_level": "kAll"
         }
       },
       "stat-lists"  : {
         "class": "default",
         "params": {
+          "stats_level": "kAll",
           "discard_tikers": "${stat-hashes}",
           "discard_histograms": "${stat-hashes}"
         }
@@ -81,6 +80,7 @@
       "stat-strings": {
         "class": "default",
         "params": {
+          "stats_level": "kAll",
           "discard_tikers": "${stat-hashes}",
           "discard_histograms": "${stat-hashes}"
         }
@@ -88,6 +88,7 @@
       "stat-sets": {
         "class": "default",
         "params": {
+          "stats_level": "kAll",
           "discard_tikers": "${stat-hashes}",
           "discard_histograms": "${stat-hashes}"
         }
@@ -95,6 +96,7 @@
       "stat-zsets": {
         "class": "default",
         "params": {
+          "stats_level": "kAll",
           "discard_tikers": "${stat-hashes}",
           "discard_histograms": "${stat-hashes}"
         }
