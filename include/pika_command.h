@@ -218,6 +218,7 @@ const fstring kCmdNamePkClusterAddTable = "pkclusteraddtable";
 const fstring kCmdNamePkClusterDelTable = "pkclusterdeltable";
 
 const fstring kCmdNameCommand = "command";
+const fstring kCmdNameQuit = "quit";
 
 const fstring kClusterPrefix = "pkcluster";
 typedef pink::RedisCmdArgsType PikaCmdArgsType;

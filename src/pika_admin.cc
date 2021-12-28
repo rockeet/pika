@@ -2448,3 +2448,13 @@ void CommandCmd::Do(const std::shared_ptr<Partition>& partition) {
   }
   return;
 }
+
+void QuitCmd::DoInitial() {
+  return;
+}
+
+void QuitCmd::Do(const std::shared_ptr<Partition>& partition) {
+  this->res_.SetRes(this->res_.kOk);
+  conn_.lock()->set_is_quit();
+  return;
+}

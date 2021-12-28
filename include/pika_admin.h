@@ -465,4 +465,15 @@ class CommandCmd : public Cmd {
   void DoInitial() override;
 };
 
+class QuitCmd : public Cmd {
+ public:
+  using Cmd::Cmd;
+  void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
+  void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
+  void Merge() override {}
+  Cmd* Clone() override { return new QuitCmd(*this); }
+ private:
+  void DoInitial() override;
+};
+
 #endif  // PIKA_ADMIN_H_
