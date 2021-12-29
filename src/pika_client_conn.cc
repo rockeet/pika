@@ -60,7 +60,12 @@ std::shared_ptr<Cmd> PikaClientConn::DoCmd(
   // Check authed
   // AuthCmd will set stat_
   if (!auth_stat_.IsAuthed(c_ptr)) {
-    c_ptr->res().SetRes(CmdRes::kErrOther, "NOAUTH Authentication required.");
+    if (c_ptr->is_admin_require()) {
+      c_ptr->res().SetRes(CmdRes::kErrOther, "NOAUTH Authentication required.");
+    }
+    else {
+      c_ptr->res().SetRes(CmdRes::kErrOther, "Command is in blacklist.");
+    }
     return c_ptr;
   }
 
