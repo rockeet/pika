@@ -80,6 +80,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new PKPatternMatchDelCmd(kCmdNamePKPatternMatchDel, 3, kCmdFlagsWrite | kCmdFlagsAdmin));
   add(new DummyCmd(kCmdDummy, 0, kCmdFlagsWrite | kCmdFlagsSinglePartition));
   add(new CommandCmd(kCmdNameCommand, 0, kCmdFlagsRead | kCmdFlagsAdmin));
+  add(new QuitCmd(kCmdNameQuit, 0, kCmdFlagsRead | kCmdFlagsAdmin));
 
 #if 0
   // Slots related

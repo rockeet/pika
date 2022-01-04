@@ -217,12 +217,20 @@ void PikaClientConn::DoBackgroundTask(void* arg) {
     conn_ptr->NotifyEpoll(false);
     return;
   }
+
+  int num = 1;
   for (const auto& argv : bg_arg->redis_cmds) {
     if (argv.size() == 0) {
       delete bg_arg;
       conn_ptr->NotifyEpoll(false);
       return;
     }
+
+    if (argv[0] == "quit") {
+      bg_arg->redis_cmds.resize(num);
+      break;
+    }
+    num++;
   }
   std::vector<Node> dst;
   bool all_local = true;
