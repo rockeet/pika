@@ -402,7 +402,7 @@ bool Partition::InitBgsaveEnv() {
   char s_time[32];
   int len = strftime(s_time, sizeof(s_time), "%Y%m%d%H%M%S", localtime(&bgsave_info_.start_time));
   bgsave_info_.s_start_time.assign(s_time, len);
-  std::string time_sub_path = g_pika_conf->bgsave_prefix() + std::string(s_time, 8);
+  std::string time_sub_path = g_pika_conf->bgsave_prefix() + std::string(s_time, 14);
   bgsave_info_.path = g_pika_conf->bgsave_path() + time_sub_path + "/" + bgsave_sub_path_;
   if (!slash::DeleteDirIfExist(bgsave_info_.path)) {
     LOG(WARNING) << partition_name_ << " remove exist bgsave dir failed";

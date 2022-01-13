@@ -456,8 +456,12 @@ Status PikaServer::DelTableStruct(const std::string& table_name) {
   return  Status::OK();
 }
 
-const std::shared_ptr<Table>& PikaServer::GetTable(const std::string &table_name) {
+const std::shared_ptr<Table> PikaServer::GetTable(const std::string &table_name) {
 #if 1
+  //todo:后续理解pika架构后分析这样使用的合理性，再优化修改方案 这里是临时方案
+  if (table_name.size() != 3 || table_name[0] != 'd' || table_name[1] != 'b' || !(table_name[2] >= '0'&& table_name[2] <= '7')) {
+    return NULL;
+  }
   int idx = DbIdxFromStr(table_name); // db0, db1, ..., db7
   ROCKSDB_VERIFY_LT(size_t(idx), tables_.size());
   return tables_[idx].second;
