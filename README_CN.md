@@ -13,7 +13,7 @@ Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 [Toplin
 
 目前(2021-10-11)，市面上存在很多大容量、持久化的 Redis 实现（一般基于 RocksDB），几乎每个大厂都有自己的相应产品。但是这类产品都存在性能低下、成本高昂、难以扩展、运维不易、监控缺失等问题，依托 ToplingDB 开创性的独有技术，Todis 解决了所有这些问题，并且在持续地不断改进。
 
-只需要 10分钟，就可以在阿里云上体验 [托管的 Todis](https://topling.cn/products)。
+只需要 10分钟([视频教程](https://www.zhihu.com/zvideo/1460305636970377216))，就可以在阿里云上体验 [托管的 Todis](https://topling.cn/products)。
 
 ## 2. 功能
 1. 存储计算分离，计算和存储可单独弹性伸缩
