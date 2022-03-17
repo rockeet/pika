@@ -27,7 +27,7 @@ static std::string html_a_link(fstring git_repo, fstring git_hash) {
 class BuildVersionsShowPlugin : public AnyPlugin {
 public:
   const char* Name() const override { return "BuildVersionsShowPlugin"; }
-  void Update(const json&, const SidePluginRepo&) {}
+  void Update(const json&, const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     json js;
     char date_time_chs[22];

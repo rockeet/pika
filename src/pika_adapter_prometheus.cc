@@ -11,7 +11,7 @@ using namespace ROCKSDB_NAMESPACE;
 class CmdRunTimeHistogramPlugin : public AnyPlugin {
 public:
   const char* Name() const override { return "CmdRunTimeHistogramPlugin"; }
-  void Update(const json&, const SidePluginRepo&) {}
+  void Update(const json&, const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     return g_pika_cmd_run_time_histogram->GetTimeMetric();
   }
@@ -23,7 +23,7 @@ ROCKSDB_REG_AnyPluginManip("CmdRunTimeHistogramPlugin");
 class CmdDataLengthHistogramPlugin : public AnyPlugin {
 public:
   const char* Name() const override { return "CmdDataLengthHistogramPlugin"; }
-  void Update(const json&, const SidePluginRepo&) {}
+  void Update(const json&, const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     bool metric = JsonSmartBool(dump_options, "metric", true);
     if (metric) {

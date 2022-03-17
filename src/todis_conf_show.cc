@@ -9,7 +9,7 @@ using namespace ROCKSDB_NAMESPACE;
 class TodisConfShowPlugin : public AnyPlugin {
 public:
   const char* Name() const override { return "TodisConfShowPlugin"; }
-  void Update(const json&, const SidePluginRepo&) {}
+  void Update(const json&, const json&, const SidePluginRepo&) {}
   std::string ToString(const json& dump_options, const SidePluginRepo&) const {
     json js;
     js["sideplugin_conf"] = g_pika_conf->sideplugin_conf();
