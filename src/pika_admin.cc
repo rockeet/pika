@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <sys/time.h>
 #include <sys/utsname.h>
+#include <sys/statvfs.h>
 
 #include "slash/include/rsync.h"
 
@@ -604,6 +605,7 @@ const std::string InfoCmd::kReplicationSection = "replication";
 const std::string InfoCmd::kKeyspaceSection = "keyspace";
 const std::string InfoCmd::kDataSection = "data";
 const std::string InfoCmd::kDebugSection = "debug";
+const std::string InfoCmd::kToplingDBSection = "ToplingDB";
 
 void InfoCmd::DoInitial() {
   size_t argc = argv_.size();
@@ -668,6 +670,8 @@ void InfoCmd::DoInitial() {
     return;
   } else if (!strcasecmp(argv_[1].data(), kDataSection.data())) {
     info_section_ = kInfoData;
+  } else if (!strcasecmp(argv_[1].data(), kToplingDBSection.data())) {
+    info_section_ = kInfoToplingDB;
   } else if (!strcasecmp(argv_[1].data(), kDebugSection.data())) {
     info_section_ = kInfoDebug;
   } else {
@@ -712,6 +716,8 @@ void InfoCmd::Do(const std::shared_ptr<Partition>& partition) {
       InfoReplication(info);
       info.append("\r\n");
       InfoKeyspace(info);
+      info.append("\r\n");
+      InfoToplingDB(partition, info);
       break;
     case kInfoServer:
       InfoServer(info);
@@ -736,6 +742,9 @@ void InfoCmd::Do(const std::shared_ptr<Partition>& partition) {
       break;
     case kInfoData:
       InfoData(info);
+      break;
+    case kInfoToplingDB:
+      InfoToplingDB(partition, info);
       break;
     case kInfoDebug:
       InfoDebug(info);
@@ -809,13 +818,16 @@ void InfoCmd::InfoExecCount(std::string& info) {
   std::stringstream tmp_stream;
   tmp_stream << "# Command_Exec_Count\r\n";
 
+  uint64_t all_count = 0;
   std::unordered_map<std::string, uint64_t> command_exec_count_table = g_pika_server->ServerExecCountTable();
   for (const auto& item : command_exec_count_table) {
     if (item.second == 0) {
       continue;
     }
     tmp_stream << item.first << ":" << item.second << "\r\n";
+    all_count += item.second;
   }
+  tmp_stream << "all_command_count" << ":" << all_count << "\r\n";
   info.append(tmp_stream.str());
 }
 
@@ -1048,6 +1060,24 @@ void InfoCmd::InfoKeyspace(std::string& info) {
       } else if (duration >= 0) {
         tmp_stream << "# Duration: " << std::to_string(duration) + "s" << "\r\n";
       }
+      auto info_disk=[](const std::string &path, std::stringstream &tmp_stream) {
+        struct statvfs stat;
+        if (statvfs(path.c_str(), &stat) == 0) {
+          auto disk_capacity = stat.f_blocks * stat.f_frsize;
+          auto used_disk_size = (stat.f_blocks - stat.f_bavail) * stat.f_frsize;
+          double used_disk_percent = used_disk_size * 100 / disk_capacity;
+          tmp_stream << "disk_capacity:" << disk_capacity << "\r\n";
+          tmp_stream << "used_disk_size:" << used_disk_size << "\r\n";
+          tmp_stream << "used_disk_percent:" << used_disk_percent << "%\r\n";
+        }
+      };
+      info_disk(g_pika_conf->db_path(), tmp_stream);
+
+      tmp_stream << "DBStrings_keys:" << key_infos[0].keys << "\r\n";
+      tmp_stream << "DBHashes_keys:" << key_infos[1].keys << "\r\n";
+      tmp_stream << "DBLists_keys:" << key_infos[2].keys << "\r\n";
+      tmp_stream << "DBZsets_keys:" << key_infos[3].keys << "\r\n";
+      tmp_stream << "DBSets_keys:" << key_infos[4].keys << "\r\n";
 
       tmp_stream << table_name << " Strings_keys=" << key_infos[0].keys << ", expires=" << key_infos[0].expires << ", invalid_keys=" << key_infos[0].invaild_keys << "\r\n";
       tmp_stream << table_name << " Hashes_keys=" << key_infos[1].keys << ", expires=" << key_infos[1].expires << ", invalid_keys=" << key_infos[1].invaild_keys << "\r\n";
@@ -1117,6 +1147,10 @@ void InfoCmd::InfoData(std::string& info) {
 
   info.append(tmp_stream.str());
   return;
+}
+
+void InfoCmd::InfoToplingDB(const std::shared_ptr<Partition>& partition, std::string &info) {
+  partition.get()->db()->GetRocksDBInfo(info);
 }
 
 void InfoCmd::InfoDebug(std::string& info) {

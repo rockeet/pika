@@ -218,13 +218,12 @@ class InfoCmd : public Cmd {
     kInfoLog,
     kInfoData,
     kInfo,
+    kInfoToplingDB,
     kInfoAll,
     kInfoDebug
   };
 
-  InfoCmd(fstring name, int arity, uint16_t flag) : Cmd(name, arity, flag) {
-    special_cmd_ = SpecialCmd::kInfo;
-  }
+  InfoCmd(fstring name, int arity, uint16_t flag) : Cmd(name, arity, flag) {}
   void Do(const std::shared_ptr<Partition>& partition = nullptr) override;
   void Split(const std::shared_ptr<Partition>&, const HintKeys&) override {}
   void Merge() override {}
@@ -247,6 +246,7 @@ class InfoCmd : public Cmd {
   const static std::string kKeyspaceSection;
   const static std::string kDataSection;
   const static std::string kDebugSection;
+  const static std::string kToplingDBSection;
 
   void DoInitial() override;
   void Clear() override {
@@ -264,6 +264,7 @@ class InfoCmd : public Cmd {
   void InfoReplication(std::string& info);
   void InfoKeyspace(std::string& info);
   void InfoData(std::string& info);
+  void InfoToplingDB(const std::shared_ptr<Partition>& partition, std::string& info);
   void InfoDebug(std::string& info);
 };
 

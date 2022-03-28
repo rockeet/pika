@@ -67,7 +67,7 @@ void InitCmdTable(CmdTable* cmd_table) {
   add(new FlushdbCmd(kCmdNameFlushdb, -1, kCmdFlagsWrite | kCmdFlagsSuspend | kCmdFlagsAdmin));
   add(new ClientCmd(kCmdNameClient, -2, kCmdFlagsRead | kCmdFlagsAdmin));
   add(new ShutdownCmd(kCmdNameShutdown, 1, kCmdFlagsRead | kCmdFlagsLocal | kCmdFlagsAdmin));
-  add(new InfoCmd(kCmdNameInfo, -1, kCmdFlagsRead | kCmdFlagsAdmin));
+  add(new InfoCmd(kCmdNameInfo, -1, kCmdFlagsRead | kCmdFlagsAdmin | kCmdFlagsSinglePartition));
   add(new ConfigCmd(kCmdNameConfig, -2, kCmdFlagsRead | kCmdFlagsAdmin));
   add(new MonitorCmd(kCmdNameMonitor, -1, kCmdFlagsRead | kCmdFlagsAdmin));
   add(new DbsizeCmd(kCmdNameDbsize, 1, kCmdFlagsRead | kCmdFlagsAdmin));
