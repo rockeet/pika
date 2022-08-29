@@ -147,11 +147,11 @@ void ConnectionPool::Release(const std::string& addr) {
   }
   auto parallel = pool_.find(addr)->second;
   if (parallel->Release()) {
-    parallel->Close();
-    delete parallel;
     pool_.erase(addr);
     LOG(INFO) << "release parallel conn :" << parallel->Addr() << " table :"
       << std::to_string(parallel->GetTable());
+    parallel->Close();
+    delete parallel;
   }
 }
 
