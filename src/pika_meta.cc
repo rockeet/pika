@@ -4,7 +4,11 @@
 // of patent rights can be found in the PATENTS file in the same directory.
 
 #include "include/pika_meta.h"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wtype-limits"
 #include "src/pika_inner_message.pb.h"
+#pragma GCC diagnostic pop
 
 const uint32_t VERSION = 1;
 

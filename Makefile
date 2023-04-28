@@ -207,6 +207,7 @@ default: all
 
 WARNING_FLAGS = -W -Wextra -Wall -Wsign-compare \
   							-Wno-unused-parameter -Woverloaded-virtual \
+							-Wno-sign-promo -Wno-invalid-offsetof \
 								-Wnon-virtual-dtor -Wno-missing-field-initializers
 
 ifndef DISABLE_WARNING_AS_ERROR
@@ -251,6 +252,8 @@ BINARY = ${BINNAME}
 
 %.o: %.cc
 	$(AM_V_CC)$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.pb.o: CXXFLAGS += -Wno-type-limits
 
 proto: $(PIKA_PROTO_GENS)
 
