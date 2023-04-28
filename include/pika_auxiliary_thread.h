@@ -10,7 +10,7 @@
 
 #include "slash/include/slash_mutex.h"
 
-class PikaAuxiliaryThread : public pink::Thread {
+class PikaAuxiliaryThread final : public pink::Thread {
  public:
   PikaAuxiliaryThread() :
       mu_(),

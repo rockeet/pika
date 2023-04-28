@@ -17,7 +17,7 @@
 #include "include/pika_define.h"
 #include "include/pika_client_conn.h"
 
-class PikaMonitorThread : public pink::Thread {
+class PikaMonitorThread final : public pink::Thread {
  public:
   PikaMonitorThread();
   virtual ~PikaMonitorThread();
