@@ -153,7 +153,6 @@ slash::Status PikaReplServer::Write(const std::string& ip,
   if (conn == nullptr) {
     return Status::NotFound("The" + ip_port + " conn cannot be found");
   }
-  ROCKSDB_DIE("Should no goes here, replication is not supported by topling");
   if (conn->WriteResp(std::string(msg))) {
     conn->NotifyClose();
     return Status::Corruption("The" + ip_port + " conn, Write Resp Failed");
