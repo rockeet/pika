@@ -99,7 +99,7 @@ std::shared_ptr<SlaveNode> SyncProgress::GetSlaveNode(const std::string& ip, int
   std::string slave_key = ip + std::to_string(port);
   slash::RWLock l(&rwlock_, false);
   const auto iter = slaves_.find(slave_key);
-  if (slaves_.end() != iter) {
+  if (slaves_.end() == iter) {
     return nullptr;
   }
   return iter->second;
