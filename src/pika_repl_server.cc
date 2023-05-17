@@ -32,7 +32,6 @@ PikaReplServer::~PikaReplServer() {
 }
 
 int PikaReplServer::Start() {
-  return pink::kSuccess;
   int res = pika_repl_server_thread_->StartThread();
   if (res != pink::kSuccess) {
     LOG(FATAL) << "Start Pika Repl Server Thread Error: " << res
@@ -47,7 +46,6 @@ int PikaReplServer::Start() {
 }
 
 int PikaReplServer::Stop() {
-  return 0;
   server_tp_->stop_thread_pool();
   pika_repl_server_thread_->StopThread();
   return 0;
