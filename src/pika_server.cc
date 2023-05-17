@@ -1066,7 +1066,7 @@ void PikaServer::TryDBSync(const std::string& ip, int port,
   std::shared_ptr<Partition> partition =
     GetTablePartitionById(table_name, partition_id);
   if (!partition) {
-    LOG(WARNING) << "Partition: " << partition->GetPartitionName()
+    LOG(WARNING) << "Partition: " << partition_id
       << " Not Found, TryDBSync Failed";
     return;
   }
@@ -1093,7 +1093,7 @@ void PikaServer::DbSyncSendFile(const std::string& ip, int port,
                                 uint32_t partition_id) {
   std::shared_ptr<Partition> partition = GetTablePartitionById(table_name, partition_id);
   if (!partition) {
-    LOG(WARNING) << "Partition: " << partition->GetPartitionName()
+    LOG(WARNING) << "Partition: " << partition_id
       << " Not Found, DbSync send file Failed";
     return;
   }
