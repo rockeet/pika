@@ -453,7 +453,7 @@
           { "url": "http://192.168.100.112:8081", "web_url": "http://dell3.topling.in:2011" },
         ],
         "dbcf_min_level": {
-          ":data_cf": 4
+          ":data_cf": -2
         },
         "dcompact_min_level": 2
       }
