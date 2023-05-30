@@ -47,7 +47,7 @@ Redis 协议虽然非常简单，但是正确、完整地实现一遍，其实�
    * 字节跳动在 2020 年底开源了 [terark-zip](https://github.com/bytedance/terark-zip)
    * 作为 **terark-zip** 的作者，rockeet 为他的 [topling-zip](https://github.com/topling/topling-zip)(fork 自 [terark-zip](https://github.com/bytedance/terark-zip)) 增加了很多改进
 3. 多租户、多实例共享计算结点的[弹性分布式 Compact](https://github.com/topling/rockside/wiki/Distributed-Compaction)
-## 5. Compile
+## 5. 编译
 ### 5.1. CentOS
 ```bash
 sudo yum install epel-release -y
@@ -58,6 +58,7 @@ cd todis
 git submodule update --init --recursive
 make -j`nproc`
 ```
+如果你的 protobuf-devel 版本太老，编译可能会失败，请更新版本之后重新编译。
 ## 6. 部署 & 运行
 编译输出目录 output 包含了所有运行时的需要，用户需要修改配置文件（特别是配置文件中数据的存储目录），配置文件有两个：
 `todis-community.conf` 和 `todis-community.json`，前者是 pika 的配置文件，后者是 todis 的 ToplingDB SidePlugin 配置文件，`todis-community.conf` 中 `sideplugin-conf` 用来指定 `todis-community.json` 的路径。
