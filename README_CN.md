@@ -22,7 +22,7 @@ Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 [Toplin
 4. 可视化 Web 数据观测（[demo](http://todis-demo.aliyun.db.topling.cn:8000)）
 
 ## 3. 性能
-1. 利用弹性分布式 Compact，彻底消除写卡顿（Write Stall）
+1. 利用弹性分布式 Compact，彻底消除写卡顿（Write Stall）[观测 demo](http://todis-demo.aliyun.db.topling.cn:8000/compaction_executor_factory/dcompact?html=1&cols=3&refresh=1)
 2. 利用可检索内存压缩技术大幅提高读性能：CPU消耗降低，内存利用率、缓存命中率提高
 3. 利用共享存储实现毫秒级主从同步，可在 10 秒内拉起新结点
 
@@ -31,7 +31,7 @@ Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 [Toplin
 Redis 协议虽然非常简单，但是正确、完整地实现一遍，其实并不容易，在众多基于 RocksDB 的 Redis 实现中，我们经过仔细调研，反复尝试，最终选择了 pika。选定之后，对其进行了大规模的深度修改：
 
 1. 重写了性能关键代码
-2. 增加了一系列监控指标（各命令的延时直方图、数据大小分布直方图）
+2. 增加了一系列[监控指标](http://todis-demo.aliyun.db.topling.cn:3000)（各命令的延时直方图、数据大小分布直方图）
 3. 适配 [ToplingDB](https://github.com/topling/toplingdb) 的 [SidePlugin](https://github.com/topling/rockside/wiki)，Web 展示各种配置，数据概要，状态信息等
 4. 适配 [ToplingDB](https://github.com/topling/toplingdb) 的 [分布式 Compact](https://github.com/topling/rockside/wiki/Distributed-Compaction)，为此重新设计了 Key 编码格式，去掉了自定义 Comparator，等等
 
