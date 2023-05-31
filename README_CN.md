@@ -1,7 +1,7 @@
 # Todis [ [English](README.md) ]
 
 ## 0. 开源社区版
-现在（2021-11-14）用户可以自己编译社区版 Todis，社区版 Todis 拥有完整的功能，企业版额外有 ToplingZipTable 压缩的 SST。
+用户可以自己编译社区版 Todis，社区版 Todis 拥有完整的功能，企业版额外有 ToplingZipTable 压缩的 SST。
 
 **开源社区版不允许字节跳动（bytedance）使用，参见 [LICENSE](LICENSE)**。
 ## 1. 简介
