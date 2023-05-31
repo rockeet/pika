@@ -18,8 +18,8 @@ Todis 的 Redis 服务层 fork 自开源的 pika，存储引擎层基于 [Toplin
 ## 2. 功能
 1. 存储计算分离，计算和存储可单独弹性伸缩
 2. 一键扩容，无需分片
-3. 完备、丰富的监控指标
-4. 可视化 Web 数据观测
+3. 完备、丰富的监控指标（[demo](http://todis-demo.aliyun.db.topling.cn:3000)）
+4. 可视化 Web 数据观测（[demo](http://todis-demo.aliyun.db.topling.cn:8000)）
 
 ## 3. 性能
 1. 利用弹性分布式 Compact，彻底消除写卡顿（Write Stall）
