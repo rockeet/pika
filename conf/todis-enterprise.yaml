@@ -354,4 +354,6 @@ CompactionExecutorFactory:
         web_url: http://dell3.topling.in:2011
       dbcf_min_level:
         ":data_cf": -2
+        ":member_cf": -2
+        ":score_cf": -2
       dcompact_min_level: 2
