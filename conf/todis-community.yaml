@@ -150,15 +150,12 @@ MemTableRepFactory:
     params:
       lookahead: 0
 CFOptions:
-  hash-data:
+  common-cfo:
     num_levels: 10
     max_bytes_for_level_multiplier: 4
     max_write_buffer_number: 4
-    write_buffer_size: 256M
-    max_bytes_for_level_base: 256M
     compaction_options_level:
       L1_score_boost: 5
-    target_file_size_base: 32M
     target_file_size_multiplier: 2
     table_factory: "${dispatch}"
     compression_per_level:
@@ -172,189 +169,79 @@ CFOptions:
     - kZSTD
     - kZSTD
     - kZSTD
+    disable_auto_compactions: true
+  hash-data:
+    template: "$common-cfo"
+    write_buffer_size: 256M
+    max_bytes_for_level_base: 256M
+    target_file_size_base: 32M
     html_user_key_coder: "$base_data_key_decoder"
     compaction_filter_factory: "${hash-data}"
   set-member:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 256M
-    compaction_options_level:
-      L1_score_boost: 5
     target_file_size_base: 16M
-    target_file_size_multiplier: 2
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$base_data_key_decoder"
     compaction_filter_factory: "${set-member}"
   zset-data:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 256M
-    compaction_options_level:
-      L1_score_boost: 5
     target_file_size_base: 16M
-    target_file_size_multiplier: 2
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$base_data_key_decoder"
     compaction_filter_factory: "${zset-data}"
   base-meta:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 128M
-    compaction_options_level:
-      L1_score_boost: 5
     target_file_size_base: 8M
-    target_file_size_multiplier: 2
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$meta_key_decoder"
     compaction_filter_factory: "${base-meta}"
   strings:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    compaction_options_level:
-      L1_score_boost: 5
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 1G
     target_file_size_base: 64M
-    target_file_size_multiplier: 2
     soft_pending_compaction_bytes_limit: 1T
     hard_pending_compaction_bytes_limit: 2T
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$meta_key_decoder"
     compaction_filter_factory: "${strings}"
   list-data:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 256M
-    compaction_options_level:
-      L1_score_boost: 5
     target_file_size_base: 16M
-    target_file_size_multiplier: 2
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$lists_data_key_decoder"
     compaction_filter_factory: "${list-data}"
   list-meta:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 16M
-    compaction_options_level:
-      L1_score_boost: 5
     target_file_size_base: 8M
-    target_file_size_multiplier: 2
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$meta_key_decoder"
     compaction_filter_factory: "${list-meta}"
   zset-score:
-    num_levels: 10
-    max_bytes_for_level_multiplier: 4
-    max_write_buffer_number: 4
+    template: "$common-cfo"
     write_buffer_size: 64M
-    compaction_options_level:
-      L1_score_boost: 5
     target_file_size_base: 8M
-    target_file_size_multiplier: 2
-    table_factory: "${dispatch}"
-    compression_per_level:
-    - kNoCompression
-    - kNoCompression
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
-    - kZSTD
     html_user_key_coder: "$zsets_score_key_decoder"
     compaction_filter_factory: "${zset-score}"
+DBOptions:
+  dbo:
+    advise_random_on_open: true
+    create_if_missing: true
+    create_missing_column_families: true
+    max_subcompactions: 1
+    write_buffer_manager: "${wbm}"
+    inplace_update_support: false
+    WAL_size_limit_MB: 0
+    allow_mmap_reads: false
 databases:
   strings:
     method: DB::Open
     params:
       db_options:
-        advise_random_on_open: true
-        create_if_missing: true
-        create_missing_column_families: true
+        template: "$dbo"
         max_background_flushes: 2
         max_background_compactions: 64
-        max_subcompactions: 1
         max_level1_subcompactions: 10
-        write_buffer_manager: "${wbm}"
-        inplace_update_support: false
-        WAL_size_limit_MB: 0
         #wal_dir: "/path/to/todis-community-wal/strings"
         statistics: "${stat-strings}"
-        allow_mmap_reads: false
       column_families:
         default: "${strings}"
       path: "/path/to/todis-community/db/db0/strings"
@@ -362,19 +249,12 @@ databases:
     method: DB::Open
     params:
       db_options:
-        advise_random_on_open: true
-        create_if_missing: true
-        create_missing_column_families: true
+        template: "$dbo"
         max_background_flushes: 2
         max_background_compactions: 32
-        max_subcompactions: 1
         max_level1_subcompactions: 3
-        write_buffer_manager: "${wbm}"
-        inplace_update_support: false
-        WAL_size_limit_MB: 0
         #wal_dir: "/path/to/todis-community-wal/hashes"
         statistics: "${stat-hashes}"
-        allow_mmap_reads: false
       column_families:
         default: "${base-meta}"
         data_cf: "${hash-data}"
@@ -383,19 +263,12 @@ databases:
     method: DB::Open
     params:
       db_options:
-        advise_random_on_open: true
-        create_if_missing: true
-        create_missing_column_families: true
+        template: "$dbo"
         max_background_flushes: 1
         max_background_compactions: 20
-        max_subcompactions: 1
         max_level1_subcompactions: 3
-        write_buffer_manager: "${wbm}"
-        inplace_update_support: false
-        WAL_size_limit_MB: 0
         #wal_dir: "/path/to/todis-community-wal/sets"
         statistics: "${stat-sets}"
-        allow_mmap_reads: false
       column_families:
         default: "${base-meta}"
         member_cf: "${set-member}"
@@ -404,19 +277,12 @@ databases:
     method: DB::Open
     params:
       db_options:
-        advise_random_on_open: true
-        create_if_missing: true
-        create_missing_column_families: true
+        template: "$dbo"
         max_background_flushes: 1
         max_background_compactions: 20
-        max_subcompactions: 1
         max_level1_subcompactions: 3
-        write_buffer_manager: "${wbm}"
-        inplace_update_support: false
-        WAL_size_limit_MB: 0
         #wal_dir: "/path/to/todis-community-wal/zsets"
         statistics: "${stat-zsets}"
-        allow_mmap_reads: false
       column_families:
         default: "${base-meta}"
         data_cf: "${zset-data}"
@@ -426,18 +292,12 @@ databases:
     method: DB::Open
     params:
       db_options:
-        create_if_missing: true
-        create_missing_column_families: true
+        template: "$dbo"
         max_background_flushes: 1
         max_background_compactions: 20
-        max_subcompactions: 1
         max_level1_subcompactions: 3
-        write_buffer_manager: "${wbm}"
-        inplace_update_support: false
-        WAL_size_limit_MB: 0
         #wal_dir: "/path/to/todis-community-wal/lists"
         statistics: "${stat-lists}"
-        allow_mmap_reads: false
       column_families:
         default: "${list-meta}"
         data_cf: "${list-data}"

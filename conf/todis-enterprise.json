@@ -143,6 +143,13 @@
     }
   },
   "TableFactory": {
+    "single_fast": {
+      "class": "SingleFastTable",
+      "params": {
+      "indexType": "MainPatricia",
+      "keyPrefixLen": 0
+      }
+    },
     "topling_fast": {
       "class": "ToplingFastTable",
       "params": {
@@ -179,13 +186,14 @@
     "dispatch_data_cf": {
       "class": "DispatcherTable",
       "params": {
-        "default": "topling_fast",
+        "default": "single_fast",
         "readers": {
+          "SingleFastTable": "single_fast",
           "ToplingFastTable": "topling_fast",
           "ToplingZipTable": "topling_zip"
         },
         "level_writers": [
-          "topling_fast", "topling_fast", "topling_fast", "topling_fast",
+          "single_fast", "single_fast", "single_fast", "single_fast",
           "topling_zip", "topling_zip", "topling_zip", "topling_zip", "topling_zip"
         ]
       }
@@ -193,86 +201,86 @@
     "dispatch": {
       "class": "DispatcherTable",
       "params": {
-        "default": "topling_fast",
+        "default": "single_fast",
         "readers": {
+          "SingleFastTable": "single_fast",
           "ToplingFastTable": "topling_fast",
           "ToplingZipTable": "topling_zip"
         },
         "level_writers": [
-          "topling_fast", "topling_fast",
+          "single_fast", "single_fast",
           "topling_zip", "topling_zip", "topling_zip", "topling_zip", "topling_zip"
         ]
       }
     }
   },
   "CFOptions": {
-    "hash-data": {
+    "common-cfo": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
+      "disable_auto_compactions": true,
+      "compaction_executor_factory": "${dcompact}"
+    },
+    "meta-cfo": {
+      "template": "$common-cfo",
+      "table_factory": "${dispatch}",
+      "html_user_key_coder": "$meta_key_decoder"
+    },
+    "data-cfo": {
+      "template": "$common-cfo",
       "table_factory": "${dispatch_data_cf}",
-      "html_user_key_coder": "$base_data_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
+      "html_user_key_coder": "$base_data_key_decoder"
+    },
+    "hash-data": {
+      "template": "$data-cfo",
       "compaction_filter_factory": "${hash-data}"
     },
     "set-member": {
-      "max_write_buffer_number": 4, "write_buffer_size": "128M",
-      "target_file_size_base": "16M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch_data_cf}",
-      "html_user_key_coder": "$base_data_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
+      "template": "$data-cfo",
       "compaction_filter_factory": "${set-member}"
     },
     "zset-data": {
-      "max_write_buffer_number": 4, "write_buffer_size": "128M",
-      "target_file_size_base": "16M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch_data_cf}",
-      "html_user_key_coder": "$base_data_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
+      "template": "$data-cfo",
       "compaction_filter_factory": "${zset-data}"
     },
     "base-meta": {
-      "max_write_buffer_number": 4, "write_buffer_size": "128M",
-      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
-      "html_user_key_coder": "$meta_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
+      "template": "$meta-cfo",
       "compaction_filter_factory": "${base-meta}"
     },
     "strings": {
-      "max_write_buffer_number": 4, "write_buffer_size": "128M",
-      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
+      "template": "$meta-cfo",
       "soft_pending_compaction_bytes_limit": "1T",
       "hard_pending_compaction_bytes_limit": "2T",
-      "table_factory": "${dispatch}",
-      "html_user_key_coder": "$meta_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${strings}"
     },
     "list-data": {
-      "//comparator": "blackwidow.ListsDataKeyComparator",
-      "max_write_buffer_number": 4, "write_buffer_size": "16M",
-      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch_data_cf}",
+      "template": "$data-cfo",
       "html_user_key_coder": "$lists_data_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${list-data}"
     },
     "list-meta": {
-      "max_write_buffer_number": 4, "write_buffer_size": "16M",
-      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
-      "html_user_key_coder": "$meta_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
+      "template": "$meta-cfo",
       "compaction_filter_factory": "${list-meta}"
     },
     "zset-score": {
-      "//comparator": "blackwidow.ZSetsScoreKeyComparator",
-      "max_write_buffer_number": 4, "write_buffer_size": "16M",
-      "target_file_size_base": "8M", "target_file_size_multiplier": 2,
-      "table_factory": "${dispatch}",
+      "template": "$data-cfo",
       "html_user_key_coder": "$zsets_score_key_decoder",
-      "compaction_executor_factory": "${dcompact}",
       "compaction_filter_factory": "${zset-score}"
+    }
+  },
+  "DBOptions": {
+    "dbo": {
+      "advise_random_on_open": true,
+      "create_if_missing": true,
+      "create_missing_column_families": true,
+      "max_background_flushes": 2,
+      "max_background_compactions": 20,
+      "max_subcompactions": 1,
+      "max_level1_subcompactions": 10,
+      "write_buffer_manager": "${wbm}",
+      "inplace_update_support": false,
+      "WAL_size_limit_MB": 0,
+      "//allow_mmap_reads:": true
     }
   },
   "databases": {
@@ -280,20 +288,10 @@
       "method": "DB::Open",
       "params": {
         "db_options": {
-          "advise_random_on_open": true,
-          "create_if_missing": true,
-          "create_missing_column_families": true,
-          "max_background_flushes": 2,
-          "max_background_compactions": 20,
-          "max_subcompactions": 1,
-          "max_level1_subcompactions": 10,
-          "write_buffer_manager": "${wbm}",
-          "inplace_update_support": false,
-          "WAL_size_limit_MB": 0,
+          "template": "$dbo",
           "//wal_dir": "/nvmepool/terark/pika-wal/strings",
           "//db_log_dir": "/nvmepool/terark/pika-wal/strings",
-          "statistics": "${stat-strings}",
-          "allow_mmap_reads": true
+          "statistics": "${stat-strings}"
         },
         "column_families": {
           "default": "${strings}"
@@ -305,16 +303,7 @@
       "method": "DB::Open",
       "params": {
         "db_options": {
-          "advise_random_on_open": true,
-          "create_if_missing": true,
-          "create_missing_column_families": true,
-          "max_background_flushes": 2,
-          "max_background_compactions": 32,
-          "max_subcompactions": 1,
-          "max_level1_subcompactions": 3,
-          "write_buffer_manager": "${wbm}",
-          "inplace_update_support": false,
-          "WAL_size_limit_MB": 0,
+          "template": "$dbo",
           "//wal_dir": "/nvmepool/terark/pika-wal/hashes",
           "//db_log_dir": "/nvmepool/terark/pika-wal/hashes",
           "statistics": "${stat-hashes}",
@@ -331,20 +320,10 @@
       "method": "DB::Open",
       "params": {
         "db_options": {
-          "advise_random_on_open": true,
-          "create_if_missing": true,
-          "create_missing_column_families": true,
-          "max_background_flushes": 1,
-          "max_background_compactions": 20,
-          "max_subcompactions": 1,
-          "max_level1_subcompactions": 3,
-          "write_buffer_manager": "${wbm}",
-          "inplace_update_support": false,
-          "WAL_size_limit_MB": 0,
+          "template": "$dbo",
           "//wal_dir": "/nvmepool/terark/pika-wal/sets",
           "//db_log_dir": "/nvmepool/terark/pika-wal/sets",
-          "statistics": "${stat-sets}",
-          "allow_mmap_reads": true
+          "statistics": "${stat-sets}"
         },
         "column_families": {
           "default": "${base-meta}",
@@ -357,20 +336,10 @@
       "method": "DB::Open",
       "params": {
         "db_options": {
-          "advise_random_on_open": true,
-          "create_if_missing": true,
-          "create_missing_column_families": true,
-          "max_background_flushes": 1,
-          "max_background_compactions": 20,
-          "max_subcompactions": 1,
-          "max_level1_subcompactions": 3,
-          "write_buffer_manager": "${wbm}",
-          "inplace_update_support": false,
-          "WAL_size_limit_MB": 0,
+          "template": "$dbo",
           "//wal_dir": "/nvmepool/terark/pika-wal/zsets",
           "//db_log_dir": "/nvmepool/terark/pika-wal/zsets",
-          "statistics": "${stat-zsets}",
-          "allow_mmap_reads": true
+          "statistics": "${stat-zsets}"
         },
         "column_families": {
           "default": "${base-meta}",
@@ -384,19 +353,10 @@
       "method": "DB::Open",
       "params": {
         "db_options": {
-          "create_if_missing": true,
-          "create_missing_column_families": true,
-          "max_background_flushes": 1,
-          "max_background_compactions": 20,
-          "max_subcompactions": 1,
-          "max_level1_subcompactions": 3,
-          "write_buffer_manager": "${wbm}",
-          "inplace_update_support": false,
-          "WAL_size_limit_MB": 0,
+          "template": "$dbo",
           "//wal_dir": "/nvmepool/terark/pika-wal/lists",
           "//db_log_dir": "/nvmepool/terark/pika-wal/lists",
-          "statistics": "${stat-lists}",
-          "allow_mmap_reads": true
+          "statistics": "${stat-lists}"
         },
         "column_families": {
           "default": "${list-meta}",
@@ -453,7 +413,9 @@
           { "url": "http://192.168.100.112:8081", "web_url": "http://dell3.topling.in:2011" },
         ],
         "dbcf_min_level": {
-          ":data_cf": -2
+          ":data_cf": -2,
+          ":member_cf": -2,
+          ":score_cf": -2
         },
         "dcompact_min_level": 2
       }
