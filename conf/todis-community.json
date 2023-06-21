@@ -194,6 +194,7 @@
         "num_levels": 10,
         "max_bytes_for_level_multiplier": 4,
         "max_write_buffer_number": 4,
+        "level_compaction_dynamic_level_bytes": false,
         "compaction_options_level": {"L1_score_boost": 5},
         "target_file_size_multiplier": 2,
         "table_factory": "${dispatch}",
@@ -208,35 +209,35 @@
         "template": "${common-cfo}",
         "write_buffer_size": "256M",
         "max_bytes_for_level_base": "256M",
-        "target_file_size_base": "32M", 
+        "target_file_size_base": "32M",
         "html_user_key_coder": "$base_data_key_decoder",
         "compaction_filter_factory": "${hash-data}"
       },
       "set-member": {
         "template": "${common-cfo}",
         "write_buffer_size": "256M",
-        "target_file_size_base": "16M", 
+        "target_file_size_base": "16M",
         "html_user_key_coder": "$base_data_key_decoder",
         "compaction_filter_factory": "${set-member}"
       },
       "zset-data": {
         "template": "${common-cfo}",
         "write_buffer_size": "256M",
-        "target_file_size_base": "16M", 
+        "target_file_size_base": "16M",
         "html_user_key_coder": "$base_data_key_decoder",
         "compaction_filter_factory": "${zset-data}"
       },
       "base-meta": {
         "template": "${common-cfo}",
         "write_buffer_size": "128M",
-        "target_file_size_base": "8M", 
+        "target_file_size_base": "8M",
         "html_user_key_coder": "$meta_key_decoder",
         "compaction_filter_factory": "${base-meta}"
       },
       "strings": {
         "template": "${common-cfo}",
         "write_buffer_size": "1G",
-        "target_file_size_base": "64M", 
+        "target_file_size_base": "64M",
         "soft_pending_compaction_bytes_limit": "1T",
         "hard_pending_compaction_bytes_limit": "2T",
         "html_user_key_coder": "$meta_key_decoder",
@@ -245,21 +246,21 @@
       "list-data": {
         "template": "${common-cfo}",
         "write_buffer_size": "256M",
-        "target_file_size_base": "16M", 
+        "target_file_size_base": "16M",
         "html_user_key_coder": "$lists_data_key_decoder",
         "compaction_filter_factory": "${list-data}"
       },
       "list-meta": {
         "template": "${common-cfo}",
         "write_buffer_size": "16M",
-        "target_file_size_base": "8M", 
+        "target_file_size_base": "8M",
         "html_user_key_coder": "$meta_key_decoder",
         "compaction_filter_factory": "${list-meta}"
       },
       "zset-score": {
         "template": "${common-cfo}",
         "write_buffer_size": "64M",
-        "target_file_size_base": "8M", 
+        "target_file_size_base": "8M",
         "html_user_key_coder": "$zsets_score_key_decoder",
         "compaction_filter_factory": "${zset-score}"
       }

@@ -154,6 +154,7 @@ CFOptions:
     num_levels: 10
     max_bytes_for_level_multiplier: 4
     max_write_buffer_number: 4
+    level_compaction_dynamic_level_bytes: false
     compaction_options_level:
       L1_score_boost: 5
     target_file_size_multiplier: 2

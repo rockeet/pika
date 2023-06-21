@@ -218,6 +218,7 @@
     "common-cfo": {
       "max_write_buffer_number": 4, "write_buffer_size": "128M",
       "target_file_size_base": "16M", "target_file_size_multiplier": 2,
+      "level_compaction_dynamic_level_bytes": false,
       "disable_auto_compactions": true,
       "compaction_executor_factory": "${dcompact}"
     },

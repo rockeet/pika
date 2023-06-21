@@ -181,6 +181,7 @@ CFOptions:
     target_file_size_base: 16M
     target_file_size_multiplier: 2
     disable_auto_compactions: true
+    level_compaction_dynamic_level_bytes: false
     compaction_executor_factory: "${dcompact}"
   meta-cfo:
     template: "$common-cfo"
