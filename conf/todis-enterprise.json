@@ -230,6 +230,7 @@
     "data-cfo": {
       "template": "$common-cfo",
       "table_factory": "${dispatch_data_cf}",
+      "compaction_executor_factory": "${data_cf_dcomact}",
       "html_user_key_coder": "$base_data_key_decoder"
     },
     "hash-data": {
@@ -411,14 +412,21 @@
           { "url": "http://192.168.100.111:8080", "web_url": "http://dell3.topling.in:2011" },
           { "url": "http://192.168.100.111:8081", "web_url": "http://dell3.topling.in:2011" },
           { "url": "http://192.168.100.112:8080", "web_url": "http://dell3.topling.in:2011" },
-          { "url": "http://192.168.100.112:8081", "web_url": "http://dell3.topling.in:2011" },
+          { "url": "http://192.168.100.112:8081", "web_url": "http://dell3.topling.in:2011" }
         ],
-        "dbcf_min_level": {
+        "dbcf_min_levelxx": {
           ":data_cf": -2,
           ":member_cf": -2,
           ":score_cf": -2
         },
         "dcompact_min_level": 2
+      }
+    },
+    "data_cf_dcomact": {
+      "class": "BwDcompactExec",
+      "params": {
+        "target_name": "dcompact",
+        "max_meta_size_ratio": 0.05
       }
     }
   }
