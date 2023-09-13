@@ -425,7 +425,7 @@
     "data_cf_dcomact": {
       "class": "BwDcompactExec",
       "params": {
-        "target_name": "dcompact",
+        "target": "dcompact",
         "max_meta_size_ratio": 0.05
       }
     }
